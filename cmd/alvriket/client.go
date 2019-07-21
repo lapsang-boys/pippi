@@ -6,12 +6,12 @@ import (
 	"fmt"
 
 	"github.com/google/subcommands"
-	"github.com/lapsang-boys/pippi/alvriket"
+	binpb "github.com/lapsang-boys/pippi/proto/bin"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 )
 
-// clientCmd is the command to launch a gRPC server processing parse ELF
+// clientCmd is the command to launch a gRPC server processing parse binary
 // requests.
 type clientCmd struct {
 	// gRPC address to connect to.
@@ -28,7 +28,7 @@ func (*clientCmd) Synopsis() string {
 
 func (*clientCmd) Usage() string {
 	const use = `
-Send ELF file parse request.
+Send binary file parse request.
 
 Usage:
 	client [OPTION]... FILE
@@ -48,19 +48,19 @@ func (cmd *clientCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 		f.Usage()
 		return subcommands.ExitUsageError
 	}
-	elfPath := f.Arg(0)
+	binPath := f.Arg(0)
 
 	// Connect to gRPC server.
-	if err := connect(cmd.Addr, elfPath); err != nil {
+	if err := connect(cmd.Addr, binPath); err != nil {
 		warn.Printf("connect failed; %+v", err)
 		return subcommands.ExitFailure
 	}
 	return subcommands.ExitSuccess
 }
 
-// connect connects to the given gRPC address for incoming requests to parse ELF
-// files.
-func connect(addr, elfPath string) error {
+// connect connects to the given gRPC address for incoming requests to parse
+// binary files.
+func connect(addr, binPath string) error {
 	dbg.Printf("connecting to %q", addr)
 	// Launch gRPC server.
 	conn, err := grpc.Dial(addr, grpc.WithInsecure())
@@ -69,13 +69,13 @@ func connect(addr, elfPath string) error {
 	}
 	defer conn.Close()
 
-	// Send ELF parsing request.
-	client := alvriket.NewELFParserClient(conn)
+	// Send binary parsing request.
+	client := binpb.NewBinaryParserClient(conn)
 	ctx := context.Background()
-	req := &alvriket.ParseELFRequest{
-		ElfPath: elfPath,
+	req := &binpb.ParseBinaryRequest{
+		BinPath: binPath,
 	}
-	reply, err := client.ParseELF(ctx, req)
+	reply, err := client.ParseBinary(ctx, req)
 	if err != nil {
 		return errors.WithStack(err)
 	}

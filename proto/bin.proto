@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package bin;
+
+service BinaryParser {
+   rpc ParseBinary (ParseBinaryRequest) returns (ParseBinaryReply) {}
+}
+
+message ParseBinaryRequest {
+   // Binary executable file path.
+   string bin_path = 1;
+}
+
+message ParseBinaryReply {
+   // Number of sections.
+   int32 nsects = 1;
+}

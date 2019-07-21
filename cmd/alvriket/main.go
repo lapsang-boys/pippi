@@ -1,4 +1,4 @@
-//go:generate protoc -I ../../alvriket --go_out=plugins=grpc:../../alvriket ../../alvriket/alvriket.proto
+//go:generate protoc -I ../../proto --go_out=plugins=grpc:../../proto/bin ../../proto/bin.proto
 
 package main
 
@@ -8,7 +8,6 @@ import (
 	"log"
 	"os"
 
-	_ "github.com/decomp/exp/bin/elf" // register ELF decoder
 	"github.com/google/subcommands"
 	"github.com/mewkiz/pkg/term"
 )

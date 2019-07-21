@@ -7,7 +7,7 @@ import (
 
 	"github.com/decomp/exp/bin"
 	"github.com/google/subcommands"
-	"github.com/lapsang-boys/pippi/alvriket"
+	binpb "github.com/lapsang-boys/pippi/proto/bin"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 )
@@ -17,7 +17,7 @@ const (
 	grpcAddr = ":1234"
 )
 
-// serverCmd is the command to launch a gRPC server processing parse ELF
+// serverCmd is the command to launch a gRPC server processing parse binary
 // requests.
 type serverCmd struct {
 	// gRPC address to listen on.
@@ -34,7 +34,7 @@ func (*serverCmd) Synopsis() string {
 
 func (*serverCmd) Usage() string {
 	const use = `
-Reply to ELF file parse request.
+Reply to binary file parse request.
 
 Usage:
 	server [OPTION]...
@@ -56,7 +56,7 @@ func (cmd *serverCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 	return subcommands.ExitSuccess
 }
 
-// listen listens on the given gRPC address for incoming requests to parse ELF
+// listen listens on the given gRPC address for incoming requests to parse binary
 // files.
 func listen(addr string) error {
 	dbg.Printf("listening on %q", addr)
@@ -66,27 +66,27 @@ func listen(addr string) error {
 		return errors.WithStack(err)
 	}
 	server := grpc.NewServer()
-	// Register ELF parser service.
-	alvriket.RegisterELFParserServer(server, &elfParserServer{})
+	// Register binary parser service.
+	binpb.RegisterBinaryParserServer(server, &binParserServer{})
 	if err := server.Serve(l); err != nil {
 		return errors.WithStack(err)
 	}
 	return nil
 }
 
-// elfParserServer implements alvriket.ELFParserServer.
-type elfParserServer struct{}
+// binParserServer implements binpb.BinaryParserServer.
+type binParserServer struct{}
 
-// ParseELF parses the given ELF file.
-func (elfParserServer) ParseELF(ctx context.Context, req *alvriket.ParseELFRequest) (*alvriket.ParseELFReply, error) {
-	dbg.Printf("parsing %q", req.ElfPath)
-	// Parse ELF file.
-	file, err := bin.ParseFile(req.ElfPath)
+// ParseBinary parses the given binary file.
+func (binParserServer) ParseBinary(ctx context.Context, req *binpb.ParseBinaryRequest) (*binpb.ParseBinaryReply, error) {
+	dbg.Printf("parsing %q", req.BinPath)
+	// Parse binary file.
+	file, err := bin.ParseFile(req.BinPath)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 	// Send reply.
-	reply := &alvriket.ParseELFReply{
+	reply := &binpb.ParseBinaryReply{
 		Nsects: int32(len(file.Sections)),
 	}
 	return reply, nil
