@@ -6,4 +6,5 @@ require (
 	github.com/decomp/exp v0.0.0-20181210173419-052a5b074939
 	github.com/kr/pretty v0.1.0
 	github.com/pkg/errors v0.8.1
+	google.golang.org/grpc v1.22.0 // indirect
 )
