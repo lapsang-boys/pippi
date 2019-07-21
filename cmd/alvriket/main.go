@@ -29,6 +29,7 @@ func main() {
 	subcommands.Register(subcommands.CommandsCommand(), "")
 	subcommands.Register(&serverCmd{}, "")
 	subcommands.Register(&clientCmd{}, "")
+	subcommands.Register(&parseCmd{}, "")
 
 	// Parse command line arguments.
 	flag.Parse()
