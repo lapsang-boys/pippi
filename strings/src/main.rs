@@ -13,7 +13,9 @@ use futures::Future;
 use grpcio::{Environment, RpcContext, ServerBuilder, UnarySink};
 use protobuf::RepeatedField;
 
+#[path="../../proto/strings/strings.rs"]
 mod strings;
+#[path="../../proto/strings/strings_grpc.rs"]
 mod strings_grpc;
 
 #[derive(Clone)]
