@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package upload;
+
+service Upload {
+	rpc Upload (UploadRequest) returns (UploadReply) {}
+}
+
+enum UploadStatusCode {
+	Unknown = 0;
+	Ok = 1;
+	Failed = 2;
+}
+
+message UploadRequest {
+	// Binary executable file path.
+	string filename = 1;
+	// File hash.
+	string hash = 2;
+	// File content.
+	bytes content = 3;
+}
+
+message UploadReply {
+	UploadStatusCode code = 1;
+}
