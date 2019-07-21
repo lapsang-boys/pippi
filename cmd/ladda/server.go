@@ -2,19 +2,24 @@ package main
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"flag"
+	"io/ioutil"
 	"net"
+	"os"
+	"path/filepath"
 
-	"github.com/decomp/exp/bin"
 	"github.com/google/subcommands"
-	binpb "github.com/lapsang-boys/pippi/proto/bin"
+	uploadpb "github.com/lapsang-boys/pippi/proto/upload"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 )
 
 const (
 	// Default gRPC address to listen on.
-	grpcAddr = ":1235"
+	grpcAddr  = ":1235"
+	extension = ".bin"
 )
 
 // serverCmd is the command to launch a gRPC server processing parse binary
@@ -65,29 +70,54 @@ func listen(addr string) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
+
+	cacheDir, err := os.UserCacheDir()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	cacheDir = filepath.Join(cacheDir, "pippi")
+
+	err = os.MkdirAll(cacheDir, 0755)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
 	server := grpc.NewServer()
 	// Register binary parser service.
-	binpb.RegisterBinaryParserServer(server, &binParserServer{})
+	uploadpb.RegisterUploadServer(server, &uploadServer{cacheDir: cacheDir})
 	if err := server.Serve(l); err != nil {
 		return errors.WithStack(err)
 	}
 	return nil
 }
 
-// binParserServer implements binpb.BinaryParserServer.
-type binParserServer struct{}
+type uploadServer struct {
+	cacheDir string
+}
 
-// ParseBinary parses the given binary file.
-func (binParserServer) ParseBinary(ctx context.Context, req *binpb.ParseBinaryRequest) (*binpb.ParseBinaryReply, error) {
-	dbg.Printf("parsing %q", req.BinPath)
-	// Parse binary file.
-	file, err := bin.ParseFile(req.BinPath)
+func (us uploadServer) Upload(ctx context.Context, req *uploadpb.UploadRequest) (*uploadpb.UploadReply, error) {
+	dbg.Printf("receiving %q", req.Filename)
+
+	rawHash := sha256.Sum256(req.Content)
+	hash := hex.EncodeToString(rawHash[:])
+	if hash != req.Hash {
+		return nil, errors.Errorf("Hash mismatch. Expected %s, got %s", req.Hash, hash)
+	}
+	dirName := filepath.Join(us.cacheDir, req.Hash)
+	err := os.Mkdir(dirName, 0755)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
+	destPath := filepath.Join(dirName, hash+extension)
+
+	err = ioutil.WriteFile(destPath, req.Content, 0644)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
 	// Send reply.
-	reply := &binpb.ParseBinaryReply{
-		Nsects: int32(len(file.Sections)),
+	reply := &uploadpb.UploadReply{
+		Id: hash,
 	}
 	return reply, nil
 }

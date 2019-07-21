@@ -2,8 +2,11 @@ package main
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"flag"
 	"fmt"
+	"io/ioutil"
 
 	"github.com/google/subcommands"
 	uploadpb "github.com/lapsang-boys/pippi/proto/upload"
@@ -57,6 +60,23 @@ func (cmd *clientCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 	return subcommands.ExitSuccess
 }
 
+func newRequest(binPath string) (*uploadpb.UploadRequest, error) {
+	buf, err := ioutil.ReadFile(binPath)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	rawHash := sha256.Sum256(buf)
+	hash := hex.EncodeToString(rawHash[:])
+
+	req := &uploadpb.UploadRequest{
+		Filename: binPath,
+		Hash:     hash,
+		Content:  buf,
+	}
+
+	return req, nil
+}
+
 // connect connects to the given gRPC address for incoming requests to parse
 // binary files.
 func connect(addr, binPath string) error {
@@ -69,15 +89,20 @@ func connect(addr, binPath string) error {
 	defer conn.Close()
 
 	// Send binary parsing request.
-	client := binpb.NewBinaryParserClient(conn)
+	client := uploadpb.NewUploadClient(conn)
 	ctx := context.Background()
-	req := &binpb.ParseBinaryRequest{
-		BinPath: binPath,
-	}
-	reply, err := client.ParseBinary(ctx, req)
+
+	req, err := newRequest(binPath)
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	fmt.Println("nsects:", reply.Nsects)
+
+	reply, err := client.Upload(ctx, req)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	fmt.Println(reply.Id)
+
 	return nil
 }
