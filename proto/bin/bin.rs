@@ -196,26 +196,60 @@ impl ::protobuf::reflect::ProtobufValue for ParseBinaryRequest {
 }
 
 #[derive(PartialEq,Clone,Default)]
-pub struct ParseBinaryReply {
+pub struct File {
     // message fields
+    pub arch: Arch,
+    pub entry: u64,
     pub sections: ::protobuf::RepeatedField<Section>,
+    pub imports: ::protobuf::RepeatedField<Func>,
+    pub exports: ::protobuf::RepeatedField<Func>,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::CachedSize,
 }
 
-impl<'a> ::std::default::Default for &'a ParseBinaryReply {
-    fn default() -> &'a ParseBinaryReply {
-        <ParseBinaryReply as ::protobuf::Message>::default_instance()
+impl<'a> ::std::default::Default for &'a File {
+    fn default() -> &'a File {
+        <File as ::protobuf::Message>::default_instance()
     }
 }
 
-impl ParseBinaryReply {
-    pub fn new() -> ParseBinaryReply {
+impl File {
+    pub fn new() -> File {
         ::std::default::Default::default()
     }
 
-    // repeated .bin.Section sections = 1;
+    // .bin.Arch arch = 1;
+
+
+    pub fn get_arch(&self) -> Arch {
+        self.arch
+    }
+    pub fn clear_arch(&mut self) {
+        self.arch = Arch::X86_32;
+    }
+
+    // Param is passed by value, moved
+    pub fn set_arch(&mut self, v: Arch) {
+        self.arch = v;
+    }
+
+    // uint64 entry = 2;
+
+
+    pub fn get_entry(&self) -> u64 {
+        self.entry
+    }
+    pub fn clear_entry(&mut self) {
+        self.entry = 0;
+    }
+
+    // Param is passed by value, moved
+    pub fn set_entry(&mut self, v: u64) {
+        self.entry = v;
+    }
+
+    // repeated .bin.Section sections = 3;
 
 
     pub fn get_sections(&self) -> &[Section] {
@@ -239,11 +273,71 @@ impl ParseBinaryReply {
     pub fn take_sections(&mut self) -> ::protobuf::RepeatedField<Section> {
         ::std::mem::replace(&mut self.sections, ::protobuf::RepeatedField::new())
     }
+
+    // repeated .bin.Func imports = 4;
+
+
+    pub fn get_imports(&self) -> &[Func] {
+        &self.imports
+    }
+    pub fn clear_imports(&mut self) {
+        self.imports.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_imports(&mut self, v: ::protobuf::RepeatedField<Func>) {
+        self.imports = v;
+    }
+
+    // Mutable pointer to the field.
+    pub fn mut_imports(&mut self) -> &mut ::protobuf::RepeatedField<Func> {
+        &mut self.imports
+    }
+
+    // Take field
+    pub fn take_imports(&mut self) -> ::protobuf::RepeatedField<Func> {
+        ::std::mem::replace(&mut self.imports, ::protobuf::RepeatedField::new())
+    }
+
+    // repeated .bin.Func exports = 5;
+
+
+    pub fn get_exports(&self) -> &[Func] {
+        &self.exports
+    }
+    pub fn clear_exports(&mut self) {
+        self.exports.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_exports(&mut self, v: ::protobuf::RepeatedField<Func>) {
+        self.exports = v;
+    }
+
+    // Mutable pointer to the field.
+    pub fn mut_exports(&mut self) -> &mut ::protobuf::RepeatedField<Func> {
+        &mut self.exports
+    }
+
+    // Take field
+    pub fn take_exports(&mut self) -> ::protobuf::RepeatedField<Func> {
+        ::std::mem::replace(&mut self.exports, ::protobuf::RepeatedField::new())
+    }
 }
 
-impl ::protobuf::Message for ParseBinaryReply {
+impl ::protobuf::Message for File {
     fn is_initialized(&self) -> bool {
         for v in &self.sections {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.imports {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.exports {
             if !v.is_initialized() {
                 return false;
             }
@@ -256,7 +350,23 @@ impl ::protobuf::Message for ParseBinaryReply {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
+                    ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.arch, 1, &mut self.unknown_fields)?
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    let tmp = is.read_uint64()?;
+                    self.entry = tmp;
+                },
+                3 => {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.sections)?;
+                },
+                4 => {
+                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.imports)?;
+                },
+                5 => {
+                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.exports)?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -270,7 +380,21 @@ impl ::protobuf::Message for ParseBinaryReply {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
+        if self.arch != Arch::X86_32 {
+            my_size += ::protobuf::rt::enum_size(1, self.arch);
+        }
+        if self.entry != 0 {
+            my_size += ::protobuf::rt::value_size(2, self.entry, ::protobuf::wire_format::WireTypeVarint);
+        }
         for value in &self.sections {
+            let len = value.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        };
+        for value in &self.imports {
+            let len = value.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        };
+        for value in &self.exports {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         };
@@ -280,8 +404,24 @@ impl ::protobuf::Message for ParseBinaryReply {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+        if self.arch != Arch::X86_32 {
+            os.write_enum(1, self.arch.value())?;
+        }
+        if self.entry != 0 {
+            os.write_uint64(2, self.entry)?;
+        }
         for v in &self.sections {
-            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_raw_varint32(v.get_cached_size())?;
+            v.write_to_with_cached_sizes(os)?;
+        };
+        for v in &self.imports {
+            os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_raw_varint32(v.get_cached_size())?;
+            v.write_to_with_cached_sizes(os)?;
+        };
+        for v in &self.exports {
+            os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -315,8 +455,8 @@ impl ::protobuf::Message for ParseBinaryReply {
         Self::descriptor_static()
     }
 
-    fn new() -> ParseBinaryReply {
-        ParseBinaryReply::new()
+    fn new() -> File {
+        File::new()
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -327,13 +467,33 @@ impl ::protobuf::Message for ParseBinaryReply {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Arch>>(
+                    "arch",
+                    |m: &File| { &m.arch },
+                    |m: &mut File| { &mut m.arch },
+                ));
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+                    "entry",
+                    |m: &File| { &m.entry },
+                    |m: &mut File| { &mut m.entry },
+                ));
                 fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Section>>(
                     "sections",
-                    |m: &ParseBinaryReply| { &m.sections },
-                    |m: &mut ParseBinaryReply| { &mut m.sections },
+                    |m: &File| { &m.sections },
+                    |m: &mut File| { &mut m.sections },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<ParseBinaryReply>(
-                    "ParseBinaryReply",
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Func>>(
+                    "imports",
+                    |m: &File| { &m.imports },
+                    |m: &mut File| { &mut m.imports },
+                ));
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Func>>(
+                    "exports",
+                    |m: &File| { &m.exports },
+                    |m: &mut File| { &mut m.exports },
+                ));
+                ::protobuf::reflect::MessageDescriptor::new::<File>(
+                    "File",
                     fields,
                     file_descriptor_proto()
                 )
@@ -341,31 +501,239 @@ impl ::protobuf::Message for ParseBinaryReply {
         }
     }
 
-    fn default_instance() -> &'static ParseBinaryReply {
-        static mut instance: ::protobuf::lazy::Lazy<ParseBinaryReply> = ::protobuf::lazy::Lazy {
+    fn default_instance() -> &'static File {
+        static mut instance: ::protobuf::lazy::Lazy<File> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ParseBinaryReply,
+            ptr: 0 as *const File,
         };
         unsafe {
-            instance.get(ParseBinaryReply::new)
+            instance.get(File::new)
         }
     }
 }
 
-impl ::protobuf::Clear for ParseBinaryReply {
+impl ::protobuf::Clear for File {
     fn clear(&mut self) {
+        self.arch = Arch::X86_32;
+        self.entry = 0;
         self.sections.clear();
+        self.imports.clear();
+        self.exports.clear();
         self.unknown_fields.clear();
     }
 }
 
-impl ::std::fmt::Debug for ParseBinaryReply {
+impl ::std::fmt::Debug for File {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for ParseBinaryReply {
+impl ::protobuf::reflect::ProtobufValue for File {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct Func {
+    // message fields
+    pub addr: u64,
+    pub name: ::std::string::String,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a Func {
+    fn default() -> &'a Func {
+        <Func as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl Func {
+    pub fn new() -> Func {
+        ::std::default::Default::default()
+    }
+
+    // uint64 addr = 1;
+
+
+    pub fn get_addr(&self) -> u64 {
+        self.addr
+    }
+    pub fn clear_addr(&mut self) {
+        self.addr = 0;
+    }
+
+    // Param is passed by value, moved
+    pub fn set_addr(&mut self, v: u64) {
+        self.addr = v;
+    }
+
+    // string name = 2;
+
+
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
+    pub fn clear_name(&mut self) {
+        self.name.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = v;
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        &mut self.name
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        ::std::mem::replace(&mut self.name, ::std::string::String::new())
+    }
+}
+
+impl ::protobuf::Message for Func {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    let tmp = is.read_uint64()?;
+                    self.addr = tmp;
+                },
+                2 => {
+                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if self.addr != 0 {
+            my_size += ::protobuf::rt::value_size(1, self.addr, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if !self.name.is_empty() {
+            my_size += ::protobuf::rt::string_size(2, &self.name);
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+        if self.addr != 0 {
+            os.write_uint64(1, self.addr)?;
+        }
+        if !self.name.is_empty() {
+            os.write_string(2, &self.name)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
+        self as &mut ::std::any::Any
+    }
+    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
+        self
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        Self::descriptor_static()
+    }
+
+    fn new() -> Func {
+        Func::new()
+    }
+
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+            lock: ::protobuf::lazy::ONCE_INIT,
+            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+                    "addr",
+                    |m: &Func| { &m.addr },
+                    |m: &mut Func| { &mut m.addr },
+                ));
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                    "name",
+                    |m: &Func| { &m.name },
+                    |m: &mut Func| { &mut m.name },
+                ));
+                ::protobuf::reflect::MessageDescriptor::new::<Func>(
+                    "Func",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn default_instance() -> &'static Func {
+        static mut instance: ::protobuf::lazy::Lazy<Func> = ::protobuf::lazy::Lazy {
+            lock: ::protobuf::lazy::ONCE_INIT,
+            ptr: 0 as *const Func,
+        };
+        unsafe {
+            instance.get(Func::new)
+        }
+    }
+}
+
+impl ::protobuf::Clear for Func {
+    fn clear(&mut self) {
+        self.addr = 0;
+        self.name.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for Func {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for Func {
     fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
         ::protobuf::reflect::ProtobufValueRef::Message(self)
     }
@@ -757,10 +1125,71 @@ impl ::protobuf::reflect::ProtobufValue for Section {
 }
 
 #[derive(Clone,PartialEq,Eq,Debug,Hash)]
+pub enum Arch {
+    X86_32 = 0,
+    X86_64 = 1,
+    MIPS_32 = 2,
+    PowerPC_32 = 3,
+}
+
+impl ::protobuf::ProtobufEnum for Arch {
+    fn value(&self) -> i32 {
+        *self as i32
+    }
+
+    fn from_i32(value: i32) -> ::std::option::Option<Arch> {
+        match value {
+            0 => ::std::option::Option::Some(Arch::X86_32),
+            1 => ::std::option::Option::Some(Arch::X86_64),
+            2 => ::std::option::Option::Some(Arch::MIPS_32),
+            3 => ::std::option::Option::Some(Arch::PowerPC_32),
+            _ => ::std::option::Option::None
+        }
+    }
+
+    fn values() -> &'static [Self] {
+        static values: &'static [Arch] = &[
+            Arch::X86_32,
+            Arch::X86_64,
+            Arch::MIPS_32,
+            Arch::PowerPC_32,
+        ];
+        values
+    }
+
+    fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy {
+            lock: ::protobuf::lazy::ONCE_INIT,
+            ptr: 0 as *const ::protobuf::reflect::EnumDescriptor,
+        };
+        unsafe {
+            descriptor.get(|| {
+                ::protobuf::reflect::EnumDescriptor::new("Arch", file_descriptor_proto())
+            })
+        }
+    }
+}
+
+impl ::std::marker::Copy for Arch {
+}
+
+impl ::std::default::Default for Arch {
+    fn default() -> Self {
+        Arch::X86_32
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for Arch {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())
+    }
+}
+
+#[derive(Clone,PartialEq,Eq,Debug,Hash)]
 pub enum Perm {
-    PermR = 0,
-    PermW = 1,
-    PermX = 2,
+    R = 0,
+    W = 1,
+    X = 2,
 }
 
 impl ::protobuf::ProtobufEnum for Perm {
@@ -770,18 +1199,18 @@ impl ::protobuf::ProtobufEnum for Perm {
 
     fn from_i32(value: i32) -> ::std::option::Option<Perm> {
         match value {
-            0 => ::std::option::Option::Some(Perm::PermR),
-            1 => ::std::option::Option::Some(Perm::PermW),
-            2 => ::std::option::Option::Some(Perm::PermX),
+            0 => ::std::option::Option::Some(Perm::R),
+            1 => ::std::option::Option::Some(Perm::W),
+            2 => ::std::option::Option::Some(Perm::X),
             _ => ::std::option::Option::None
         }
     }
 
     fn values() -> &'static [Self] {
         static values: &'static [Perm] = &[
-            Perm::PermR,
-            Perm::PermW,
-            Perm::PermX,
+            Perm::R,
+            Perm::W,
+            Perm::X,
         ];
         values
     }
@@ -804,7 +1233,7 @@ impl ::std::marker::Copy for Perm {
 
 impl ::std::default::Default for Perm {
     fn default() -> Self {
-        Perm::PermR
+        Perm::R
     }
 }
 
@@ -816,82 +1245,129 @@ impl ::protobuf::reflect::ProtobufValue for Perm {
 
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\tbin.proto\x12\x03bin\"+\n\x12ParseBinaryRequest\x12\x15\n\x06bin_id\
-    \x18\x01\x20\x01(\tR\x05binId\"<\n\x10ParseBinaryReply\x12(\n\x08section\
-    s\x18\x01\x20\x03(\x0b2\x0c.bin.SectionR\x08sections\"\xba\x01\n\x07Sect\
-    ion\x12\x12\n\x04name\x18\x01\x20\x01(\tR\x04name\x12\x12\n\x04addr\x18\
-    \x02\x20\x01(\x04R\x04addr\x12\x16\n\x06offset\x18\x03\x20\x01(\x04R\x06\
-    offset\x12\x16\n\x06length\x18\x04\x20\x01(\x04R\x06length\x12\x1b\n\tfi\
-    le_size\x18\x05\x20\x01(\x04R\x08fileSize\x12\x19\n\x08mem_size\x18\x06\
-    \x20\x01(\x04R\x07memSize\x12\x1f\n\x05perms\x18\x07\x20\x03(\x0e2\t.bin\
-    .PermR\x05perms*'\n\x04Perm\x12\t\n\x05PermR\x10\0\x12\t\n\x05PermW\x10\
-    \x01\x12\t\n\x05PermX\x10\x022O\n\x0cBinaryParser\x12?\n\x0bParseBinary\
-    \x12\x17.bin.ParseBinaryRequest\x1a\x15.bin.ParseBinaryReply\"\0J\xdc\
-    \x0e\n\x06\x12\x04\0\02\x01\n\x08\n\x01\x0c\x12\x03\0\0\x12\n\x08\n\x01\
-    \x02\x12\x03\x02\0\x0c\n\n\n\x02\x06\0\x12\x04\x04\0\x06\x01\n\n\n\x03\
-    \x06\0\x01\x12\x03\x04\x08\x14\n\x0b\n\x04\x06\0\x02\0\x12\x03\x05\x08J\
-    \n\x0c\n\x05\x06\0\x02\0\x01\x12\x03\x05\x0c\x17\n\x0c\n\x05\x06\0\x02\0\
-    \x02\x12\x03\x05\x19+\n\x0c\n\x05\x06\0\x02\0\x03\x12\x03\x056F\n\n\n\
-    \x02\x04\0\x12\x04\x08\0\x0b\x01\n\n\n\x03\x04\0\x01\x12\x03\x08\x08\x1a\
-    \n<\n\x04\x04\0\x02\0\x12\x03\n\x08\x1a\x1a/\x20Binary\x20executable\x20\
-    ID\x20(lowercase\x20sha256\x20hash).\n\n\r\n\x05\x04\0\x02\0\x04\x12\x04\
-    \n\x08\x08\x1c\n\x0c\n\x05\x04\0\x02\0\x05\x12\x03\n\x08\x0e\n\x0c\n\x05\
-    \x04\0\x02\0\x01\x12\x03\n\x0f\x15\n\x0c\n\x05\x04\0\x02\0\x03\x12\x03\n\
-    \x18\x19\n\n\n\x02\x04\x01\x12\x04\r\0\x0f\x01\n\n\n\x03\x04\x01\x01\x12\
-    \x03\r\x08\x18\n\x0b\n\x04\x04\x01\x02\0\x12\x03\x0e\x08&\n\x0c\n\x05\
-    \x04\x01\x02\0\x04\x12\x03\x0e\x08\x10\n\x0c\n\x05\x04\x01\x02\0\x06\x12\
-    \x03\x0e\x11\x18\n\x0c\n\x05\x04\x01\x02\0\x01\x12\x03\x0e\x19!\n\x0c\n\
-    \x05\x04\x01\x02\0\x03\x12\x03\x0e$%\nB\n\x02\x04\x02\x12\x04\x12\0(\x01\
-    \x1a6\x20A\x20Section\x20represents\x20a\x20continuous\x20section\x20of\
-    \x20memory.\n\n\n\n\x03\x04\x02\x01\x12\x03\x12\x08\x0f\nK\n\x04\x04\x02\
-    \x02\0\x12\x03\x14\x08\x18\x1a>\x20Section\x20name;\x20or\x20empty\x20if\
-    \x20unnamed\x20section\x20or\x20memory\x20segment.\n\n\r\n\x05\x04\x02\
-    \x02\0\x04\x12\x04\x14\x08\x12\x11\n\x0c\n\x05\x04\x02\x02\0\x05\x12\x03\
-    \x14\x08\x0e\n\x0c\n\x05\x04\x02\x02\0\x01\x12\x03\x14\x0f\x13\n\x0c\n\
-    \x05\x04\x02\x02\0\x03\x12\x03\x14\x16\x17\n(\n\x04\x04\x02\x02\x01\x12\
-    \x03\x16\x08\x18\x1a\x1b\x20Start\x20address\x20of\x20section.\n\n\r\n\
-    \x05\x04\x02\x02\x01\x04\x12\x04\x16\x08\x14\x18\n\x0c\n\x05\x04\x02\x02\
-    \x01\x05\x12\x03\x16\x08\x0e\n\x0c\n\x05\x04\x02\x02\x01\x01\x12\x03\x16\
-    \x0f\x13\n\x0c\n\x05\x04\x02\x02\x01\x03\x12\x03\x16\x16\x17\n&\n\x04\
-    \x04\x02\x02\x02\x12\x03\x18\x08\x1a\x1a\x19\x20File\x20offset\x20of\x20\
-    section.\n\n\r\n\x05\x04\x02\x02\x02\x04\x12\x04\x18\x08\x16\x18\n\x0c\n\
-    \x05\x04\x02\x02\x02\x05\x12\x03\x18\x08\x0e\n\x0c\n\x05\x04\x02\x02\x02\
-    \x01\x12\x03\x18\x0f\x15\n\x0c\n\x05\x04\x02\x02\x02\x03\x12\x03\x18\x18\
-    \x19\nY\n\x04\x04\x02\x02\x03\x12\x03\x1a\x08\x1a\x1aL\x20Length\x20of\
-    \x20section\x20in\x20number\x20of\x20bytes;\x20excluding\x20section\x20a\
-    lignment\x20padding.\n\n\r\n\x05\x04\x02\x02\x03\x04\x12\x04\x1a\x08\x18\
-    \x1a\n\x0c\n\x05\x04\x02\x02\x03\x05\x12\x03\x1a\x08\x0e\n\x0c\n\x05\x04\
-    \x02\x02\x03\x01\x12\x03\x1a\x0f\x15\n\x0c\n\x05\x04\x02\x02\x03\x03\x12\
-    \x03\x1a\x18\x19\n\xd9\x01\n\x04\x04\x02\x02\x04\x12\x03\x20\x08\x1d\x1a\
-    \xcb\x01\x20Size\x20in\x20bytes\x20of\x20the\x20section\x20contents\x20i\
-    n\x20the\x20executable\x20file;\x20including\n\x20section\x20alignment\
-    \x20padding.\n\n\x20file_size\x20is\x20larger\x20than\x20mem_size\x20for\
-    \x20sections\x20padded\x20to\x20section\x20alignment\n\x20in\x20the\x20e\
-    xecutable\x20file.\n\n\r\n\x05\x04\x02\x02\x04\x04\x12\x04\x20\x08\x1a\
-    \x1a\n\x0c\n\x05\x04\x02\x02\x04\x05\x12\x03\x20\x08\x0e\n\x0c\n\x05\x04\
-    \x02\x02\x04\x01\x12\x03\x20\x0f\x18\n\x0c\n\x05\x04\x02\x02\x04\x03\x12\
-    \x03\x20\x1b\x1c\n\xbf\x01\n\x04\x04\x02\x02\x05\x12\x03%\x08\x1c\x1a\
-    \xb1\x01\x20Size\x20in\x20bytes\x20of\x20the\x20section\x20contents\x20w\
-    hen\x20loaded\x20into\x20memory.\n\n\x20mem_size\x20is\x20larger\x20than\
-    \x20file_size\x20for\x20sections\x20containing\x20uninitialized\n\x20dat\
-    a\x20not\x20part\x20of\x20the\x20executable\x20file.\n\n\r\n\x05\x04\x02\
-    \x02\x05\x04\x12\x04%\x08\x20\x1d\n\x0c\n\x05\x04\x02\x02\x05\x05\x12\
-    \x03%\x08\x0e\n\x0c\n\x05\x04\x02\x02\x05\x01\x12\x03%\x0f\x17\n\x0c\n\
-    \x05\x04\x02\x02\x05\x03\x12\x03%\x1a\x1b\n;\n\x04\x04\x02\x02\x06\x12\
-    \x03'\x08\x20\x1a.\x20Access\x20permissions\x20of\x20the\x20section\x20i\
-    n\x20memory.\n\n\x0c\n\x05\x04\x02\x02\x06\x04\x12\x03'\x08\x10\n\x0c\n\
-    \x05\x04\x02\x02\x06\x06\x12\x03'\x11\x15\n\x0c\n\x05\x04\x02\x02\x06\
-    \x01\x12\x03'\x16\x1b\n\x0c\n\x05\x04\x02\x02\x06\x03\x12\x03'\x1e\x1f\n\
-    !\n\x02\x05\0\x12\x04+\02\x01\x1a\x15\x20Access\x20permissions.\n\n\n\n\
-    \x03\x05\0\x01\x12\x03+\x05\t\nB\n\x04\x05\0\x02\0\x12\x03-\x08\x12\x1a.\
-    \x20PermR\x20specifies\x20that\x20the\x20memory\x20is\x20readable.\n\"\
-    \x05\x200x4\n\n\x0c\n\x05\x05\0\x02\0\x01\x12\x03-\x08\r\n\x0c\n\x05\x05\
-    \0\x02\0\x02\x12\x03-\x10\x11\nC\n\x04\x05\0\x02\x01\x12\x03/\x08\x12\
-    \x1a/\x20PermW\x20specifies\x20that\x20the\x20memory\x20is\x20writeable.\
-    \n\"\x05\x200x2\n\n\x0c\n\x05\x05\0\x02\x01\x01\x12\x03/\x08\r\n\x0c\n\
-    \x05\x05\0\x02\x01\x02\x12\x03/\x10\x11\nD\n\x04\x05\0\x02\x02\x12\x031\
-    \x08\x12\x1a0\x20PermX\x20specifies\x20that\x20the\x20memory\x20is\x20ex\
-    ecutable.\n\"\x05\x200x1\n\n\x0c\n\x05\x05\0\x02\x02\x01\x12\x031\x08\r\
-    \n\x0c\n\x05\x05\0\x02\x02\x02\x12\x031\x10\x11b\x06proto3\
+    \x18\x01\x20\x01(\tR\x05binId\"\xaf\x01\n\x04File\x12\x1d\n\x04arch\x18\
+    \x01\x20\x01(\x0e2\t.bin.ArchR\x04arch\x12\x14\n\x05entry\x18\x02\x20\
+    \x01(\x04R\x05entry\x12(\n\x08sections\x18\x03\x20\x03(\x0b2\x0c.bin.Sec\
+    tionR\x08sections\x12#\n\x07imports\x18\x04\x20\x03(\x0b2\t.bin.FuncR\
+    \x07imports\x12#\n\x07exports\x18\x05\x20\x03(\x0b2\t.bin.FuncR\x07expor\
+    ts\".\n\x04Func\x12\x12\n\x04addr\x18\x01\x20\x01(\x04R\x04addr\x12\x12\
+    \n\x04name\x18\x02\x20\x01(\tR\x04name\"\xba\x01\n\x07Section\x12\x12\n\
+    \x04name\x18\x01\x20\x01(\tR\x04name\x12\x12\n\x04addr\x18\x02\x20\x01(\
+    \x04R\x04addr\x12\x16\n\x06offset\x18\x03\x20\x01(\x04R\x06offset\x12\
+    \x16\n\x06length\x18\x04\x20\x01(\x04R\x06length\x12\x1b\n\tfile_size\
+    \x18\x05\x20\x01(\x04R\x08fileSize\x12\x19\n\x08mem_size\x18\x06\x20\x01\
+    (\x04R\x07memSize\x12\x1f\n\x05perms\x18\x07\x20\x03(\x0e2\t.bin.PermR\
+    \x05perms*;\n\x04Arch\x12\n\n\x06X86_32\x10\0\x12\n\n\x06X86_64\x10\x01\
+    \x12\x0b\n\x07MIPS_32\x10\x02\x12\x0e\n\nPowerPC_32\x10\x03*\x1b\n\x04Pe\
+    rm\x12\x05\n\x01R\x10\0\x12\x05\n\x01W\x10\x01\x12\x05\n\x01X\x10\x022C\
+    \n\x0cBinaryParser\x123\n\x0bParseBinary\x12\x17.bin.ParseBinaryRequest\
+    \x1a\t.bin.File\"\0J\xa6\x17\n\x06\x12\x04\0\0P\x01\n\x08\n\x01\x0c\x12\
+    \x03\0\0\x12\n\x08\n\x01\x02\x12\x03\x02\0\x0c\n\n\n\x02\x06\0\x12\x04\
+    \x04\0\x06\x01\n\n\n\x03\x06\0\x01\x12\x03\x04\x08\x14\n\x0b\n\x04\x06\0\
+    \x02\0\x12\x03\x05\x08>\n\x0c\n\x05\x06\0\x02\0\x01\x12\x03\x05\x0c\x17\
+    \n\x0c\n\x05\x06\0\x02\0\x02\x12\x03\x05\x19+\n\x0c\n\x05\x06\0\x02\0\
+    \x03\x12\x03\x056:\n\n\n\x02\x04\0\x12\x04\x08\0\x0b\x01\n\n\n\x03\x04\0\
+    \x01\x12\x03\x08\x08\x1a\n<\n\x04\x04\0\x02\0\x12\x03\n\x08\x1a\x1a/\x20\
+    Binary\x20executable\x20ID\x20(lowercase\x20sha256\x20hash).\n\n\r\n\x05\
+    \x04\0\x02\0\x04\x12\x04\n\x08\x08\x1c\n\x0c\n\x05\x04\0\x02\0\x05\x12\
+    \x03\n\x08\x0e\n\x0c\n\x05\x04\0\x02\0\x01\x12\x03\n\x0f\x15\n\x0c\n\x05\
+    \x04\0\x02\0\x03\x12\x03\n\x18\x19\n,\n\x02\x04\x01\x12\x04\x0e\0\x19\
+    \x01\x1a\x20\x20A\x20File\x20is\x20a\x20binary\x20exectuable.\n\n\n\n\
+    \x03\x04\x01\x01\x12\x03\x0e\x08\x0c\nL\n\x04\x04\x01\x02\0\x12\x03\x10\
+    \x08\x16\x1a?\x20Machine\x20architecture\x20specifying\x20the\x20assembl\
+    y\x20instruction\x20set.\n\n\r\n\x05\x04\x01\x02\0\x04\x12\x04\x10\x08\
+    \x0e\x0e\n\x0c\n\x05\x04\x01\x02\0\x06\x12\x03\x10\x08\x0c\n\x0c\n\x05\
+    \x04\x01\x02\0\x01\x12\x03\x10\r\x11\n\x0c\n\x05\x04\x01\x02\0\x03\x12\
+    \x03\x10\x14\x15\n-\n\x04\x04\x01\x02\x01\x12\x03\x12\x08\x19\x1a\x20\
+    \x20Entry\x20point\x20of\x20the\x20executable.\n\n\r\n\x05\x04\x01\x02\
+    \x01\x04\x12\x04\x12\x08\x10\x16\n\x0c\n\x05\x04\x01\x02\x01\x05\x12\x03\
+    \x12\x08\x0e\n\x0c\n\x05\x04\x01\x02\x01\x01\x12\x03\x12\x0f\x14\n\x0c\n\
+    \x05\x04\x01\x02\x01\x03\x12\x03\x12\x17\x18\n9\n\x04\x04\x01\x02\x02\
+    \x12\x03\x14\x08&\x1a,\x20Sections\x20(and\x20segments)\x20of\x20the\x20\
+    exectuable.\n\n\x0c\n\x05\x04\x01\x02\x02\x04\x12\x03\x14\x08\x10\n\x0c\
+    \n\x05\x04\x01\x02\x02\x06\x12\x03\x14\x11\x18\n\x0c\n\x05\x04\x01\x02\
+    \x02\x01\x12\x03\x14\x19!\n\x0c\n\x05\x04\x01\x02\x02\x03\x12\x03\x14$%\
+    \n\x20\n\x04\x04\x01\x02\x03\x12\x03\x16\x08\"\x1a\x13\x20Function\x20im\
+    ports.\n\n\x0c\n\x05\x04\x01\x02\x03\x04\x12\x03\x16\x08\x10\n\x0c\n\x05\
+    \x04\x01\x02\x03\x06\x12\x03\x16\x11\x15\n\x0c\n\x05\x04\x01\x02\x03\x01\
+    \x12\x03\x16\x16\x1d\n\x0c\n\x05\x04\x01\x02\x03\x03\x12\x03\x16\x20!\n\
+    \x20\n\x04\x04\x01\x02\x04\x12\x03\x18\x08\"\x1a\x13\x20Function\x20expo\
+    rts.\n\n\x0c\n\x05\x04\x01\x02\x04\x04\x12\x03\x18\x08\x10\n\x0c\n\x05\
+    \x04\x01\x02\x04\x06\x12\x03\x18\x11\x15\n\x0c\n\x05\x04\x01\x02\x04\x01\
+    \x12\x03\x18\x16\x1d\n\x0c\n\x05\x04\x01\x02\x04\x03\x12\x03\x18\x20!\n?\
+    \n\x02\x05\0\x12\x04\x1c\0%\x01\x1a3\x20Arch\x20represents\x20the\x20set\
+    \x20of\x20machine\x20architectures.\n\n\n\n\x03\x05\0\x01\x12\x03\x1c\
+    \x05\t\nI\n\x04\x05\0\x02\0\x12\x03\x1e\x08\x13\x1a<\x2032-bit\x20x86\
+    \x20machine\x20architecture,\x20as\x20used\x20by\x20Intel\x20and\x20AMD.\
+    \n\n\x0c\n\x05\x05\0\x02\0\x01\x12\x03\x1e\x08\x0e\n\x0c\n\x05\x05\0\x02\
+    \0\x02\x12\x03\x1e\x11\x12\nL\n\x04\x05\0\x02\x01\x12\x03\x20\x08\x13\
+    \x1a?\x2064-bit\x20x86-64\x20machine\x20architecture,\x20as\x20used\x20b\
+    y\x20Intel\x20and\x20AMD.\n\n\x0c\n\x05\x05\0\x02\x01\x01\x12\x03\x20\
+    \x08\x0e\n\x0c\n\x05\x05\0\x02\x01\x02\x12\x03\x20\x11\x12\n0\n\x04\x05\
+    \0\x02\x02\x12\x03\"\x08\x14\x1a#\x2032-bit\x20MIPS\x20machine\x20archit\
+    ecture.\n\n\x0c\n\x05\x05\0\x02\x02\x01\x12\x03\"\x08\x0f\n\x0c\n\x05\
+    \x05\0\x02\x02\x02\x12\x03\"\x12\x13\n3\n\x04\x05\0\x02\x03\x12\x03$\x08\
+    \x17\x1a&\x2032-bit\x20PowerPC\x20machine\x20architecture.\n\n\x0c\n\x05\
+    \x05\0\x02\x03\x01\x12\x03$\x08\x12\n\x0c\n\x05\x05\0\x02\x03\x02\x12\
+    \x03$\x15\x16\n9\n\x02\x04\x02\x12\x04(\0-\x01\x1a-\x20A\x20Func\x20is\
+    \x20an\x20imported\x20or\x20exported\x20function.\n\n\n\n\x03\x04\x02\
+    \x01\x12\x03(\x08\x0c\n\x20\n\x04\x04\x02\x02\0\x12\x03*\x08\x18\x1a\x13\
+    \x20Function\x20address.\n\n\r\n\x05\x04\x02\x02\0\x04\x12\x04*\x08(\x0e\
+    \n\x0c\n\x05\x04\x02\x02\0\x05\x12\x03*\x08\x0e\n\x0c\n\x05\x04\x02\x02\
+    \0\x01\x12\x03*\x0f\x13\n\x0c\n\x05\x04\x02\x02\0\x03\x12\x03*\x16\x17\n\
+    \x1d\n\x04\x04\x02\x02\x01\x12\x03,\x08\x18\x1a\x10\x20Function\x20name.\
+    \n\n\r\n\x05\x04\x02\x02\x01\x04\x12\x04,\x08*\x18\n\x0c\n\x05\x04\x02\
+    \x02\x01\x05\x12\x03,\x08\x0e\n\x0c\n\x05\x04\x02\x02\x01\x01\x12\x03,\
+    \x0f\x13\n\x0c\n\x05\x04\x02\x02\x01\x03\x12\x03,\x16\x17\nB\n\x02\x04\
+    \x03\x12\x040\0F\x01\x1a6\x20A\x20Section\x20represents\x20a\x20continuo\
+    us\x20section\x20of\x20memory.\n\n\n\n\x03\x04\x03\x01\x12\x030\x08\x0f\
+    \nK\n\x04\x04\x03\x02\0\x12\x032\x08\x18\x1a>\x20Section\x20name;\x20or\
+    \x20empty\x20if\x20unnamed\x20section\x20or\x20memory\x20segment.\n\n\r\
+    \n\x05\x04\x03\x02\0\x04\x12\x042\x080\x11\n\x0c\n\x05\x04\x03\x02\0\x05\
+    \x12\x032\x08\x0e\n\x0c\n\x05\x04\x03\x02\0\x01\x12\x032\x0f\x13\n\x0c\n\
+    \x05\x04\x03\x02\0\x03\x12\x032\x16\x17\n(\n\x04\x04\x03\x02\x01\x12\x03\
+    4\x08\x18\x1a\x1b\x20Start\x20address\x20of\x20section.\n\n\r\n\x05\x04\
+    \x03\x02\x01\x04\x12\x044\x082\x18\n\x0c\n\x05\x04\x03\x02\x01\x05\x12\
+    \x034\x08\x0e\n\x0c\n\x05\x04\x03\x02\x01\x01\x12\x034\x0f\x13\n\x0c\n\
+    \x05\x04\x03\x02\x01\x03\x12\x034\x16\x17\n&\n\x04\x04\x03\x02\x02\x12\
+    \x036\x08\x1a\x1a\x19\x20File\x20offset\x20of\x20section.\n\n\r\n\x05\
+    \x04\x03\x02\x02\x04\x12\x046\x084\x18\n\x0c\n\x05\x04\x03\x02\x02\x05\
+    \x12\x036\x08\x0e\n\x0c\n\x05\x04\x03\x02\x02\x01\x12\x036\x0f\x15\n\x0c\
+    \n\x05\x04\x03\x02\x02\x03\x12\x036\x18\x19\nY\n\x04\x04\x03\x02\x03\x12\
+    \x038\x08\x1a\x1aL\x20Length\x20of\x20section\x20in\x20number\x20of\x20b\
+    ytes;\x20excluding\x20section\x20alignment\x20padding.\n\n\r\n\x05\x04\
+    \x03\x02\x03\x04\x12\x048\x086\x1a\n\x0c\n\x05\x04\x03\x02\x03\x05\x12\
+    \x038\x08\x0e\n\x0c\n\x05\x04\x03\x02\x03\x01\x12\x038\x0f\x15\n\x0c\n\
+    \x05\x04\x03\x02\x03\x03\x12\x038\x18\x19\n\xd9\x01\n\x04\x04\x03\x02\
+    \x04\x12\x03>\x08\x1d\x1a\xcb\x01\x20Size\x20in\x20bytes\x20of\x20the\
+    \x20section\x20contents\x20in\x20the\x20executable\x20file;\x20including\
+    \n\x20section\x20alignment\x20padding.\n\n\x20file_size\x20is\x20larger\
+    \x20than\x20mem_size\x20for\x20sections\x20padded\x20to\x20section\x20al\
+    ignment\n\x20in\x20the\x20executable\x20file.\n\n\r\n\x05\x04\x03\x02\
+    \x04\x04\x12\x04>\x088\x1a\n\x0c\n\x05\x04\x03\x02\x04\x05\x12\x03>\x08\
+    \x0e\n\x0c\n\x05\x04\x03\x02\x04\x01\x12\x03>\x0f\x18\n\x0c\n\x05\x04\
+    \x03\x02\x04\x03\x12\x03>\x1b\x1c\n\xbf\x01\n\x04\x04\x03\x02\x05\x12\
+    \x03C\x08\x1c\x1a\xb1\x01\x20Size\x20in\x20bytes\x20of\x20the\x20section\
+    \x20contents\x20when\x20loaded\x20into\x20memory.\n\n\x20mem_size\x20is\
+    \x20larger\x20than\x20file_size\x20for\x20sections\x20containing\x20unin\
+    itialized\n\x20data\x20not\x20part\x20of\x20the\x20executable\x20file.\n\
+    \n\r\n\x05\x04\x03\x02\x05\x04\x12\x04C\x08>\x1d\n\x0c\n\x05\x04\x03\x02\
+    \x05\x05\x12\x03C\x08\x0e\n\x0c\n\x05\x04\x03\x02\x05\x01\x12\x03C\x0f\
+    \x17\n\x0c\n\x05\x04\x03\x02\x05\x03\x12\x03C\x1a\x1b\n;\n\x04\x04\x03\
+    \x02\x06\x12\x03E\x08\x20\x1a.\x20Access\x20permissions\x20of\x20the\x20\
+    section\x20in\x20memory.\n\n\x0c\n\x05\x04\x03\x02\x06\x04\x12\x03E\x08\
+    \x10\n\x0c\n\x05\x04\x03\x02\x06\x06\x12\x03E\x11\x15\n\x0c\n\x05\x04\
+    \x03\x02\x06\x01\x12\x03E\x16\x1b\n\x0c\n\x05\x04\x03\x02\x06\x03\x12\
+    \x03E\x1e\x1f\n!\n\x02\x05\x01\x12\x04I\0P\x01\x1a\x15\x20Access\x20perm\
+    issions.\n\n\n\n\x03\x05\x01\x01\x12\x03I\x05\t\n\"\n\x04\x05\x01\x02\0\
+    \x12\x03K\x08\x0e\x1a\x15\x20Memory\x20is\x20readable.\n\n\x0c\n\x05\x05\
+    \x01\x02\0\x01\x12\x03K\x08\t\n\x0c\n\x05\x05\x01\x02\0\x02\x12\x03K\x0c\
+    \r\n#\n\x04\x05\x01\x02\x01\x12\x03M\x08\x0e\x1a\x16\x20Memory\x20is\x20\
+    writeable.\n\n\x0c\n\x05\x05\x01\x02\x01\x01\x12\x03M\x08\t\n\x0c\n\x05\
+    \x05\x01\x02\x01\x02\x12\x03M\x0c\r\n$\n\x04\x05\x01\x02\x02\x12\x03O\
+    \x08\x0e\x1a\x17\x20Memory\x20is\x20executable.\n\n\x0c\n\x05\x05\x01\
+    \x02\x02\x01\x12\x03O\x08\t\n\x0c\n\x05\x05\x01\x02\x02\x02\x12\x03O\x0c\
+    \rb\x06proto3\
 ";
 
 static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {

@@ -17,7 +17,7 @@ class BinaryParserStub(object):
     self.ParseBinary = channel.unary_unary(
         '/bin.BinaryParser/ParseBinary',
         request_serializer=bin__pb2.ParseBinaryRequest.SerializeToString,
-        response_deserializer=bin__pb2.ParseBinaryReply.FromString,
+        response_deserializer=bin__pb2.File.FromString,
         )
 
 
@@ -38,7 +38,7 @@ def add_BinaryParserServicer_to_server(servicer, server):
       'ParseBinary': grpc.unary_unary_rpc_method_handler(
           servicer.ParseBinary,
           request_deserializer=bin__pb2.ParseBinaryRequest.FromString,
-          response_serializer=bin__pb2.ParseBinaryReply.SerializeToString,
+          response_serializer=bin__pb2.File.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(

@@ -18,7 +18,7 @@
 #![allow(unused_imports)]
 #![allow(unused_results)]
 
-const METHOD_BINARY_PARSER_PARSE_BINARY: ::grpcio::Method<super::bin::ParseBinaryRequest, super::bin::ParseBinaryReply> = ::grpcio::Method {
+const METHOD_BINARY_PARSER_PARSE_BINARY: ::grpcio::Method<super::bin::ParseBinaryRequest, super::bin::File> = ::grpcio::Method {
     ty: ::grpcio::MethodType::Unary,
     name: "/bin.BinaryParser/ParseBinary",
     req_mar: ::grpcio::Marshaller { ser: ::grpcio::pb_ser, de: ::grpcio::pb_de },
@@ -37,19 +37,19 @@ impl BinaryParserClient {
         }
     }
 
-    pub fn parse_binary_opt(&self, req: &super::bin::ParseBinaryRequest, opt: ::grpcio::CallOption) -> ::grpcio::Result<super::bin::ParseBinaryReply> {
+    pub fn parse_binary_opt(&self, req: &super::bin::ParseBinaryRequest, opt: ::grpcio::CallOption) -> ::grpcio::Result<super::bin::File> {
         self.client.unary_call(&METHOD_BINARY_PARSER_PARSE_BINARY, req, opt)
     }
 
-    pub fn parse_binary(&self, req: &super::bin::ParseBinaryRequest) -> ::grpcio::Result<super::bin::ParseBinaryReply> {
+    pub fn parse_binary(&self, req: &super::bin::ParseBinaryRequest) -> ::grpcio::Result<super::bin::File> {
         self.parse_binary_opt(req, ::grpcio::CallOption::default())
     }
 
-    pub fn parse_binary_async_opt(&self, req: &super::bin::ParseBinaryRequest, opt: ::grpcio::CallOption) -> ::grpcio::Result<::grpcio::ClientUnaryReceiver<super::bin::ParseBinaryReply>> {
+    pub fn parse_binary_async_opt(&self, req: &super::bin::ParseBinaryRequest, opt: ::grpcio::CallOption) -> ::grpcio::Result<::grpcio::ClientUnaryReceiver<super::bin::File>> {
         self.client.unary_call_async(&METHOD_BINARY_PARSER_PARSE_BINARY, req, opt)
     }
 
-    pub fn parse_binary_async(&self, req: &super::bin::ParseBinaryRequest) -> ::grpcio::Result<::grpcio::ClientUnaryReceiver<super::bin::ParseBinaryReply>> {
+    pub fn parse_binary_async(&self, req: &super::bin::ParseBinaryRequest) -> ::grpcio::Result<::grpcio::ClientUnaryReceiver<super::bin::File>> {
         self.parse_binary_async_opt(req, ::grpcio::CallOption::default())
     }
     pub fn spawn<F>(&self, f: F) where F: ::futures::Future<Item = (), Error = ()> + Send + 'static {
@@ -58,7 +58,7 @@ impl BinaryParserClient {
 }
 
 pub trait BinaryParser {
-    fn parse_binary(&mut self, ctx: ::grpcio::RpcContext, req: super::bin::ParseBinaryRequest, sink: ::grpcio::UnarySink<super::bin::ParseBinaryReply>);
+    fn parse_binary(&mut self, ctx: ::grpcio::RpcContext, req: super::bin::ParseBinaryRequest, sink: ::grpcio::UnarySink<super::bin::File>);
 }
 
 pub fn create_binary_parser<S: BinaryParser + Send + Clone + 'static>(s: S) -> ::grpcio::Service {

@@ -24,28 +24,64 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
+// Arch represents the set of machine architectures.
+type Arch int32
+
+const (
+	// 32-bit x86 machine architecture, as used by Intel and AMD.
+	Arch_X86_32 Arch = 0
+	// 64-bit x86-64 machine architecture, as used by Intel and AMD.
+	Arch_X86_64 Arch = 1
+	// 32-bit MIPS machine architecture.
+	Arch_MIPS_32 Arch = 2
+	// 32-bit PowerPC machine architecture.
+	Arch_PowerPC_32 Arch = 3
+)
+
+var Arch_name = map[int32]string{
+	0: "X86_32",
+	1: "X86_64",
+	2: "MIPS_32",
+	3: "PowerPC_32",
+}
+
+var Arch_value = map[string]int32{
+	"X86_32":     0,
+	"X86_64":     1,
+	"MIPS_32":    2,
+	"PowerPC_32": 3,
+}
+
+func (x Arch) String() string {
+	return proto.EnumName(Arch_name, int32(x))
+}
+
+func (Arch) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_af36b52e36742298, []int{0}
+}
+
 // Access permissions.
 type Perm int32
 
 const (
-	// PermR specifies that the memory is readable.
-	Perm_PermR Perm = 0
-	// PermW specifies that the memory is writeable.
-	Perm_PermW Perm = 1
-	// PermX specifies that the memory is executable.
-	Perm_PermX Perm = 2
+	// Memory is readable.
+	Perm_R Perm = 0
+	// Memory is writeable.
+	Perm_W Perm = 1
+	// Memory is executable.
+	Perm_X Perm = 2
 )
 
 var Perm_name = map[int32]string{
-	0: "PermR",
-	1: "PermW",
-	2: "PermX",
+	0: "R",
+	1: "W",
+	2: "X",
 }
 
 var Perm_value = map[string]int32{
-	"PermR": 0,
-	"PermW": 1,
-	"PermX": 2,
+	"R": 0,
+	"W": 1,
+	"X": 2,
 }
 
 func (x Perm) String() string {
@@ -53,7 +89,7 @@ func (x Perm) String() string {
 }
 
 func (Perm) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_af36b52e36742298, []int{0}
+	return fileDescriptor_af36b52e36742298, []int{1}
 }
 
 type ParseBinaryRequest struct {
@@ -96,43 +132,131 @@ func (m *ParseBinaryRequest) GetBinId() string {
 	return ""
 }
 
-type ParseBinaryReply struct {
-	Sections             []*Section `protobuf:"bytes,1,rep,name=sections,proto3" json:"sections,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
-	XXX_unrecognized     []byte     `json:"-"`
-	XXX_sizecache        int32      `json:"-"`
+// A File is a binary exectuable.
+type File struct {
+	// Machine architecture specifying the assembly instruction set.
+	Arch Arch `protobuf:"varint,1,opt,name=arch,proto3,enum=bin.Arch" json:"arch,omitempty"`
+	// Entry point of the executable.
+	Entry uint64 `protobuf:"varint,2,opt,name=entry,proto3" json:"entry,omitempty"`
+	// Sections (and segments) of the exectuable.
+	Sections []*Section `protobuf:"bytes,3,rep,name=sections,proto3" json:"sections,omitempty"`
+	// Function imports.
+	Imports []*Func `protobuf:"bytes,4,rep,name=imports,proto3" json:"imports,omitempty"`
+	// Function exports.
+	Exports              []*Func  `protobuf:"bytes,5,rep,name=exports,proto3" json:"exports,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ParseBinaryReply) Reset()         { *m = ParseBinaryReply{} }
-func (m *ParseBinaryReply) String() string { return proto.CompactTextString(m) }
-func (*ParseBinaryReply) ProtoMessage()    {}
-func (*ParseBinaryReply) Descriptor() ([]byte, []int) {
+func (m *File) Reset()         { *m = File{} }
+func (m *File) String() string { return proto.CompactTextString(m) }
+func (*File) ProtoMessage()    {}
+func (*File) Descriptor() ([]byte, []int) {
 	return fileDescriptor_af36b52e36742298, []int{1}
 }
 
-func (m *ParseBinaryReply) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ParseBinaryReply.Unmarshal(m, b)
+func (m *File) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_File.Unmarshal(m, b)
 }
-func (m *ParseBinaryReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ParseBinaryReply.Marshal(b, m, deterministic)
+func (m *File) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_File.Marshal(b, m, deterministic)
 }
-func (m *ParseBinaryReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ParseBinaryReply.Merge(m, src)
+func (m *File) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_File.Merge(m, src)
 }
-func (m *ParseBinaryReply) XXX_Size() int {
-	return xxx_messageInfo_ParseBinaryReply.Size(m)
+func (m *File) XXX_Size() int {
+	return xxx_messageInfo_File.Size(m)
 }
-func (m *ParseBinaryReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_ParseBinaryReply.DiscardUnknown(m)
+func (m *File) XXX_DiscardUnknown() {
+	xxx_messageInfo_File.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ParseBinaryReply proto.InternalMessageInfo
+var xxx_messageInfo_File proto.InternalMessageInfo
 
-func (m *ParseBinaryReply) GetSections() []*Section {
+func (m *File) GetArch() Arch {
+	if m != nil {
+		return m.Arch
+	}
+	return Arch_X86_32
+}
+
+func (m *File) GetEntry() uint64 {
+	if m != nil {
+		return m.Entry
+	}
+	return 0
+}
+
+func (m *File) GetSections() []*Section {
 	if m != nil {
 		return m.Sections
 	}
 	return nil
+}
+
+func (m *File) GetImports() []*Func {
+	if m != nil {
+		return m.Imports
+	}
+	return nil
+}
+
+func (m *File) GetExports() []*Func {
+	if m != nil {
+		return m.Exports
+	}
+	return nil
+}
+
+// A Func is an imported or exported function.
+type Func struct {
+	// Function address.
+	Addr uint64 `protobuf:"varint,1,opt,name=addr,proto3" json:"addr,omitempty"`
+	// Function name.
+	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Func) Reset()         { *m = Func{} }
+func (m *Func) String() string { return proto.CompactTextString(m) }
+func (*Func) ProtoMessage()    {}
+func (*Func) Descriptor() ([]byte, []int) {
+	return fileDescriptor_af36b52e36742298, []int{2}
+}
+
+func (m *Func) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Func.Unmarshal(m, b)
+}
+func (m *Func) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Func.Marshal(b, m, deterministic)
+}
+func (m *Func) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Func.Merge(m, src)
+}
+func (m *Func) XXX_Size() int {
+	return xxx_messageInfo_Func.Size(m)
+}
+func (m *Func) XXX_DiscardUnknown() {
+	xxx_messageInfo_Func.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Func proto.InternalMessageInfo
+
+func (m *Func) GetAddr() uint64 {
+	if m != nil {
+		return m.Addr
+	}
+	return 0
+}
+
+func (m *Func) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
 }
 
 // A Section represents a continuous section of memory.
@@ -167,7 +291,7 @@ func (m *Section) Reset()         { *m = Section{} }
 func (m *Section) String() string { return proto.CompactTextString(m) }
 func (*Section) ProtoMessage()    {}
 func (*Section) Descriptor() ([]byte, []int) {
-	return fileDescriptor_af36b52e36742298, []int{2}
+	return fileDescriptor_af36b52e36742298, []int{3}
 }
 
 func (m *Section) XXX_Unmarshal(b []byte) error {
@@ -238,35 +362,44 @@ func (m *Section) GetPerms() []Perm {
 }
 
 func init() {
+	proto.RegisterEnum("bin.Arch", Arch_name, Arch_value)
 	proto.RegisterEnum("bin.Perm", Perm_name, Perm_value)
 	proto.RegisterType((*ParseBinaryRequest)(nil), "bin.ParseBinaryRequest")
-	proto.RegisterType((*ParseBinaryReply)(nil), "bin.ParseBinaryReply")
+	proto.RegisterType((*File)(nil), "bin.File")
+	proto.RegisterType((*Func)(nil), "bin.Func")
 	proto.RegisterType((*Section)(nil), "bin.Section")
 }
 
 func init() { proto.RegisterFile("bin.proto", fileDescriptor_af36b52e36742298) }
 
 var fileDescriptor_af36b52e36742298 = []byte{
-	// 295 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x64, 0x91, 0xcf, 0x4b, 0xc3, 0x30,
-	0x14, 0xc7, 0x97, 0xf5, 0xc7, 0xd6, 0xb7, 0x21, 0xe5, 0xc1, 0x34, 0xea, 0xc1, 0xd2, 0x8b, 0x45,
-	0x61, 0x87, 0x79, 0x15, 0x04, 0x6f, 0x9e, 0x1c, 0xdd, 0x41, 0x6f, 0xa3, 0xb5, 0x6f, 0x1a, 0x68,
-	0xd2, 0x9a, 0xd4, 0xc3, 0xf6, 0xa7, 0xf9, 0xd7, 0x49, 0x93, 0x4d, 0x94, 0xdd, 0xbe, 0xef, 0xf3,
-	0x09, 0x2f, 0xe4, 0x1b, 0x88, 0x4a, 0xa1, 0xe6, 0xad, 0x6e, 0xba, 0x06, 0xbd, 0x52, 0xa8, 0xf4,
-	0x16, 0x70, 0x59, 0x68, 0x43, 0x8f, 0x42, 0x15, 0x7a, 0x9b, 0xd3, 0xe7, 0x17, 0x99, 0x0e, 0x67,
-	0x10, 0x96, 0x42, 0xad, 0x45, 0xc5, 0x59, 0xc2, 0xb2, 0x28, 0x0f, 0x4a, 0xa1, 0x9e, 0xaa, 0xf4,
-	0x1e, 0xe2, 0x7f, 0x87, 0xdb, 0x7a, 0x8b, 0x19, 0x8c, 0x0d, 0xbd, 0x75, 0xa2, 0x51, 0x86, 0xb3,
-	0xc4, 0xcb, 0x26, 0x8b, 0xe9, 0xbc, 0xbf, 0x63, 0xe5, 0x60, 0xfe, 0x6b, 0xd3, 0x6f, 0x06, 0xa3,
-	0x3d, 0x45, 0x04, 0x5f, 0x15, 0x92, 0xf6, 0xeb, 0x6d, 0xee, 0x59, 0x51, 0x55, 0x9a, 0x0f, 0x13,
-	0x96, 0xf9, 0xb9, 0xcd, 0x78, 0x0a, 0x61, 0xb3, 0xd9, 0x18, 0xea, 0xb8, 0x67, 0xe9, 0x7e, 0xea,
-	0x79, 0x4d, 0xea, 0xbd, 0xfb, 0xe0, 0xbe, 0xe3, 0x6e, 0xc2, 0x4b, 0x88, 0x36, 0xa2, 0xa6, 0xb5,
-	0x11, 0x3b, 0xe2, 0x81, 0x55, 0xe3, 0x1e, 0xac, 0xc4, 0x8e, 0xf0, 0x1c, 0xc6, 0x92, 0xa4, 0x73,
-	0xa1, 0x75, 0x23, 0x49, 0xd2, 0xaa, 0x2b, 0x08, 0x5a, 0xd2, 0xd2, 0xf0, 0x51, 0xe2, 0x65, 0x27,
-	0x8b, 0xc8, 0x3e, 0x61, 0x49, 0x5a, 0xe6, 0x8e, 0xdf, 0x5c, 0x83, 0xdf, 0x8f, 0x18, 0x41, 0x60,
-	0x71, 0x3c, 0x38, 0xc4, 0x97, 0x98, 0x1d, 0xe2, 0x6b, 0x3c, 0x5c, 0x3c, 0xc3, 0xd4, 0xd5, 0x63,
-	0x9b, 0xd2, 0xf8, 0x00, 0x93, 0x3f, 0x9d, 0xe1, 0x99, 0xdb, 0x7c, 0x54, 0xf9, 0xc5, 0xec, 0x58,
-	0xb4, 0xf5, 0x36, 0x1d, 0x94, 0xa1, 0xfd, 0xad, 0xbb, 0x9f, 0x00, 0x00, 0x00, 0xff, 0xff, 0xb6,
-	0x02, 0x85, 0xd9, 0xba, 0x01, 0x00, 0x00,
+	// 410 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x64, 0x92, 0x5f, 0x6b, 0xdb, 0x30,
+	0x10, 0xc0, 0xa3, 0x58, 0xb6, 0xe3, 0x4b, 0x29, 0xe6, 0xd8, 0x1f, 0x6f, 0x65, 0x2c, 0x78, 0x2f,
+	0xa1, 0x83, 0x3c, 0x24, 0xa3, 0x0c, 0xf6, 0xb4, 0x15, 0x0a, 0x7d, 0x18, 0x18, 0xe5, 0x61, 0x7d,
+	0x0b, 0x76, 0x72, 0x59, 0x04, 0x91, 0x9c, 0x49, 0x2e, 0x5b, 0xfb, 0xa5, 0xf6, 0xbe, 0x4f, 0x37,
+	0x24, 0xa5, 0x6e, 0xa1, 0x4f, 0xba, 0xfb, 0xfd, 0xce, 0xe7, 0x43, 0x3a, 0xc8, 0x1a, 0xa9, 0x67,
+	0x07, 0xd3, 0x76, 0x2d, 0x46, 0x8d, 0xd4, 0xe5, 0x47, 0xc0, 0xaa, 0x36, 0x96, 0xbe, 0x49, 0x5d,
+	0x9b, 0x3b, 0x41, 0xbf, 0x6e, 0xc9, 0x76, 0xf8, 0x12, 0x92, 0x46, 0xea, 0x95, 0xdc, 0x14, 0x6c,
+	0xc2, 0xa6, 0x99, 0x88, 0x1b, 0xa9, 0xaf, 0x37, 0xe5, 0x5f, 0x06, 0xfc, 0x4a, 0xee, 0x09, 0xdf,
+	0x01, 0xaf, 0xcd, 0x7a, 0xe7, 0xed, 0xe9, 0x3c, 0x9b, 0xb9, 0xa6, 0x5f, 0xcd, 0x7a, 0x27, 0x3c,
+	0xc6, 0x17, 0x10, 0x93, 0xee, 0xcc, 0x5d, 0x31, 0x9c, 0xb0, 0x29, 0x17, 0x21, 0xc1, 0x29, 0x8c,
+	0x2c, 0xad, 0x3b, 0xd9, 0x6a, 0x5b, 0x44, 0x93, 0x68, 0x3a, 0x9e, 0x9f, 0xf8, 0x0f, 0x97, 0x01,
+	0x8a, 0xde, 0xe2, 0x07, 0x48, 0xa5, 0x3a, 0xb4, 0xa6, 0xb3, 0x05, 0xf7, 0x85, 0xe1, 0x0f, 0x57,
+	0xb7, 0x7a, 0x2d, 0x1e, 0x8c, 0x2b, 0xa2, 0x3f, 0xa1, 0x28, 0x7e, 0x56, 0x74, 0x34, 0xe5, 0x0c,
+	0xb8, 0x03, 0x88, 0xc0, 0xeb, 0xcd, 0xc6, 0xf8, 0x81, 0xb9, 0xf0, 0xb1, 0x63, 0xba, 0x56, 0xe4,
+	0x87, 0xcc, 0x84, 0x8f, 0xcb, 0x7f, 0x0c, 0xd2, 0xe3, 0x3c, 0xbd, 0x67, 0x8f, 0xbe, 0xef, 0x33,
+	0x7c, 0xd2, 0xe7, 0x15, 0x24, 0xed, 0x76, 0x6b, 0xa9, 0x2b, 0x22, 0x4f, 0x8f, 0x99, 0xe3, 0x7b,
+	0xd2, 0x3f, 0xbb, 0x5d, 0xc1, 0x03, 0x0f, 0x19, 0x9e, 0x41, 0xb6, 0x95, 0x7b, 0x5a, 0x59, 0x79,
+	0x4f, 0x45, 0xec, 0xd5, 0xc8, 0x81, 0xa5, 0xbc, 0x27, 0x7c, 0x03, 0x23, 0x45, 0x2a, 0xb8, 0xc4,
+	0xbb, 0x54, 0x91, 0xf2, 0xea, 0x3d, 0xc4, 0x07, 0x32, 0xca, 0x16, 0xe9, 0x24, 0xea, 0x6f, 0xbd,
+	0x22, 0xa3, 0x44, 0xe0, 0xe7, 0x5f, 0x80, 0xbb, 0x47, 0x40, 0x80, 0xe4, 0xe6, 0xf3, 0xc5, 0x6a,
+	0x31, 0xcf, 0x07, 0x0f, 0xf1, 0xc5, 0xa7, 0x9c, 0xe1, 0x18, 0xd2, 0xef, 0xd7, 0xd5, 0xd2, 0x89,
+	0x21, 0x9e, 0x02, 0x54, 0xed, 0x6f, 0x32, 0xd5, 0xa5, 0xcb, 0xa3, 0xf3, 0x33, 0xe0, 0xae, 0x17,
+	0xc6, 0xc0, 0x44, 0x3e, 0x70, 0xc7, 0x8f, 0x9c, 0xb9, 0xe3, 0x26, 0x1f, 0xce, 0x2f, 0xe1, 0x24,
+	0x2c, 0x88, 0xdf, 0x15, 0x83, 0x0b, 0x18, 0x3f, 0xd9, 0x1a, 0x7c, 0x1d, 0x46, 0x79, 0xb6, 0x47,
+	0x6f, 0x8f, 0x4f, 0x22, 0xf7, 0x54, 0x0e, 0x9a, 0xc4, 0xaf, 0xdd, 0xe2, 0x7f, 0x00, 0x00, 0x00,
+	0xff, 0xff, 0x5b, 0x66, 0x90, 0x30, 0x83, 0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -281,7 +414,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type BinaryParserClient interface {
-	ParseBinary(ctx context.Context, in *ParseBinaryRequest, opts ...grpc.CallOption) (*ParseBinaryReply, error)
+	ParseBinary(ctx context.Context, in *ParseBinaryRequest, opts ...grpc.CallOption) (*File, error)
 }
 
 type binaryParserClient struct {
@@ -292,8 +425,8 @@ func NewBinaryParserClient(cc *grpc.ClientConn) BinaryParserClient {
 	return &binaryParserClient{cc}
 }
 
-func (c *binaryParserClient) ParseBinary(ctx context.Context, in *ParseBinaryRequest, opts ...grpc.CallOption) (*ParseBinaryReply, error) {
-	out := new(ParseBinaryReply)
+func (c *binaryParserClient) ParseBinary(ctx context.Context, in *ParseBinaryRequest, opts ...grpc.CallOption) (*File, error) {
+	out := new(File)
 	err := c.cc.Invoke(ctx, "/bin.BinaryParser/ParseBinary", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -303,14 +436,14 @@ func (c *binaryParserClient) ParseBinary(ctx context.Context, in *ParseBinaryReq
 
 // BinaryParserServer is the server API for BinaryParser service.
 type BinaryParserServer interface {
-	ParseBinary(context.Context, *ParseBinaryRequest) (*ParseBinaryReply, error)
+	ParseBinary(context.Context, *ParseBinaryRequest) (*File, error)
 }
 
 // UnimplementedBinaryParserServer can be embedded to have forward compatible implementations.
 type UnimplementedBinaryParserServer struct {
 }
 
-func (*UnimplementedBinaryParserServer) ParseBinary(ctx context.Context, req *ParseBinaryRequest) (*ParseBinaryReply, error) {
+func (*UnimplementedBinaryParserServer) ParseBinary(ctx context.Context, req *ParseBinaryRequest) (*File, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ParseBinary not implemented")
 }
 

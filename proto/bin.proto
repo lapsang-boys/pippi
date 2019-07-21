@@ -3,7 +3,7 @@ syntax = "proto3";
 package bin;
 
 service BinaryParser {
-	rpc ParseBinary (ParseBinaryRequest) returns (ParseBinaryReply) {}
+	rpc ParseBinary (ParseBinaryRequest) returns (File) {}
 }
 
 message ParseBinaryRequest {
@@ -11,8 +11,38 @@ message ParseBinaryRequest {
 	string bin_id = 1;
 }
 
-message ParseBinaryReply {
-	repeated Section sections = 1;
+// A File is a binary exectuable.
+message File {
+	// Machine architecture specifying the assembly instruction set.
+	Arch arch = 1;
+	// Entry point of the executable.
+	uint64 entry = 2;
+	// Sections (and segments) of the exectuable.
+	repeated Section sections = 3;
+	// Function imports.
+	repeated Func imports = 4;
+	// Function exports.
+	repeated Func exports = 5;
+}
+
+// Arch represents the set of machine architectures.
+enum Arch {
+	// 32-bit x86 machine architecture, as used by Intel and AMD.
+	X86_32 = 0;
+	// 64-bit x86-64 machine architecture, as used by Intel and AMD.
+	X86_64 = 1;
+	// 32-bit MIPS machine architecture.
+	MIPS_32 = 2;
+	// 32-bit PowerPC machine architecture.
+	PowerPC_32 = 3;
+}
+
+// A Func is an imported or exported function.
+message Func {
+	// Function address.
+	uint64 addr = 1;
+	// Function name.
+	string name = 2;
 }
 
 // A Section represents a continuous section of memory.
@@ -42,10 +72,10 @@ message Section {
 
 // Access permissions.
 enum Perm {
-	// PermR specifies that the memory is readable.
-	PermR = 0; // 0x4
-	// PermW specifies that the memory is writeable.
-	PermW = 1; // 0x2
-	// PermX specifies that the memory is executable.
-	PermX = 2; // 0x1
+	// Memory is readable.
+	R = 0;
+	// Memory is writeable.
+	W = 1;
+	// Memory is executable.
+	X = 2;
 }

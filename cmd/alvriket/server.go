@@ -4,9 +4,11 @@ import (
 	"context"
 	"crypto/sha256"
 	"flag"
+	"fmt"
 	"net"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/decomp/exp/bin"
@@ -94,7 +96,7 @@ type binParserServer struct {
 }
 
 // ParseBinary parses the given binary file.
-func (s *binParserServer) ParseBinary(ctx context.Context, req *binpb.ParseBinaryRequest) (*binpb.ParseBinaryReply, error) {
+func (s *binParserServer) ParseBinary(ctx context.Context, req *binpb.ParseBinaryRequest) (*binpb.File, error) {
 	if err := validateID(req.BinId); err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -107,7 +109,11 @@ func (s *binParserServer) ParseBinary(ctx context.Context, req *binpb.ParseBinar
 		return nil, errors.WithStack(err)
 	}
 	// Send reply.
-	reply := &binpb.ParseBinaryReply{}
+	reply := &binpb.File{
+		Arch:  archpb(file.Arch),
+		Entry: uint64(file.Entry),
+	}
+	// Sections.
 	for _, sect := range file.Sections {
 		section := &binpb.Section{
 			Name:     sect.Name,
@@ -118,17 +124,55 @@ func (s *binParserServer) ParseBinary(ctx context.Context, req *binpb.ParseBinar
 			MemSize:  uint64(sect.MemSize),
 		}
 		if sect.Perm&bin.PermR != 0 {
-			section.Perms = append(section.Perms, binpb.Perm_PermR)
+			section.Perms = append(section.Perms, binpb.Perm_R)
 		}
 		if sect.Perm&bin.PermW != 0 {
-			section.Perms = append(section.Perms, binpb.Perm_PermW)
+			section.Perms = append(section.Perms, binpb.Perm_W)
 		}
 		if sect.Perm&bin.PermX != 0 {
-			section.Perms = append(section.Perms, binpb.Perm_PermX)
+			section.Perms = append(section.Perms, binpb.Perm_X)
 		}
 		reply.Sections = append(reply.Sections, section)
 	}
+	// Imports.
+	for addr, funcName := range file.Imports {
+		fn := &binpb.Func{
+			Addr: uint64(addr),
+			Name: funcName,
+		}
+		reply.Imports = append(reply.Imports, fn)
+	}
+	sort.Slice(reply.Imports, func(i, j int) bool {
+		return reply.Imports[i].Addr < reply.Imports[j].Addr
+	})
+	// Exports.
+	for addr, funcName := range file.Exports {
+		fn := &binpb.Func{
+			Addr: uint64(addr),
+			Name: funcName,
+		}
+		reply.Exports = append(reply.Exports, fn)
+	}
+	sort.Slice(reply.Exports, func(i, j int) bool {
+		return reply.Exports[i].Addr < reply.Exports[j].Addr
+	})
 	return reply, nil
+}
+
+// archpb converts the given Go machine architecture to protobuf format.
+func archpb(arch bin.Arch) binpb.Arch {
+	switch arch {
+	case bin.ArchX86_32:
+		return binpb.Arch_X86_32
+	case bin.ArchX86_64:
+		return binpb.Arch_X86_64
+	case bin.ArchMIPS_32:
+		return binpb.Arch_MIPS_32
+	case bin.ArchPowerPC_32:
+		return binpb.Arch_PowerPC_32
+	default:
+		panic(fmt.Errorf("support for arch %v not yet implemented", arch))
+	}
 }
 
 // validateID validates the given binary ID.
