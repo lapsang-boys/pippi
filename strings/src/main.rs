@@ -1,6 +1,9 @@
 #[macro_use]
 extern crate log;
 
+#[macro_use]
+extern crate lazy_static;
+
 use std::fs;
 use std::str;
 
@@ -10,16 +13,28 @@ use std::{io, thread};
 
 use futures::sync::oneshot;
 use futures::Future;
-use grpcio::{Environment, RpcContext, ServerBuilder, UnarySink};
+use grpcio::{Environment, RpcContext, RpcStatus, RpcStatusCode, ServerBuilder, UnarySink};
 use protobuf::RepeatedField;
 
-#[path="../../proto/strings/strings.rs"]
+#[path = "../../proto/strings/strings.rs"]
 mod strings;
-#[path="../../proto/strings/strings_grpc.rs"]
+#[path = "../../proto/strings/strings_grpc.rs"]
 mod strings_grpc;
+
+use directories::BaseDirs;
+
+use regex::Regex;
 
 #[derive(Clone)]
 struct StringsService;
+
+fn is_valid(id: &str) -> bool {
+    lazy_static! {
+        static ref RE: Regex = Regex::new("^[0-9a-f]{64}$").unwrap();
+    }
+
+    RE.is_match(id) && id.len() == 64
+}
 
 impl strings_grpc::StringsExtractor for StringsService {
     fn extract_strings(
@@ -28,8 +43,32 @@ impl strings_grpc::StringsExtractor for StringsService {
         req: strings::StringsRequest,
         sink: UnarySink<strings::StringsReply>,
     ) {
-        let filename = req.get_elf_path();
-        let sinfos = extract_strings_from_path(filename.to_string());
+        let id = req.get_id();
+        println!("{}", id);
+        println!("{}", is_valid(id));
+        if !is_valid(id) {
+            let status = RpcStatus::new(
+                RpcStatusCode::InvalidArgument,
+                Some("Invalid argument".to_string()),
+            );
+            let f = sink
+                .fail(status)
+                .map_err(move |e| error!("failed to reply {:?}: {:?}", req, e));
+            ctx.spawn(f);
+            return;
+        }
+        let base_dirs = BaseDirs::new().unwrap();
+        let filename = base_dirs
+            .cache_dir()
+            .join("pippi")
+            .join(id)
+            .join(id.to_owned() + ".bin")
+            .to_str()
+            .unwrap()
+            .to_string();
+
+        println!("{}", filename);
+        let sinfos = extract_strings_from_path(filename).unwrap();
         let mut resp = strings::StringsReply::default();
         resp.set_strings(RepeatedField::from_vec(sinfos));
         let f = sink
@@ -67,8 +106,8 @@ fn is_ascii_printable(c: u8) -> bool {
     return c.is_ascii_graphic() || c == ' ' as u8 || c == '\t' as u8;
 }
 
-fn extract_strings_from_path(filename: String) -> Vec<strings::StringInfo> {
-    let contents = fs::read(filename).expect("Something went wrong reading the file");
+fn extract_strings_from_path(filename: String) -> Result<Vec<strings::StringInfo>, std::io::Error> {
+    let contents = fs::read(filename)?;
 
     let mut a: Vec<u8> = Vec::new();
     let mut sinfos: Vec<strings::StringInfo> = Vec::new();
@@ -97,5 +136,5 @@ fn extract_strings_from_path(filename: String) -> Vec<strings::StringInfo> {
         }
     }
 
-    sinfos
+    Ok(sinfos)
 }
