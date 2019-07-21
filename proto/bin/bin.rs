@@ -380,7 +380,7 @@ pub struct Section {
     pub length: u64,
     pub file_size: u64,
     pub mem_size: u64,
-    pub perm: Perm,
+    pub perms: ::std::vec::Vec<Perm>,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::CachedSize,
@@ -498,19 +498,29 @@ impl Section {
         self.mem_size = v;
     }
 
-    // .bin.Perm perm = 7;
+    // repeated .bin.Perm perms = 7;
 
 
-    pub fn get_perm(&self) -> Perm {
-        self.perm
+    pub fn get_perms(&self) -> &[Perm] {
+        &self.perms
     }
-    pub fn clear_perm(&mut self) {
-        self.perm = Perm::PermR;
+    pub fn clear_perms(&mut self) {
+        self.perms.clear();
     }
 
     // Param is passed by value, moved
-    pub fn set_perm(&mut self, v: Perm) {
-        self.perm = v;
+    pub fn set_perms(&mut self, v: ::std::vec::Vec<Perm>) {
+        self.perms = v;
+    }
+
+    // Mutable pointer to the field.
+    pub fn mut_perms(&mut self) -> &mut ::std::vec::Vec<Perm> {
+        &mut self.perms
+    }
+
+    // Take field
+    pub fn take_perms(&mut self) -> ::std::vec::Vec<Perm> {
+        ::std::mem::replace(&mut self.perms, ::std::vec::Vec::new())
     }
 }
 
@@ -562,7 +572,7 @@ impl ::protobuf::Message for Section {
                     self.mem_size = tmp;
                 },
                 7 => {
-                    ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.perm, 7, &mut self.unknown_fields)?
+                    ::protobuf::rt::read_repeated_enum_with_unknown_fields_into(wire_type, is, &mut self.perms, 7, &mut self.unknown_fields)?
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -594,9 +604,9 @@ impl ::protobuf::Message for Section {
         if self.mem_size != 0 {
             my_size += ::protobuf::rt::value_size(6, self.mem_size, ::protobuf::wire_format::WireTypeVarint);
         }
-        if self.perm != Perm::PermR {
-            my_size += ::protobuf::rt::enum_size(7, self.perm);
-        }
+        for value in &self.perms {
+            my_size += ::protobuf::rt::enum_size(7, *value);
+        };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -621,9 +631,9 @@ impl ::protobuf::Message for Section {
         if self.mem_size != 0 {
             os.write_uint64(6, self.mem_size)?;
         }
-        if self.perm != Perm::PermR {
-            os.write_enum(7, self.perm.value())?;
-        }
+        for v in &self.perms {
+            os.write_enum(7, v.value())?;
+        };
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -696,10 +706,10 @@ impl ::protobuf::Message for Section {
                     |m: &Section| { &m.mem_size },
                     |m: &mut Section| { &mut m.mem_size },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Perm>>(
-                    "perm",
-                    |m: &Section| { &m.perm },
-                    |m: &mut Section| { &mut m.perm },
+                fields.push(::protobuf::reflect::accessor::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Perm>>(
+                    "perms",
+                    |m: &Section| { &m.perms },
+                    |m: &mut Section| { &mut m.perms },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<Section>(
                     "Section",
@@ -729,7 +739,7 @@ impl ::protobuf::Clear for Section {
         self.length = 0;
         self.file_size = 0;
         self.mem_size = 0;
-        self.perm = Perm::PermR;
+        self.perms.clear();
         self.unknown_fields.clear();
     }
 }
@@ -807,15 +817,15 @@ impl ::protobuf::reflect::ProtobufValue for Perm {
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\tbin.proto\x12\x03bin\"+\n\x12ParseBinaryRequest\x12\x15\n\x06bin_id\
     \x18\x01\x20\x01(\tR\x05binId\"<\n\x10ParseBinaryReply\x12(\n\x08section\
-    s\x18\x01\x20\x03(\x0b2\x0c.bin.SectionR\x08sections\"\xb8\x01\n\x07Sect\
+    s\x18\x01\x20\x03(\x0b2\x0c.bin.SectionR\x08sections\"\xba\x01\n\x07Sect\
     ion\x12\x12\n\x04name\x18\x01\x20\x01(\tR\x04name\x12\x12\n\x04addr\x18\
     \x02\x20\x01(\x04R\x04addr\x12\x16\n\x06offset\x18\x03\x20\x01(\x04R\x06\
     offset\x12\x16\n\x06length\x18\x04\x20\x01(\x04R\x06length\x12\x1b\n\tfi\
     le_size\x18\x05\x20\x01(\x04R\x08fileSize\x12\x19\n\x08mem_size\x18\x06\
-    \x20\x01(\x04R\x07memSize\x12\x1d\n\x04perm\x18\x07\x20\x01(\x0e2\t.bin.\
-    PermR\x04perm*'\n\x04Perm\x12\t\n\x05PermR\x10\0\x12\t\n\x05PermW\x10\
+    \x20\x01(\x04R\x07memSize\x12\x1f\n\x05perms\x18\x07\x20\x03(\x0e2\t.bin\
+    .PermR\x05perms*'\n\x04Perm\x12\t\n\x05PermR\x10\0\x12\t\n\x05PermW\x10\
     \x01\x12\t\n\x05PermX\x10\x022O\n\x0cBinaryParser\x12?\n\x0bParseBinary\
-    \x12\x17.bin.ParseBinaryRequest\x1a\x15.bin.ParseBinaryReply\"\0J\xdd\
+    \x12\x17.bin.ParseBinaryRequest\x1a\x15.bin.ParseBinaryReply\"\0J\xdc\
     \x0e\n\x06\x12\x04\0\02\x01\n\x08\n\x01\x0c\x12\x03\0\0\x12\n\x08\n\x01\
     \x02\x12\x03\x02\0\x0c\n\n\n\x02\x06\0\x12\x04\x04\0\x06\x01\n\n\n\x03\
     \x06\0\x01\x12\x03\x04\x08\x14\n\x0b\n\x04\x06\0\x02\0\x12\x03\x05\x08J\
@@ -867,11 +877,11 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x02\x05\x04\x12\x04%\x08\x20\x1d\n\x0c\n\x05\x04\x02\x02\x05\x05\x12\
     \x03%\x08\x0e\n\x0c\n\x05\x04\x02\x02\x05\x01\x12\x03%\x0f\x17\n\x0c\n\
     \x05\x04\x02\x02\x05\x03\x12\x03%\x1a\x1b\n;\n\x04\x04\x02\x02\x06\x12\
-    \x03'\x08\x16\x1a.\x20Access\x20permissions\x20of\x20the\x20section\x20i\
-    n\x20memory.\n\n\r\n\x05\x04\x02\x02\x06\x04\x12\x04'\x08%\x1c\n\x0c\n\
-    \x05\x04\x02\x02\x06\x06\x12\x03'\x08\x0c\n\x0c\n\x05\x04\x02\x02\x06\
-    \x01\x12\x03'\r\x11\n\x0c\n\x05\x04\x02\x02\x06\x03\x12\x03'\x14\x15\n!\
-    \n\x02\x05\0\x12\x04+\02\x01\x1a\x15\x20Access\x20permissions.\n\n\n\n\
+    \x03'\x08\x20\x1a.\x20Access\x20permissions\x20of\x20the\x20section\x20i\
+    n\x20memory.\n\n\x0c\n\x05\x04\x02\x02\x06\x04\x12\x03'\x08\x10\n\x0c\n\
+    \x05\x04\x02\x02\x06\x06\x12\x03'\x11\x15\n\x0c\n\x05\x04\x02\x02\x06\
+    \x01\x12\x03'\x16\x1b\n\x0c\n\x05\x04\x02\x02\x06\x03\x12\x03'\x1e\x1f\n\
+    !\n\x02\x05\0\x12\x04+\02\x01\x1a\x15\x20Access\x20permissions.\n\n\n\n\
     \x03\x05\0\x01\x12\x03+\x05\t\nB\n\x04\x05\0\x02\0\x12\x03-\x08\x12\x1a.\
     \x20PermR\x20specifies\x20that\x20the\x20memory\x20is\x20readable.\n\"\
     \x05\x200x4\n\n\x0c\n\x05\x05\0\x02\0\x01\x12\x03-\x08\r\n\x0c\n\x05\x05\

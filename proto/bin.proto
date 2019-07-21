@@ -37,7 +37,7 @@ message Section {
 	// data not part of the executable file.
 	uint64 mem_size = 6;
 	// Access permissions of the section in memory.
-	Perm perm = 7;
+	repeated Perm perms = 7;
 }
 
 // Access permissions.

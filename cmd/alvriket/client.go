@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 
 	"github.com/google/subcommands"
+	"github.com/kr/pretty"
 	binpb "github.com/lapsang-boys/pippi/proto/bin"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
@@ -31,7 +31,7 @@ func (*clientCmd) Usage() string {
 Send binary file parse request.
 
 Usage:
-	client [OPTION]... FILE
+	client [OPTION]... BIN_ID
 
 Flags:
 `
@@ -48,10 +48,10 @@ func (cmd *clientCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 		f.Usage()
 		return subcommands.ExitUsageError
 	}
-	binPath := f.Arg(0)
+	binID := f.Arg(0)
 
 	// Connect to gRPC server.
-	if err := connect(cmd.Addr, binPath); err != nil {
+	if err := connect(cmd.Addr, binID); err != nil {
 		warn.Printf("connect failed; %+v", err)
 		return subcommands.ExitFailure
 	}
@@ -60,7 +60,7 @@ func (cmd *clientCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 
 // connect connects to the given gRPC address for incoming requests to parse
 // binary files.
-func connect(addr, binPath string) error {
+func connect(addr, binID string) error {
 	dbg.Printf("connecting to %q", addr)
 	// Launch gRPC server.
 	conn, err := grpc.Dial(addr, grpc.WithInsecure())
@@ -73,12 +73,12 @@ func connect(addr, binPath string) error {
 	client := binpb.NewBinaryParserClient(conn)
 	ctx := context.Background()
 	req := &binpb.ParseBinaryRequest{
-		BinPath: binPath,
+		BinId: binID,
 	}
 	reply, err := client.ParseBinary(ctx, req)
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	fmt.Println("nsects:", reply.Nsects)
+	pretty.Println(reply.Sections)
 	return nil
 }

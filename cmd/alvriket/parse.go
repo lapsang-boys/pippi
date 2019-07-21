@@ -5,8 +5,6 @@ import (
 	"flag"
 
 	"github.com/decomp/exp/bin"
-	_ "github.com/decomp/exp/bin/pe" // register PE decoder
-	_ "github.com/decomp/exp/bin/elf" // register ELF decoder
 	"github.com/google/subcommands"
 	"github.com/kr/pretty"
 	"github.com/pkg/errors"
