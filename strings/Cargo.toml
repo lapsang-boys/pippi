@@ -1,0 +1,11 @@
+[package]
+name = "strings"
+version = "0.1.0"
+authors = ["Henry Eklind <henry@karlek.io>"]
+edition = "2018"
+
+[dependencies]
+futures = "0.1.26"
+grpcio = "0.4"
+protobuf = "*" # grpcio
+log = "0.4.7"
