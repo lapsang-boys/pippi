@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='strings',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\rstrings.proto\x12\x07strings\"\"\n\x0eStringsRequest\x12\x10\n\x08\x65lf_path\x18\x01 \x01(\t\"2\n\nStringInfo\x12\x10\n\x08location\x18\x01 \x01(\x04\x12\x12\n\nraw_string\x18\x02 \x01(\t\"4\n\x0cStringsReply\x12$\n\x07strings\x18\x01 \x03(\x0b\x32\x13.strings.StringInfo2V\n\x10StringsExtractor\x12\x42\n\x0e\x45xtractStrings\x12\x17.strings.StringsRequest\x1a\x15.strings.StringsReply\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\rstrings.proto\x12\x07strings\"\x1c\n\x0eStringsRequest\x12\n\n\x02id\x18\x01 \x01(\t\"2\n\nStringInfo\x12\x10\n\x08location\x18\x01 \x01(\x04\x12\x12\n\nraw_string\x18\x02 \x01(\t\"4\n\x0cStringsReply\x12$\n\x07strings\x18\x01 \x03(\x0b\x32\x13.strings.StringInfo2V\n\x10StringsExtractor\x12\x42\n\x0e\x45xtractStrings\x12\x17.strings.StringsRequest\x1a\x15.strings.StringsReply\"\x00\x62\x06proto3')
 )
 
 
@@ -34,7 +34,7 @@ _STRINGSREQUEST = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='elf_path', full_name='strings.StringsRequest.elf_path', index=0,
+      name='id', full_name='strings.StringsRequest.id', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -53,7 +53,7 @@ _STRINGSREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=26,
-  serialized_end=60,
+  serialized_end=54,
 )
 
 
@@ -90,8 +90,8 @@ _STRINGINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=62,
-  serialized_end=112,
+  serialized_start=56,
+  serialized_end=106,
 )
 
 
@@ -121,8 +121,8 @@ _STRINGSREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=114,
-  serialized_end=166,
+  serialized_start=108,
+  serialized_end=160,
 )
 
 _STRINGSREPLY.fields_by_name['strings'].message_type = _STRINGINFO
@@ -160,8 +160,8 @@ _STRINGSEXTRACTOR = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=168,
-  serialized_end=254,
+  serialized_start=162,
+  serialized_end=248,
   methods=[
   _descriptor.MethodDescriptor(
     name='ExtractStrings',

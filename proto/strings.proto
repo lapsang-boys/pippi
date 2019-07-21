@@ -7,8 +7,8 @@ service StringsExtractor {
 }
 
 message StringsRequest {
-   // ELF file path.
-   string elf_path = 1;
+   // ID of file.
+   string id = 1;
 }
 
 message StringInfo {
@@ -17,6 +17,5 @@ message StringInfo {
 }
 
 message StringsReply {
-   // Number of sections.
    repeated StringInfo strings = 1;
 }

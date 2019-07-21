@@ -29,7 +29,7 @@ const _PROTOBUF_VERSION_CHECK: () = ::protobuf::VERSION_2_7_0;
 #[derive(PartialEq,Clone,Default)]
 pub struct StringsRequest {
     // message fields
-    pub elf_path: ::std::string::String,
+    pub id: ::std::string::String,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::CachedSize,
@@ -46,30 +46,30 @@ impl StringsRequest {
         ::std::default::Default::default()
     }
 
-    // string elf_path = 1;
+    // string id = 1;
 
 
-    pub fn get_elf_path(&self) -> &str {
-        &self.elf_path
+    pub fn get_id(&self) -> &str {
+        &self.id
     }
-    pub fn clear_elf_path(&mut self) {
-        self.elf_path.clear();
+    pub fn clear_id(&mut self) {
+        self.id.clear();
     }
 
     // Param is passed by value, moved
-    pub fn set_elf_path(&mut self, v: ::std::string::String) {
-        self.elf_path = v;
+    pub fn set_id(&mut self, v: ::std::string::String) {
+        self.id = v;
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_elf_path(&mut self) -> &mut ::std::string::String {
-        &mut self.elf_path
+    pub fn mut_id(&mut self) -> &mut ::std::string::String {
+        &mut self.id
     }
 
     // Take field
-    pub fn take_elf_path(&mut self) -> ::std::string::String {
-        ::std::mem::replace(&mut self.elf_path, ::std::string::String::new())
+    pub fn take_id(&mut self) -> ::std::string::String {
+        ::std::mem::replace(&mut self.id, ::std::string::String::new())
     }
 }
 
@@ -83,7 +83,7 @@ impl ::protobuf::Message for StringsRequest {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.elf_path)?;
+                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.id)?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -97,8 +97,8 @@ impl ::protobuf::Message for StringsRequest {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if !self.elf_path.is_empty() {
-            my_size += ::protobuf::rt::string_size(1, &self.elf_path);
+        if !self.id.is_empty() {
+            my_size += ::protobuf::rt::string_size(1, &self.id);
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -106,8 +106,8 @@ impl ::protobuf::Message for StringsRequest {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if !self.elf_path.is_empty() {
-            os.write_string(1, &self.elf_path)?;
+        if !self.id.is_empty() {
+            os.write_string(1, &self.id)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -152,9 +152,9 @@ impl ::protobuf::Message for StringsRequest {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                    "elf_path",
-                    |m: &StringsRequest| { &m.elf_path },
-                    |m: &mut StringsRequest| { &mut m.elf_path },
+                    "id",
+                    |m: &StringsRequest| { &m.id },
+                    |m: &mut StringsRequest| { &mut m.id },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<StringsRequest>(
                     "StringsRequest",
@@ -178,7 +178,7 @@ impl ::protobuf::Message for StringsRequest {
 
 impl ::protobuf::Clear for StringsRequest {
     fn clear(&mut self) {
-        self.elf_path.clear();
+        self.id.clear();
         self.unknown_fields.clear();
     }
 }
@@ -576,36 +576,35 @@ impl ::protobuf::reflect::ProtobufValue for StringsReply {
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
-    \n\rstrings.proto\x12\x07strings\"+\n\x0eStringsRequest\x12\x19\n\x08elf\
-    _path\x18\x01\x20\x01(\tR\x07elfPath\"G\n\nStringInfo\x12\x1a\n\x08locat\
-    ion\x18\x01\x20\x01(\x04R\x08location\x12\x1d\n\nraw_string\x18\x02\x20\
-    \x01(\tR\trawString\"=\n\x0cStringsReply\x12-\n\x07strings\x18\x01\x20\
-    \x03(\x0b2\x13.strings.StringInfoR\x07strings2V\n\x10StringsExtractor\
-    \x12B\n\x0eExtractStrings\x12\x17.strings.StringsRequest\x1a\x15.strings\
-    .StringsReply\"\0J\xf3\x03\n\x06\x12\x04\0\0\x15\x01\n\x08\n\x01\x0c\x12\
-    \x03\0\0\x12\n\x08\n\x01\x02\x12\x03\x02\0\x10\n\n\n\x02\x06\0\x12\x04\
-    \x04\0\x06\x01\n\n\n\x03\x06\0\x01\x12\x03\x04\x08\x18\n\x0b\n\x04\x06\0\
-    \x02\0\x12\x03\x05\x03@\n\x0c\n\x05\x06\0\x02\0\x01\x12\x03\x05\x07\x15\
-    \n\x0c\n\x05\x06\0\x02\0\x02\x12\x03\x05\x17%\n\x0c\n\x05\x06\0\x02\0\
-    \x03\x12\x03\x050<\n\n\n\x02\x04\0\x12\x04\x08\0\x0b\x01\n\n\n\x03\x04\0\
-    \x01\x12\x03\x08\x08\x16\n\x1d\n\x04\x04\0\x02\0\x12\x03\n\x03\x17\x1a\
-    \x10\x20ELF\x20file\x20path.\n\n\r\n\x05\x04\0\x02\0\x04\x12\x04\n\x03\
-    \x08\x18\n\x0c\n\x05\x04\0\x02\0\x05\x12\x03\n\x03\t\n\x0c\n\x05\x04\0\
-    \x02\0\x01\x12\x03\n\n\x12\n\x0c\n\x05\x04\0\x02\0\x03\x12\x03\n\x15\x16\
-    \n\n\n\x02\x04\x01\x12\x04\r\0\x10\x01\n\n\n\x03\x04\x01\x01\x12\x03\r\
-    \x08\x12\n\x0b\n\x04\x04\x01\x02\0\x12\x03\x0e\x08\x1c\n\r\n\x05\x04\x01\
-    \x02\0\x04\x12\x04\x0e\x08\r\x14\n\x0c\n\x05\x04\x01\x02\0\x05\x12\x03\
-    \x0e\x08\x0e\n\x0c\n\x05\x04\x01\x02\0\x01\x12\x03\x0e\x0f\x17\n\x0c\n\
-    \x05\x04\x01\x02\0\x03\x12\x03\x0e\x1a\x1b\n\x0b\n\x04\x04\x01\x02\x01\
-    \x12\x03\x0f\x08\x1e\n\r\n\x05\x04\x01\x02\x01\x04\x12\x04\x0f\x08\x0e\
-    \x1c\n\x0c\n\x05\x04\x01\x02\x01\x05\x12\x03\x0f\x08\x0e\n\x0c\n\x05\x04\
-    \x01\x02\x01\x01\x12\x03\x0f\x0f\x19\n\x0c\n\x05\x04\x01\x02\x01\x03\x12\
-    \x03\x0f\x1c\x1d\n\n\n\x02\x04\x02\x12\x04\x12\0\x15\x01\n\n\n\x03\x04\
-    \x02\x01\x12\x03\x12\x08\x14\n\"\n\x04\x04\x02\x02\0\x12\x03\x14\x03#\
-    \x1a\x15\x20Number\x20of\x20sections.\n\n\x0c\n\x05\x04\x02\x02\0\x04\
-    \x12\x03\x14\x03\x0b\n\x0c\n\x05\x04\x02\x02\0\x06\x12\x03\x14\x0c\x16\n\
-    \x0c\n\x05\x04\x02\x02\0\x01\x12\x03\x14\x17\x1e\n\x0c\n\x05\x04\x02\x02\
-    \0\x03\x12\x03\x14!\"b\x06proto3\
+    \n\rstrings.proto\x12\x07strings\"\x20\n\x0eStringsRequest\x12\x0e\n\x02\
+    id\x18\x01\x20\x01(\tR\x02id\"G\n\nStringInfo\x12\x1a\n\x08location\x18\
+    \x01\x20\x01(\x04R\x08location\x12\x1d\n\nraw_string\x18\x02\x20\x01(\tR\
+    \trawString\"=\n\x0cStringsReply\x12-\n\x07strings\x18\x01\x20\x03(\x0b2\
+    \x13.strings.StringInfoR\x07strings2V\n\x10StringsExtractor\x12B\n\x0eEx\
+    tractStrings\x12\x17.strings.StringsRequest\x1a\x15.strings.StringsReply\
+    \"\0J\xd9\x03\n\x06\x12\x04\0\0\x14\x01\n\x08\n\x01\x0c\x12\x03\0\0\x12\
+    \n\x08\n\x01\x02\x12\x03\x02\0\x10\n\n\n\x02\x06\0\x12\x04\x04\0\x06\x01\
+    \n\n\n\x03\x06\0\x01\x12\x03\x04\x08\x18\n\x0b\n\x04\x06\0\x02\0\x12\x03\
+    \x05\x03@\n\x0c\n\x05\x06\0\x02\0\x01\x12\x03\x05\x07\x15\n\x0c\n\x05\
+    \x06\0\x02\0\x02\x12\x03\x05\x17%\n\x0c\n\x05\x06\0\x02\0\x03\x12\x03\
+    \x050<\n\n\n\x02\x04\0\x12\x04\x08\0\x0b\x01\n\n\n\x03\x04\0\x01\x12\x03\
+    \x08\x08\x16\n\x1a\n\x04\x04\0\x02\0\x12\x03\n\x03\x11\x1a\r\x20ID\x20of\
+    \x20file.\n\n\r\n\x05\x04\0\x02\0\x04\x12\x04\n\x03\x08\x18\n\x0c\n\x05\
+    \x04\0\x02\0\x05\x12\x03\n\x03\t\n\x0c\n\x05\x04\0\x02\0\x01\x12\x03\n\n\
+    \x0c\n\x0c\n\x05\x04\0\x02\0\x03\x12\x03\n\x0f\x10\n\n\n\x02\x04\x01\x12\
+    \x04\r\0\x10\x01\n\n\n\x03\x04\x01\x01\x12\x03\r\x08\x12\n\x0b\n\x04\x04\
+    \x01\x02\0\x12\x03\x0e\x08\x1c\n\r\n\x05\x04\x01\x02\0\x04\x12\x04\x0e\
+    \x08\r\x14\n\x0c\n\x05\x04\x01\x02\0\x05\x12\x03\x0e\x08\x0e\n\x0c\n\x05\
+    \x04\x01\x02\0\x01\x12\x03\x0e\x0f\x17\n\x0c\n\x05\x04\x01\x02\0\x03\x12\
+    \x03\x0e\x1a\x1b\n\x0b\n\x04\x04\x01\x02\x01\x12\x03\x0f\x08\x1e\n\r\n\
+    \x05\x04\x01\x02\x01\x04\x12\x04\x0f\x08\x0e\x1c\n\x0c\n\x05\x04\x01\x02\
+    \x01\x05\x12\x03\x0f\x08\x0e\n\x0c\n\x05\x04\x01\x02\x01\x01\x12\x03\x0f\
+    \x0f\x19\n\x0c\n\x05\x04\x01\x02\x01\x03\x12\x03\x0f\x1c\x1d\n\n\n\x02\
+    \x04\x02\x12\x04\x12\0\x14\x01\n\n\n\x03\x04\x02\x01\x12\x03\x12\x08\x14\
+    \n\x0b\n\x04\x04\x02\x02\0\x12\x03\x13\x03#\n\x0c\n\x05\x04\x02\x02\0\
+    \x04\x12\x03\x13\x03\x0b\n\x0c\n\x05\x04\x02\x02\0\x06\x12\x03\x13\x0c\
+    \x16\n\x0c\n\x05\x04\x02\x02\0\x01\x12\x03\x13\x17\x1e\n\x0c\n\x05\x04\
+    \x02\x02\0\x03\x12\x03\x13!\"b\x06proto3\
 ";
 
 static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
