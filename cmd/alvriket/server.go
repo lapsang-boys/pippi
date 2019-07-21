@@ -100,8 +100,8 @@ func (s *binParserServer) ParseBinary(ctx context.Context, req *binpb.ParseBinar
 	}
 	dbg.Printf("parsing ID %q", req.BinId)
 	// Parse binary file.
-	binName := filepath.Base(req.BinId) + ext
-	binPath := filepath.Join(s.cacheDir, binName)
+	binName := req.BinId + ext
+	binPath := filepath.Join(s.cacheDir, req.BinId, binName)
 	file, err := bin.ParseFile(binPath)
 	if err != nil {
 		return nil, errors.WithStack(err)
