@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package strings;
+
+service StringsExtractor {
+   rpc ExtractStrings (StringsRequest) returns (StringsReply) {}
+}
+
+message StringsRequest {
+   // ELF file path.
+   string elf_path = 1;
+}
+
+message StringInfo {
+	uint64 location = 1;
+	string raw_string = 2;
+}
+
+message StringsReply {
+   // Number of sections.
+   repeated StringInfo strings = 1;
+}

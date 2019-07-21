@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package alvriket;
+package elf;
 
 service ELFParser {
    rpc ParseELF (ParseELFRequest) returns (ParseELFReply) {}
