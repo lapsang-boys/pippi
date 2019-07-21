@@ -7,11 +7,45 @@ service BinaryParser {
 }
 
 message ParseBinaryRequest {
-   // Binary executable file path.
-   string bin_path = 1;
+   // Binary executable ID (lowercase sha256 hash).
+   string bin_id = 1;
 }
 
 message ParseBinaryReply {
-   // Number of sections.
-   int32 nsects = 1;
+   repeated Section sections = 1;
+}
+
+// A Section represents a continuous section of memory.
+message Section {
+   // Section name; or empty if unnamed section or memory segment.
+   string name = 1;
+   // Start address of section.
+   uint64 addr = 2;
+   // File offset of section.
+   uint64 offset = 3;
+   // Length of section in number of bytes; excluding section alignment padding.
+   uint64 length = 4;
+	// Size in bytes of the section contents in the executable file; including
+	// section alignment padding.
+	//
+	// file_size is larger than mem_size for sections padded to section alignment
+	// in the executable file.
+	uint64 file_size = 5;
+	// Size in bytes of the section contents when loaded into memory.
+	//
+	// mem_size is larger than file_size for sections containing uninitialized
+	// data not part of the executable file.
+	uint64 mem_size = 6;
+	// Access permissions of the section in memory.
+	Perm perm = 7;
+}
+
+// Access permissions.
+enum Perm {
+	// PermR specifies that the memory is readable.
+	PermR = 0; // 0x4
+	// PermW specifies that the memory is writeable.
+	PermW = 1; // 0x2
+	// PermX specifies that the memory is executable.
+	PermX = 2; // 0x1
 }

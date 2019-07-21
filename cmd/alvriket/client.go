@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-// clientCmd is the command to launch a gRPC server processing parse binary
+// clientCmd is the command to connect to a gRPC server to send parse binary
 // requests.
 type clientCmd struct {
 	// gRPC address to connect to.

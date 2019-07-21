@@ -29,7 +29,7 @@ const _PROTOBUF_VERSION_CHECK: () = ::protobuf::VERSION_2_7_0;
 #[derive(PartialEq,Clone,Default)]
 pub struct ParseBinaryRequest {
     // message fields
-    pub bin_path: ::std::string::String,
+    pub bin_id: ::std::string::String,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::CachedSize,
@@ -46,30 +46,30 @@ impl ParseBinaryRequest {
         ::std::default::Default::default()
     }
 
-    // string bin_path = 1;
+    // string bin_id = 1;
 
 
-    pub fn get_bin_path(&self) -> &str {
-        &self.bin_path
+    pub fn get_bin_id(&self) -> &str {
+        &self.bin_id
     }
-    pub fn clear_bin_path(&mut self) {
-        self.bin_path.clear();
+    pub fn clear_bin_id(&mut self) {
+        self.bin_id.clear();
     }
 
     // Param is passed by value, moved
-    pub fn set_bin_path(&mut self, v: ::std::string::String) {
-        self.bin_path = v;
+    pub fn set_bin_id(&mut self, v: ::std::string::String) {
+        self.bin_id = v;
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_bin_path(&mut self) -> &mut ::std::string::String {
-        &mut self.bin_path
+    pub fn mut_bin_id(&mut self) -> &mut ::std::string::String {
+        &mut self.bin_id
     }
 
     // Take field
-    pub fn take_bin_path(&mut self) -> ::std::string::String {
-        ::std::mem::replace(&mut self.bin_path, ::std::string::String::new())
+    pub fn take_bin_id(&mut self) -> ::std::string::String {
+        ::std::mem::replace(&mut self.bin_id, ::std::string::String::new())
     }
 }
 
@@ -83,7 +83,7 @@ impl ::protobuf::Message for ParseBinaryRequest {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.bin_path)?;
+                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.bin_id)?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -97,8 +97,8 @@ impl ::protobuf::Message for ParseBinaryRequest {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if !self.bin_path.is_empty() {
-            my_size += ::protobuf::rt::string_size(1, &self.bin_path);
+        if !self.bin_id.is_empty() {
+            my_size += ::protobuf::rt::string_size(1, &self.bin_id);
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -106,8 +106,8 @@ impl ::protobuf::Message for ParseBinaryRequest {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if !self.bin_path.is_empty() {
-            os.write_string(1, &self.bin_path)?;
+        if !self.bin_id.is_empty() {
+            os.write_string(1, &self.bin_id)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -152,9 +152,9 @@ impl ::protobuf::Message for ParseBinaryRequest {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                    "bin_path",
-                    |m: &ParseBinaryRequest| { &m.bin_path },
-                    |m: &mut ParseBinaryRequest| { &mut m.bin_path },
+                    "bin_id",
+                    |m: &ParseBinaryRequest| { &m.bin_id },
+                    |m: &mut ParseBinaryRequest| { &mut m.bin_id },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<ParseBinaryRequest>(
                     "ParseBinaryRequest",
@@ -178,7 +178,7 @@ impl ::protobuf::Message for ParseBinaryRequest {
 
 impl ::protobuf::Clear for ParseBinaryRequest {
     fn clear(&mut self) {
-        self.bin_path.clear();
+        self.bin_id.clear();
         self.unknown_fields.clear();
     }
 }
@@ -198,7 +198,7 @@ impl ::protobuf::reflect::ProtobufValue for ParseBinaryRequest {
 #[derive(PartialEq,Clone,Default)]
 pub struct ParseBinaryReply {
     // message fields
-    pub nsects: i32,
+    pub sections: ::protobuf::RepeatedField<Section>,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::CachedSize,
@@ -215,24 +215,39 @@ impl ParseBinaryReply {
         ::std::default::Default::default()
     }
 
-    // int32 nsects = 1;
+    // repeated .bin.Section sections = 1;
 
 
-    pub fn get_nsects(&self) -> i32 {
-        self.nsects
+    pub fn get_sections(&self) -> &[Section] {
+        &self.sections
     }
-    pub fn clear_nsects(&mut self) {
-        self.nsects = 0;
+    pub fn clear_sections(&mut self) {
+        self.sections.clear();
     }
 
     // Param is passed by value, moved
-    pub fn set_nsects(&mut self, v: i32) {
-        self.nsects = v;
+    pub fn set_sections(&mut self, v: ::protobuf::RepeatedField<Section>) {
+        self.sections = v;
+    }
+
+    // Mutable pointer to the field.
+    pub fn mut_sections(&mut self) -> &mut ::protobuf::RepeatedField<Section> {
+        &mut self.sections
+    }
+
+    // Take field
+    pub fn take_sections(&mut self) -> ::protobuf::RepeatedField<Section> {
+        ::std::mem::replace(&mut self.sections, ::protobuf::RepeatedField::new())
     }
 }
 
 impl ::protobuf::Message for ParseBinaryReply {
     fn is_initialized(&self) -> bool {
+        for v in &self.sections {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -241,11 +256,7 @@ impl ::protobuf::Message for ParseBinaryReply {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    }
-                    let tmp = is.read_int32()?;
-                    self.nsects = tmp;
+                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.sections)?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -259,18 +270,21 @@ impl ::protobuf::Message for ParseBinaryReply {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if self.nsects != 0 {
-            my_size += ::protobuf::rt::value_size(1, self.nsects, ::protobuf::wire_format::WireTypeVarint);
-        }
+        for value in &self.sections {
+            let len = value.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if self.nsects != 0 {
-            os.write_int32(1, self.nsects)?;
-        }
+        for v in &self.sections {
+            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_raw_varint32(v.get_cached_size())?;
+            v.write_to_with_cached_sizes(os)?;
+        };
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -313,10 +327,10 @@ impl ::protobuf::Message for ParseBinaryReply {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
-                    "nsects",
-                    |m: &ParseBinaryReply| { &m.nsects },
-                    |m: &mut ParseBinaryReply| { &mut m.nsects },
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Section>>(
+                    "sections",
+                    |m: &ParseBinaryReply| { &m.sections },
+                    |m: &mut ParseBinaryReply| { &mut m.sections },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<ParseBinaryReply>(
                     "ParseBinaryReply",
@@ -340,7 +354,7 @@ impl ::protobuf::Message for ParseBinaryReply {
 
 impl ::protobuf::Clear for ParseBinaryReply {
     fn clear(&mut self) {
-        self.nsects = 0;
+        self.sections.clear();
         self.unknown_fields.clear();
     }
 }
@@ -357,27 +371,517 @@ impl ::protobuf::reflect::ProtobufValue for ParseBinaryReply {
     }
 }
 
+#[derive(PartialEq,Clone,Default)]
+pub struct Section {
+    // message fields
+    pub name: ::std::string::String,
+    pub addr: u64,
+    pub offset: u64,
+    pub length: u64,
+    pub file_size: u64,
+    pub mem_size: u64,
+    pub perm: Perm,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a Section {
+    fn default() -> &'a Section {
+        <Section as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl Section {
+    pub fn new() -> Section {
+        ::std::default::Default::default()
+    }
+
+    // string name = 1;
+
+
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
+    pub fn clear_name(&mut self) {
+        self.name.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = v;
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        &mut self.name
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        ::std::mem::replace(&mut self.name, ::std::string::String::new())
+    }
+
+    // uint64 addr = 2;
+
+
+    pub fn get_addr(&self) -> u64 {
+        self.addr
+    }
+    pub fn clear_addr(&mut self) {
+        self.addr = 0;
+    }
+
+    // Param is passed by value, moved
+    pub fn set_addr(&mut self, v: u64) {
+        self.addr = v;
+    }
+
+    // uint64 offset = 3;
+
+
+    pub fn get_offset(&self) -> u64 {
+        self.offset
+    }
+    pub fn clear_offset(&mut self) {
+        self.offset = 0;
+    }
+
+    // Param is passed by value, moved
+    pub fn set_offset(&mut self, v: u64) {
+        self.offset = v;
+    }
+
+    // uint64 length = 4;
+
+
+    pub fn get_length(&self) -> u64 {
+        self.length
+    }
+    pub fn clear_length(&mut self) {
+        self.length = 0;
+    }
+
+    // Param is passed by value, moved
+    pub fn set_length(&mut self, v: u64) {
+        self.length = v;
+    }
+
+    // uint64 file_size = 5;
+
+
+    pub fn get_file_size(&self) -> u64 {
+        self.file_size
+    }
+    pub fn clear_file_size(&mut self) {
+        self.file_size = 0;
+    }
+
+    // Param is passed by value, moved
+    pub fn set_file_size(&mut self, v: u64) {
+        self.file_size = v;
+    }
+
+    // uint64 mem_size = 6;
+
+
+    pub fn get_mem_size(&self) -> u64 {
+        self.mem_size
+    }
+    pub fn clear_mem_size(&mut self) {
+        self.mem_size = 0;
+    }
+
+    // Param is passed by value, moved
+    pub fn set_mem_size(&mut self, v: u64) {
+        self.mem_size = v;
+    }
+
+    // .bin.Perm perm = 7;
+
+
+    pub fn get_perm(&self) -> Perm {
+        self.perm
+    }
+    pub fn clear_perm(&mut self) {
+        self.perm = Perm::PermR;
+    }
+
+    // Param is passed by value, moved
+    pub fn set_perm(&mut self, v: Perm) {
+        self.perm = v;
+    }
+}
+
+impl ::protobuf::Message for Section {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    let tmp = is.read_uint64()?;
+                    self.addr = tmp;
+                },
+                3 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    let tmp = is.read_uint64()?;
+                    self.offset = tmp;
+                },
+                4 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    let tmp = is.read_uint64()?;
+                    self.length = tmp;
+                },
+                5 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    let tmp = is.read_uint64()?;
+                    self.file_size = tmp;
+                },
+                6 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    let tmp = is.read_uint64()?;
+                    self.mem_size = tmp;
+                },
+                7 => {
+                    ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.perm, 7, &mut self.unknown_fields)?
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if !self.name.is_empty() {
+            my_size += ::protobuf::rt::string_size(1, &self.name);
+        }
+        if self.addr != 0 {
+            my_size += ::protobuf::rt::value_size(2, self.addr, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if self.offset != 0 {
+            my_size += ::protobuf::rt::value_size(3, self.offset, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if self.length != 0 {
+            my_size += ::protobuf::rt::value_size(4, self.length, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if self.file_size != 0 {
+            my_size += ::protobuf::rt::value_size(5, self.file_size, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if self.mem_size != 0 {
+            my_size += ::protobuf::rt::value_size(6, self.mem_size, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if self.perm != Perm::PermR {
+            my_size += ::protobuf::rt::enum_size(7, self.perm);
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+        if !self.name.is_empty() {
+            os.write_string(1, &self.name)?;
+        }
+        if self.addr != 0 {
+            os.write_uint64(2, self.addr)?;
+        }
+        if self.offset != 0 {
+            os.write_uint64(3, self.offset)?;
+        }
+        if self.length != 0 {
+            os.write_uint64(4, self.length)?;
+        }
+        if self.file_size != 0 {
+            os.write_uint64(5, self.file_size)?;
+        }
+        if self.mem_size != 0 {
+            os.write_uint64(6, self.mem_size)?;
+        }
+        if self.perm != Perm::PermR {
+            os.write_enum(7, self.perm.value())?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn as_any(&self) -> &::std::any::Any {
+        self as &::std::any::Any
+    }
+    fn as_any_mut(&mut self) -> &mut ::std::any::Any {
+        self as &mut ::std::any::Any
+    }
+    fn into_any(self: Box<Self>) -> ::std::boxed::Box<::std::any::Any> {
+        self
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        Self::descriptor_static()
+    }
+
+    fn new() -> Section {
+        Section::new()
+    }
+
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy {
+            lock: ::protobuf::lazy::ONCE_INIT,
+            ptr: 0 as *const ::protobuf::reflect::MessageDescriptor,
+        };
+        unsafe {
+            descriptor.get(|| {
+                let mut fields = ::std::vec::Vec::new();
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                    "name",
+                    |m: &Section| { &m.name },
+                    |m: &mut Section| { &mut m.name },
+                ));
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+                    "addr",
+                    |m: &Section| { &m.addr },
+                    |m: &mut Section| { &mut m.addr },
+                ));
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+                    "offset",
+                    |m: &Section| { &m.offset },
+                    |m: &mut Section| { &mut m.offset },
+                ));
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+                    "length",
+                    |m: &Section| { &m.length },
+                    |m: &mut Section| { &mut m.length },
+                ));
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+                    "file_size",
+                    |m: &Section| { &m.file_size },
+                    |m: &mut Section| { &mut m.file_size },
+                ));
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+                    "mem_size",
+                    |m: &Section| { &m.mem_size },
+                    |m: &mut Section| { &mut m.mem_size },
+                ));
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<Perm>>(
+                    "perm",
+                    |m: &Section| { &m.perm },
+                    |m: &mut Section| { &mut m.perm },
+                ));
+                ::protobuf::reflect::MessageDescriptor::new::<Section>(
+                    "Section",
+                    fields,
+                    file_descriptor_proto()
+                )
+            })
+        }
+    }
+
+    fn default_instance() -> &'static Section {
+        static mut instance: ::protobuf::lazy::Lazy<Section> = ::protobuf::lazy::Lazy {
+            lock: ::protobuf::lazy::ONCE_INIT,
+            ptr: 0 as *const Section,
+        };
+        unsafe {
+            instance.get(Section::new)
+        }
+    }
+}
+
+impl ::protobuf::Clear for Section {
+    fn clear(&mut self) {
+        self.name.clear();
+        self.addr = 0;
+        self.offset = 0;
+        self.length = 0;
+        self.file_size = 0;
+        self.mem_size = 0;
+        self.perm = Perm::PermR;
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for Section {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for Section {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Message(self)
+    }
+}
+
+#[derive(Clone,PartialEq,Eq,Debug,Hash)]
+pub enum Perm {
+    PermR = 0,
+    PermW = 1,
+    PermX = 2,
+}
+
+impl ::protobuf::ProtobufEnum for Perm {
+    fn value(&self) -> i32 {
+        *self as i32
+    }
+
+    fn from_i32(value: i32) -> ::std::option::Option<Perm> {
+        match value {
+            0 => ::std::option::Option::Some(Perm::PermR),
+            1 => ::std::option::Option::Some(Perm::PermW),
+            2 => ::std::option::Option::Some(Perm::PermX),
+            _ => ::std::option::Option::None
+        }
+    }
+
+    fn values() -> &'static [Self] {
+        static values: &'static [Perm] = &[
+            Perm::PermR,
+            Perm::PermW,
+            Perm::PermX,
+        ];
+        values
+    }
+
+    fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
+        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy {
+            lock: ::protobuf::lazy::ONCE_INIT,
+            ptr: 0 as *const ::protobuf::reflect::EnumDescriptor,
+        };
+        unsafe {
+            descriptor.get(|| {
+                ::protobuf::reflect::EnumDescriptor::new("Perm", file_descriptor_proto())
+            })
+        }
+    }
+}
+
+impl ::std::marker::Copy for Perm {
+}
+
+impl ::std::default::Default for Perm {
+    fn default() -> Self {
+        Perm::PermR
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for Perm {
+    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
+        ::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())
+    }
+}
+
 static file_descriptor_proto_data: &'static [u8] = b"\
-    \n\tbin.proto\x12\x03bin\"/\n\x12ParseBinaryRequest\x12\x19\n\x08bin_pat\
-    h\x18\x01\x20\x01(\tR\x07binPath\"*\n\x10ParseBinaryReply\x12\x16\n\x06n\
-    sects\x18\x01\x20\x01(\x05R\x06nsects2O\n\x0cBinaryParser\x12?\n\x0bPars\
-    eBinary\x12\x17.bin.ParseBinaryRequest\x1a\x15.bin.ParseBinaryReply\"\0J\
-    \xde\x02\n\x06\x12\x04\0\0\x10\x01\n\x08\n\x01\x0c\x12\x03\0\0\x12\n\x08\
-    \n\x01\x02\x12\x03\x02\0\x0c\n\n\n\x02\x06\0\x12\x04\x04\0\x06\x01\n\n\n\
-    \x03\x06\0\x01\x12\x03\x04\x08\x14\n\x0b\n\x04\x06\0\x02\0\x12\x03\x05\
-    \x03E\n\x0c\n\x05\x06\0\x02\0\x01\x12\x03\x05\x07\x12\n\x0c\n\x05\x06\0\
-    \x02\0\x02\x12\x03\x05\x14&\n\x0c\n\x05\x06\0\x02\0\x03\x12\x03\x051A\n\
-    \n\n\x02\x04\0\x12\x04\x08\0\x0b\x01\n\n\n\x03\x04\0\x01\x12\x03\x08\x08\
-    \x1a\n+\n\x04\x04\0\x02\0\x12\x03\n\x03\x17\x1a\x1e\x20Binary\x20executa\
-    ble\x20file\x20path.\n\n\r\n\x05\x04\0\x02\0\x04\x12\x04\n\x03\x08\x1c\n\
-    \x0c\n\x05\x04\0\x02\0\x05\x12\x03\n\x03\t\n\x0c\n\x05\x04\0\x02\0\x01\
-    \x12\x03\n\n\x12\n\x0c\n\x05\x04\0\x02\0\x03\x12\x03\n\x15\x16\n\n\n\x02\
-    \x04\x01\x12\x04\r\0\x10\x01\n\n\n\x03\x04\x01\x01\x12\x03\r\x08\x18\n\"\
-    \n\x04\x04\x01\x02\0\x12\x03\x0f\x03\x14\x1a\x15\x20Number\x20of\x20sect\
-    ions.\n\n\r\n\x05\x04\x01\x02\0\x04\x12\x04\x0f\x03\r\x1a\n\x0c\n\x05\
-    \x04\x01\x02\0\x05\x12\x03\x0f\x03\x08\n\x0c\n\x05\x04\x01\x02\0\x01\x12\
-    \x03\x0f\t\x0f\n\x0c\n\x05\x04\x01\x02\0\x03\x12\x03\x0f\x12\x13b\x06pro\
-    to3\
+    \n\tbin.proto\x12\x03bin\"+\n\x12ParseBinaryRequest\x12\x15\n\x06bin_id\
+    \x18\x01\x20\x01(\tR\x05binId\"<\n\x10ParseBinaryReply\x12(\n\x08section\
+    s\x18\x01\x20\x03(\x0b2\x0c.bin.SectionR\x08sections\"\xb8\x01\n\x07Sect\
+    ion\x12\x12\n\x04name\x18\x01\x20\x01(\tR\x04name\x12\x12\n\x04addr\x18\
+    \x02\x20\x01(\x04R\x04addr\x12\x16\n\x06offset\x18\x03\x20\x01(\x04R\x06\
+    offset\x12\x16\n\x06length\x18\x04\x20\x01(\x04R\x06length\x12\x1b\n\tfi\
+    le_size\x18\x05\x20\x01(\x04R\x08fileSize\x12\x19\n\x08mem_size\x18\x06\
+    \x20\x01(\x04R\x07memSize\x12\x1d\n\x04perm\x18\x07\x20\x01(\x0e2\t.bin.\
+    PermR\x04perm*'\n\x04Perm\x12\t\n\x05PermR\x10\0\x12\t\n\x05PermW\x10\
+    \x01\x12\t\n\x05PermX\x10\x022O\n\x0cBinaryParser\x12?\n\x0bParseBinary\
+    \x12\x17.bin.ParseBinaryRequest\x1a\x15.bin.ParseBinaryReply\"\0J\xdd\
+    \x0e\n\x06\x12\x04\0\02\x01\n\x08\n\x01\x0c\x12\x03\0\0\x12\n\x08\n\x01\
+    \x02\x12\x03\x02\0\x0c\n\n\n\x02\x06\0\x12\x04\x04\0\x06\x01\n\n\n\x03\
+    \x06\0\x01\x12\x03\x04\x08\x14\n\x0b\n\x04\x06\0\x02\0\x12\x03\x05\x03E\
+    \n\x0c\n\x05\x06\0\x02\0\x01\x12\x03\x05\x07\x12\n\x0c\n\x05\x06\0\x02\0\
+    \x02\x12\x03\x05\x14&\n\x0c\n\x05\x06\0\x02\0\x03\x12\x03\x051A\n\n\n\
+    \x02\x04\0\x12\x04\x08\0\x0b\x01\n\n\n\x03\x04\0\x01\x12\x03\x08\x08\x1a\
+    \n<\n\x04\x04\0\x02\0\x12\x03\n\x03\x15\x1a/\x20Binary\x20executable\x20\
+    ID\x20(lowercase\x20sha256\x20hash).\n\n\r\n\x05\x04\0\x02\0\x04\x12\x04\
+    \n\x03\x08\x1c\n\x0c\n\x05\x04\0\x02\0\x05\x12\x03\n\x03\t\n\x0c\n\x05\
+    \x04\0\x02\0\x01\x12\x03\n\n\x10\n\x0c\n\x05\x04\0\x02\0\x03\x12\x03\n\
+    \x13\x14\n\n\n\x02\x04\x01\x12\x04\r\0\x0f\x01\n\n\n\x03\x04\x01\x01\x12\
+    \x03\r\x08\x18\n\x0b\n\x04\x04\x01\x02\0\x12\x03\x0e\x03!\n\x0c\n\x05\
+    \x04\x01\x02\0\x04\x12\x03\x0e\x03\x0b\n\x0c\n\x05\x04\x01\x02\0\x06\x12\
+    \x03\x0e\x0c\x13\n\x0c\n\x05\x04\x01\x02\0\x01\x12\x03\x0e\x14\x1c\n\x0c\
+    \n\x05\x04\x01\x02\0\x03\x12\x03\x0e\x1f\x20\nB\n\x02\x04\x02\x12\x04\
+    \x12\0(\x01\x1a6\x20A\x20Section\x20represents\x20a\x20continuous\x20sec\
+    tion\x20of\x20memory.\n\n\n\n\x03\x04\x02\x01\x12\x03\x12\x08\x0f\nK\n\
+    \x04\x04\x02\x02\0\x12\x03\x14\x03\x13\x1a>\x20Section\x20name;\x20or\
+    \x20empty\x20if\x20unnamed\x20section\x20or\x20memory\x20segment.\n\n\r\
+    \n\x05\x04\x02\x02\0\x04\x12\x04\x14\x03\x12\x11\n\x0c\n\x05\x04\x02\x02\
+    \0\x05\x12\x03\x14\x03\t\n\x0c\n\x05\x04\x02\x02\0\x01\x12\x03\x14\n\x0e\
+    \n\x0c\n\x05\x04\x02\x02\0\x03\x12\x03\x14\x11\x12\n(\n\x04\x04\x02\x02\
+    \x01\x12\x03\x16\x03\x13\x1a\x1b\x20Start\x20address\x20of\x20section.\n\
+    \n\r\n\x05\x04\x02\x02\x01\x04\x12\x04\x16\x03\x14\x13\n\x0c\n\x05\x04\
+    \x02\x02\x01\x05\x12\x03\x16\x03\t\n\x0c\n\x05\x04\x02\x02\x01\x01\x12\
+    \x03\x16\n\x0e\n\x0c\n\x05\x04\x02\x02\x01\x03\x12\x03\x16\x11\x12\n&\n\
+    \x04\x04\x02\x02\x02\x12\x03\x18\x03\x15\x1a\x19\x20File\x20offset\x20of\
+    \x20section.\n\n\r\n\x05\x04\x02\x02\x02\x04\x12\x04\x18\x03\x16\x13\n\
+    \x0c\n\x05\x04\x02\x02\x02\x05\x12\x03\x18\x03\t\n\x0c\n\x05\x04\x02\x02\
+    \x02\x01\x12\x03\x18\n\x10\n\x0c\n\x05\x04\x02\x02\x02\x03\x12\x03\x18\
+    \x13\x14\nY\n\x04\x04\x02\x02\x03\x12\x03\x1a\x03\x15\x1aL\x20Length\x20\
+    of\x20section\x20in\x20number\x20of\x20bytes;\x20excluding\x20section\
+    \x20alignment\x20padding.\n\n\r\n\x05\x04\x02\x02\x03\x04\x12\x04\x1a\
+    \x03\x18\x15\n\x0c\n\x05\x04\x02\x02\x03\x05\x12\x03\x1a\x03\t\n\x0c\n\
+    \x05\x04\x02\x02\x03\x01\x12\x03\x1a\n\x10\n\x0c\n\x05\x04\x02\x02\x03\
+    \x03\x12\x03\x1a\x13\x14\n\xd9\x01\n\x04\x04\x02\x02\x04\x12\x03\x20\x08\
+    \x1d\x1a\xcb\x01\x20Size\x20in\x20bytes\x20of\x20the\x20section\x20conte\
+    nts\x20in\x20the\x20executable\x20file;\x20including\n\x20section\x20ali\
+    gnment\x20padding.\n\n\x20file_size\x20is\x20larger\x20than\x20mem_size\
+    \x20for\x20sections\x20padded\x20to\x20section\x20alignment\n\x20in\x20t\
+    he\x20executable\x20file.\n\n\r\n\x05\x04\x02\x02\x04\x04\x12\x04\x20\
+    \x08\x1a\x15\n\x0c\n\x05\x04\x02\x02\x04\x05\x12\x03\x20\x08\x0e\n\x0c\n\
+    \x05\x04\x02\x02\x04\x01\x12\x03\x20\x0f\x18\n\x0c\n\x05\x04\x02\x02\x04\
+    \x03\x12\x03\x20\x1b\x1c\n\xbf\x01\n\x04\x04\x02\x02\x05\x12\x03%\x08\
+    \x1c\x1a\xb1\x01\x20Size\x20in\x20bytes\x20of\x20the\x20section\x20conte\
+    nts\x20when\x20loaded\x20into\x20memory.\n\n\x20mem_size\x20is\x20larger\
+    \x20than\x20file_size\x20for\x20sections\x20containing\x20uninitialized\
+    \n\x20data\x20not\x20part\x20of\x20the\x20executable\x20file.\n\n\r\n\
+    \x05\x04\x02\x02\x05\x04\x12\x04%\x08\x20\x1d\n\x0c\n\x05\x04\x02\x02\
+    \x05\x05\x12\x03%\x08\x0e\n\x0c\n\x05\x04\x02\x02\x05\x01\x12\x03%\x0f\
+    \x17\n\x0c\n\x05\x04\x02\x02\x05\x03\x12\x03%\x1a\x1b\n;\n\x04\x04\x02\
+    \x02\x06\x12\x03'\x08\x16\x1a.\x20Access\x20permissions\x20of\x20the\x20\
+    section\x20in\x20memory.\n\n\r\n\x05\x04\x02\x02\x06\x04\x12\x04'\x08%\
+    \x1c\n\x0c\n\x05\x04\x02\x02\x06\x06\x12\x03'\x08\x0c\n\x0c\n\x05\x04\
+    \x02\x02\x06\x01\x12\x03'\r\x11\n\x0c\n\x05\x04\x02\x02\x06\x03\x12\x03'\
+    \x14\x15\n!\n\x02\x05\0\x12\x04+\02\x01\x1a\x15\x20Access\x20permissions\
+    .\n\n\n\n\x03\x05\0\x01\x12\x03+\x05\t\nB\n\x04\x05\0\x02\0\x12\x03-\x08\
+    \x12\x1a.\x20PermR\x20specifies\x20that\x20the\x20memory\x20is\x20readab\
+    le.\n\"\x05\x200x4\n\n\x0c\n\x05\x05\0\x02\0\x01\x12\x03-\x08\r\n\x0c\n\
+    \x05\x05\0\x02\0\x02\x12\x03-\x10\x11\nC\n\x04\x05\0\x02\x01\x12\x03/\
+    \x08\x12\x1a/\x20PermW\x20specifies\x20that\x20the\x20memory\x20is\x20wr\
+    iteable.\n\"\x05\x200x2\n\n\x0c\n\x05\x05\0\x02\x01\x01\x12\x03/\x08\r\n\
+    \x0c\n\x05\x05\0\x02\x01\x02\x12\x03/\x10\x11\nD\n\x04\x05\0\x02\x02\x12\
+    \x031\x08\x12\x1a0\x20PermX\x20specifies\x20that\x20the\x20memory\x20is\
+    \x20executable.\n\"\x05\x200x1\n\n\x0c\n\x05\x05\0\x02\x02\x01\x12\x031\
+    \x08\r\n\x0c\n\x05\x05\0\x02\x02\x02\x12\x031\x10\x11b\x06proto3\
 ";
 
 static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
