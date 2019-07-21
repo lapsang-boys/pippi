@@ -75,10 +75,10 @@ func connect(addr, binID string) error {
 	req := &binpb.ParseBinaryRequest{
 		BinId: binID,
 	}
-	reply, err := client.ParseBinary(ctx, req)
+	file, err := client.ParseBinary(ctx, req)
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	pretty.Println(reply.Sections)
+	pretty.Println(file)
 	return nil
 }
