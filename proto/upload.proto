@@ -6,12 +6,6 @@ service Upload {
 	rpc Upload (UploadRequest) returns (UploadReply) {}
 }
 
-enum UploadStatusCode {
-	Unknown = 0;
-	Ok = 1;
-	Failed = 2;
-}
-
 message UploadRequest {
 	// Binary executable file path.
 	string filename = 1;
@@ -22,5 +16,5 @@ message UploadRequest {
 }
 
 message UploadReply {
-	UploadStatusCode code = 1;
+	string id = 1;
 }

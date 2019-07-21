@@ -4,7 +4,6 @@
 
 import sys
 _b=sys.version_info[0]<3 and (lambda x:x) or (lambda x:x.encode('latin1'))
-from google.protobuf.internal import enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
@@ -21,39 +20,9 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='upload',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0cupload.proto\x12\x06upload\"@\n\rUploadRequest\x12\x10\n\x08\x66ilename\x18\x01 \x01(\t\x12\x0c\n\x04hash\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\x0c\"5\n\x0bUploadReply\x12&\n\x04\x63ode\x18\x01 \x01(\x0e\x32\x18.upload.UploadStatusCode*3\n\x10UploadStatusCode\x12\x0b\n\x07Unknown\x10\x00\x12\x06\n\x02Ok\x10\x01\x12\n\n\x06\x46\x61iled\x10\x02\x32@\n\x06Upload\x12\x36\n\x06Upload\x12\x15.upload.UploadRequest\x1a\x13.upload.UploadReply\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x0cupload.proto\x12\x06upload\"@\n\rUploadRequest\x12\x10\n\x08\x66ilename\x18\x01 \x01(\t\x12\x0c\n\x04hash\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\x0c\"\x19\n\x0bUploadReply\x12\n\n\x02id\x18\x01 \x01(\t2@\n\x06Upload\x12\x36\n\x06Upload\x12\x15.upload.UploadRequest\x1a\x13.upload.UploadReply\"\x00\x62\x06proto3')
 )
 
-_UPLOADSTATUSCODE = _descriptor.EnumDescriptor(
-  name='UploadStatusCode',
-  full_name='upload.UploadStatusCode',
-  filename=None,
-  file=DESCRIPTOR,
-  values=[
-    _descriptor.EnumValueDescriptor(
-      name='Unknown', index=0, number=0,
-      serialized_options=None,
-      type=None),
-    _descriptor.EnumValueDescriptor(
-      name='Ok', index=1, number=1,
-      serialized_options=None,
-      type=None),
-    _descriptor.EnumValueDescriptor(
-      name='Failed', index=2, number=2,
-      serialized_options=None,
-      type=None),
-  ],
-  containing_type=None,
-  serialized_options=None,
-  serialized_start=145,
-  serialized_end=196,
-)
-_sym_db.RegisterEnumDescriptor(_UPLOADSTATUSCODE)
-
-UploadStatusCode = enum_type_wrapper.EnumTypeWrapper(_UPLOADSTATUSCODE)
-Unknown = 0
-Ok = 1
-Failed = 2
 
 
 
@@ -110,9 +79,9 @@ _UPLOADREPLY = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='code', full_name='upload.UploadReply.code', index=0,
-      number=1, type=14, cpp_type=8, label=1,
-      has_default_value=False, default_value=0,
+      name='id', full_name='upload.UploadReply.id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -129,13 +98,11 @@ _UPLOADREPLY = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=90,
-  serialized_end=143,
+  serialized_end=115,
 )
 
-_UPLOADREPLY.fields_by_name['code'].enum_type = _UPLOADSTATUSCODE
 DESCRIPTOR.message_types_by_name['UploadRequest'] = _UPLOADREQUEST
 DESCRIPTOR.message_types_by_name['UploadReply'] = _UPLOADREPLY
-DESCRIPTOR.enum_types_by_name['UploadStatusCode'] = _UPLOADSTATUSCODE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 UploadRequest = _reflection.GeneratedProtocolMessageType('UploadRequest', (_message.Message,), {
@@ -160,8 +127,8 @@ _UPLOAD = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=198,
-  serialized_end=262,
+  serialized_start=117,
+  serialized_end=181,
   methods=[
   _descriptor.MethodDescriptor(
     name='Upload',

@@ -282,7 +282,7 @@ impl ::protobuf::reflect::ProtobufValue for UploadRequest {
 #[derive(PartialEq,Clone,Default)]
 pub struct UploadReply {
     // message fields
-    pub code: UploadStatusCode,
+    pub id: ::std::string::String,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::CachedSize,
@@ -299,19 +299,30 @@ impl UploadReply {
         ::std::default::Default::default()
     }
 
-    // .upload.UploadStatusCode code = 1;
+    // string id = 1;
 
 
-    pub fn get_code(&self) -> UploadStatusCode {
-        self.code
+    pub fn get_id(&self) -> &str {
+        &self.id
     }
-    pub fn clear_code(&mut self) {
-        self.code = UploadStatusCode::Unknown;
+    pub fn clear_id(&mut self) {
+        self.id.clear();
     }
 
     // Param is passed by value, moved
-    pub fn set_code(&mut self, v: UploadStatusCode) {
-        self.code = v;
+    pub fn set_id(&mut self, v: ::std::string::String) {
+        self.id = v;
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_id(&mut self) -> &mut ::std::string::String {
+        &mut self.id
+    }
+
+    // Take field
+    pub fn take_id(&mut self) -> ::std::string::String {
+        ::std::mem::replace(&mut self.id, ::std::string::String::new())
     }
 }
 
@@ -325,7 +336,7 @@ impl ::protobuf::Message for UploadReply {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.code, 1, &mut self.unknown_fields)?
+                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.id)?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -339,8 +350,8 @@ impl ::protobuf::Message for UploadReply {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if self.code != UploadStatusCode::Unknown {
-            my_size += ::protobuf::rt::enum_size(1, self.code);
+        if !self.id.is_empty() {
+            my_size += ::protobuf::rt::string_size(1, &self.id);
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -348,8 +359,8 @@ impl ::protobuf::Message for UploadReply {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if self.code != UploadStatusCode::Unknown {
-            os.write_enum(1, self.code.value())?;
+        if !self.id.is_empty() {
+            os.write_string(1, &self.id)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -393,10 +404,10 @@ impl ::protobuf::Message for UploadReply {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<UploadStatusCode>>(
-                    "code",
-                    |m: &UploadReply| { &m.code },
-                    |m: &mut UploadReply| { &mut m.code },
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                    "id",
+                    |m: &UploadReply| { &m.id },
+                    |m: &mut UploadReply| { &mut m.id },
                 ));
                 ::protobuf::reflect::MessageDescriptor::new::<UploadReply>(
                     "UploadReply",
@@ -420,7 +431,7 @@ impl ::protobuf::Message for UploadReply {
 
 impl ::protobuf::Clear for UploadReply {
     fn clear(&mut self) {
-        self.code = UploadStatusCode::Unknown;
+        self.id.clear();
         self.unknown_fields.clear();
     }
 }
@@ -437,102 +448,35 @@ impl ::protobuf::reflect::ProtobufValue for UploadReply {
     }
 }
 
-#[derive(Clone,PartialEq,Eq,Debug,Hash)]
-pub enum UploadStatusCode {
-    Unknown = 0,
-    Ok = 1,
-    Failed = 2,
-}
-
-impl ::protobuf::ProtobufEnum for UploadStatusCode {
-    fn value(&self) -> i32 {
-        *self as i32
-    }
-
-    fn from_i32(value: i32) -> ::std::option::Option<UploadStatusCode> {
-        match value {
-            0 => ::std::option::Option::Some(UploadStatusCode::Unknown),
-            1 => ::std::option::Option::Some(UploadStatusCode::Ok),
-            2 => ::std::option::Option::Some(UploadStatusCode::Failed),
-            _ => ::std::option::Option::None
-        }
-    }
-
-    fn values() -> &'static [Self] {
-        static values: &'static [UploadStatusCode] = &[
-            UploadStatusCode::Unknown,
-            UploadStatusCode::Ok,
-            UploadStatusCode::Failed,
-        ];
-        values
-    }
-
-    fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::EnumDescriptor> = ::protobuf::lazy::Lazy {
-            lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ::protobuf::reflect::EnumDescriptor,
-        };
-        unsafe {
-            descriptor.get(|| {
-                ::protobuf::reflect::EnumDescriptor::new("UploadStatusCode", file_descriptor_proto())
-            })
-        }
-    }
-}
-
-impl ::std::marker::Copy for UploadStatusCode {
-}
-
-impl ::std::default::Default for UploadStatusCode {
-    fn default() -> Self {
-        UploadStatusCode::Unknown
-    }
-}
-
-impl ::protobuf::reflect::ProtobufValue for UploadStatusCode {
-    fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
-        ::protobuf::reflect::ProtobufValueRef::Enum(self.descriptor())
-    }
-}
-
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x0cupload.proto\x12\x06upload\"Y\n\rUploadRequest\x12\x1a\n\x08filena\
     me\x18\x01\x20\x01(\tR\x08filename\x12\x12\n\x04hash\x18\x02\x20\x01(\tR\
-    \x04hash\x12\x18\n\x07content\x18\x03\x20\x01(\x0cR\x07content\";\n\x0bU\
-    ploadReply\x12,\n\x04code\x18\x01\x20\x01(\x0e2\x18.upload.UploadStatusC\
-    odeR\x04code*3\n\x10UploadStatusCode\x12\x0b\n\x07Unknown\x10\0\x12\x06\
-    \n\x02Ok\x10\x01\x12\n\n\x06Failed\x10\x022@\n\x06Upload\x126\n\x06Uploa\
-    d\x12\x15.upload.UploadRequest\x1a\x13.upload.UploadReply\"\0J\x85\x05\n\
-    \x06\x12\x04\0\0\x19\x01\n\x08\n\x01\x0c\x12\x03\0\0\x12\n\x08\n\x01\x02\
-    \x12\x03\x02\0\x0f\n\n\n\x02\x06\0\x12\x04\x04\0\x06\x01\n\n\n\x03\x06\0\
-    \x01\x12\x03\x04\x08\x0e\n\x0b\n\x04\x06\0\x02\0\x12\x03\x05\x08;\n\x0c\
-    \n\x05\x06\0\x02\0\x01\x12\x03\x05\x0c\x12\n\x0c\n\x05\x06\0\x02\0\x02\
-    \x12\x03\x05\x14!\n\x0c\n\x05\x06\0\x02\0\x03\x12\x03\x05,7\n\n\n\x02\
-    \x05\0\x12\x04\x08\0\x0c\x01\n\n\n\x03\x05\0\x01\x12\x03\x08\x05\x15\n\
-    \x0b\n\x04\x05\0\x02\0\x12\x03\t\x08\x14\n\x0c\n\x05\x05\0\x02\0\x01\x12\
-    \x03\t\x08\x0f\n\x0c\n\x05\x05\0\x02\0\x02\x12\x03\t\x12\x13\n\x0b\n\x04\
-    \x05\0\x02\x01\x12\x03\n\x08\x0f\n\x0c\n\x05\x05\0\x02\x01\x01\x12\x03\n\
-    \x08\n\n\x0c\n\x05\x05\0\x02\x01\x02\x12\x03\n\r\x0e\n\x0b\n\x04\x05\0\
-    \x02\x02\x12\x03\x0b\x08\x13\n\x0c\n\x05\x05\0\x02\x02\x01\x12\x03\x0b\
-    \x08\x0e\n\x0c\n\x05\x05\0\x02\x02\x02\x12\x03\x0b\x11\x12\n\n\n\x02\x04\
-    \0\x12\x04\x0e\0\x15\x01\n\n\n\x03\x04\0\x01\x12\x03\x0e\x08\x15\n+\n\
-    \x04\x04\0\x02\0\x12\x03\x10\x08\x1c\x1a\x1e\x20Binary\x20executable\x20\
-    file\x20path.\n\n\r\n\x05\x04\0\x02\0\x04\x12\x04\x10\x08\x0e\x17\n\x0c\
-    \n\x05\x04\0\x02\0\x05\x12\x03\x10\x08\x0e\n\x0c\n\x05\x04\0\x02\0\x01\
-    \x12\x03\x10\x0f\x17\n\x0c\n\x05\x04\0\x02\0\x03\x12\x03\x10\x1a\x1b\n\
-    \x19\n\x04\x04\0\x02\x01\x12\x03\x12\x08\x18\x1a\x0c\x20File\x20hash.\n\
-    \n\r\n\x05\x04\0\x02\x01\x04\x12\x04\x12\x08\x10\x1c\n\x0c\n\x05\x04\0\
-    \x02\x01\x05\x12\x03\x12\x08\x0e\n\x0c\n\x05\x04\0\x02\x01\x01\x12\x03\
-    \x12\x0f\x13\n\x0c\n\x05\x04\0\x02\x01\x03\x12\x03\x12\x16\x17\n\x1c\n\
-    \x04\x04\0\x02\x02\x12\x03\x14\x08\x1a\x1a\x0f\x20File\x20content.\n\n\r\
-    \n\x05\x04\0\x02\x02\x04\x12\x04\x14\x08\x12\x18\n\x0c\n\x05\x04\0\x02\
-    \x02\x05\x12\x03\x14\x08\r\n\x0c\n\x05\x04\0\x02\x02\x01\x12\x03\x14\x0e\
-    \x15\n\x0c\n\x05\x04\0\x02\x02\x03\x12\x03\x14\x18\x19\n\n\n\x02\x04\x01\
-    \x12\x04\x17\0\x19\x01\n\n\n\x03\x04\x01\x01\x12\x03\x17\x08\x13\n\x0b\n\
-    \x04\x04\x01\x02\0\x12\x03\x18\x08\"\n\r\n\x05\x04\x01\x02\0\x04\x12\x04\
-    \x18\x08\x17\x15\n\x0c\n\x05\x04\x01\x02\0\x06\x12\x03\x18\x08\x18\n\x0c\
-    \n\x05\x04\x01\x02\0\x01\x12\x03\x18\x19\x1d\n\x0c\n\x05\x04\x01\x02\0\
-    \x03\x12\x03\x18\x20!b\x06proto3\
+    \x04hash\x12\x18\n\x07content\x18\x03\x20\x01(\x0cR\x07content\"\x1d\n\
+    \x0bUploadReply\x12\x0e\n\x02id\x18\x01\x20\x01(\tR\x02id2@\n\x06Upload\
+    \x126\n\x06Upload\x12\x15.upload.UploadRequest\x1a\x13.upload.UploadRepl\
+    y\"\0J\xf2\x03\n\x06\x12\x04\0\0\x13\x01\n\x08\n\x01\x0c\x12\x03\0\0\x12\
+    \n\x08\n\x01\x02\x12\x03\x02\0\x0f\n\n\n\x02\x06\0\x12\x04\x04\0\x06\x01\
+    \n\n\n\x03\x06\0\x01\x12\x03\x04\x08\x0e\n\x0b\n\x04\x06\0\x02\0\x12\x03\
+    \x05\x08;\n\x0c\n\x05\x06\0\x02\0\x01\x12\x03\x05\x0c\x12\n\x0c\n\x05\
+    \x06\0\x02\0\x02\x12\x03\x05\x14!\n\x0c\n\x05\x06\0\x02\0\x03\x12\x03\
+    \x05,7\n\n\n\x02\x04\0\x12\x04\x08\0\x0f\x01\n\n\n\x03\x04\0\x01\x12\x03\
+    \x08\x08\x15\n+\n\x04\x04\0\x02\0\x12\x03\n\x08\x1c\x1a\x1e\x20Binary\
+    \x20executable\x20file\x20path.\n\n\r\n\x05\x04\0\x02\0\x04\x12\x04\n\
+    \x08\x08\x17\n\x0c\n\x05\x04\0\x02\0\x05\x12\x03\n\x08\x0e\n\x0c\n\x05\
+    \x04\0\x02\0\x01\x12\x03\n\x0f\x17\n\x0c\n\x05\x04\0\x02\0\x03\x12\x03\n\
+    \x1a\x1b\n\x19\n\x04\x04\0\x02\x01\x12\x03\x0c\x08\x18\x1a\x0c\x20File\
+    \x20hash.\n\n\r\n\x05\x04\0\x02\x01\x04\x12\x04\x0c\x08\n\x1c\n\x0c\n\
+    \x05\x04\0\x02\x01\x05\x12\x03\x0c\x08\x0e\n\x0c\n\x05\x04\0\x02\x01\x01\
+    \x12\x03\x0c\x0f\x13\n\x0c\n\x05\x04\0\x02\x01\x03\x12\x03\x0c\x16\x17\n\
+    \x1c\n\x04\x04\0\x02\x02\x12\x03\x0e\x08\x1a\x1a\x0f\x20File\x20content.\
+    \n\n\r\n\x05\x04\0\x02\x02\x04\x12\x04\x0e\x08\x0c\x18\n\x0c\n\x05\x04\0\
+    \x02\x02\x05\x12\x03\x0e\x08\r\n\x0c\n\x05\x04\0\x02\x02\x01\x12\x03\x0e\
+    \x0e\x15\n\x0c\n\x05\x04\0\x02\x02\x03\x12\x03\x0e\x18\x19\n\n\n\x02\x04\
+    \x01\x12\x04\x11\0\x13\x01\n\n\n\x03\x04\x01\x01\x12\x03\x11\x08\x13\n\
+    \x0b\n\x04\x04\x01\x02\0\x12\x03\x12\x08\x16\n\r\n\x05\x04\x01\x02\0\x04\
+    \x12\x04\x12\x08\x11\x15\n\x0c\n\x05\x04\x01\x02\0\x05\x12\x03\x12\x08\
+    \x0e\n\x0c\n\x05\x04\x01\x02\0\x01\x12\x03\x12\x0f\x11\n\x0c\n\x05\x04\
+    \x01\x02\0\x03\x12\x03\x12\x14\x15b\x06proto3\
 ";
 
 static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
