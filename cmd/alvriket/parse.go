@@ -43,8 +43,7 @@ func (cmd *parseCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{
 		return subcommands.ExitUsageError
 	}
 	binPath := f.Arg(0)
-
-	// Connect to gRPC server.
+	// Parse binary file and pretty-print to standard output.
 	if err := parse(binPath); err != nil {
 		warn.Printf("parse failed; %+v", err)
 		return subcommands.ExitFailure
