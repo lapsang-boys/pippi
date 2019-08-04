@@ -13,8 +13,6 @@ all: ${DIR} ${PB_GO} ${PB_PY} ${PB_RS}
 #
 #    $ pacman -S protoc
 
-#bin/bin_pb2.py bin/bin_pb2_grpc.py
-
 # Go protobuf compiler:
 #
 #    $ go get -u github.com/golang/protobuf/protoc-gen-go

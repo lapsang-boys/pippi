@@ -6,7 +6,8 @@ import (
 	"fmt"
 
 	"github.com/decomp/exp/bin"
-	_ "github.com/decomp/exp/bin/pe" // Register support for PE files.
+	_ "github.com/decomp/exp/bin/elf" // register ELF decoder
+	_ "github.com/decomp/exp/bin/pe"  // register PE decoder
 	"github.com/google/subcommands"
 	"github.com/kr/pretty"
 	"github.com/pkg/errors"
@@ -116,7 +117,7 @@ func shingledDisasm(mode int, sectData []byte, sectAddr uint64) (valid []bool, e
 			if err != nil {
 				return nil, errors.WithStack(err)
 			}
-			fmt.Printf("%08X %v\n", instAddr, inst)
+			fmt.Printf("%08X\t%v\n", instAddr, inst)
 			if hasFallthrough(inst) {
 				nextOff := off + uint64(inst.Len)
 				if nextOff < 0 || nextOff >= uint64(len(sectData)) {

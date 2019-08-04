@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package disasm;
+
+import "bin.proto";
+
+service Disassembler {
+	rpc Disassemble (DisassembleRequest) returns (DisassembleReply) {}
+}
+
+message DisassembleRequest {
+	// Binary executable ID (lowercase sha256 hash).
+	string bin_id = 1;
+}
+
+message DisassembleReply {
+	// Executable sections.
+	repeated DisassembleSection exec_sections = 1;
+}
+
+message DisassembleSection {
+	// Underlying section (or segment) of the exectuable.
+	bin.Section section = 1;
+	// Valid byte offsets for assembly instructions.
+	repeated uint64 valid_offsets = 2;
+}

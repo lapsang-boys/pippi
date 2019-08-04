@@ -58,17 +58,16 @@ func (cmd *clientCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 	return subcommands.ExitSuccess
 }
 
-// connect connects to the given gRPC address for incoming requests to parse
-// binary files.
+// connect connects to the given gRPC address to send a parse binary file
+// request.
 func connect(addr, binID string) error {
 	dbg.Printf("connecting to %q", addr)
-	// Launch gRPC server.
+	// Connect to gRPC server.
 	conn, err := grpc.Dial(addr, grpc.WithInsecure())
 	if err != nil {
 		return errors.WithStack(err)
 	}
 	defer conn.Close()
-
 	// Send binary parsing request.
 	client := binpb.NewBinaryParserClient(conn)
 	ctx := context.Background()
