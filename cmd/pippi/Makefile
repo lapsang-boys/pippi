@@ -4,8 +4,10 @@ pippi:
 	cd frontend && npm install
 	wails build
 
+.SHELL:
 run:
-	wails serve
+	wails serve &
+	sleep 5; cd frontend && npx ng serve --poll=2000
 
 .PHONY: all pippi clean
 

@@ -5,17 +5,17 @@
 
 [![CircleCI](https://circleci.com/gh/lapsang-boys/pippi/tree/master.svg?style=svg)](https://circleci.com/gh/lapsang-boys/pippi/tree/master)
 
+## Build
+
+```bash
+make
+```
+
 ## Run
 
 ```bash
 go get -u github.com/ddollar/forego
 forego start
-```
-
-## Build
-
-```bash
-make
 ```
 
 ## Ports
