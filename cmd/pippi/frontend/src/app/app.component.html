@@ -4,8 +4,20 @@
     Welcome to {{ title }}!
   </h1>
     <br />
-    <button (click)="onClickMe()">Hello</button>
-    <p *ngFor="let string of extractedStrings">{{string}}</p>
+    <button (click)="getBinary()">Binary</button>
+    <ng-container *ngIf="binary">
+      <pre style="text-align: left; color: #fff;">{{ binary }}</pre>
+    </ng-container>
+    <button (click)="getDisassembly()">Disassembly</button>
+    <ng-container *ngIf="disassembly">
+    {{ disassembly }}
+    </ng-container>
+    <button (click)="getFile()">File</button>
+    <ng-container *ngIf="file">
+    {{ file }}
+    </ng-container>
+    <button (click)="getStrings()">Strings</button>
+    <p *ngFor="let string of extractedStrings">{{string.location}} {{string.raw_string}}</p>
 </div>
 
 <router-outlet></router-outlet>
