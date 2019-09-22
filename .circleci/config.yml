@@ -22,13 +22,13 @@ jobs: # basic units of work in a run
           name: Update apt
           working_directory: /
           command: |
-            apt-get update -y
+            sudo apt-get update -y
 
       - run:
           name: Install wails dependencies
           working_directory: /
           command: |
-            apt-get install -yq \
+            sudo apt-get install -yq \
             build-essential \
             libgtk-3-dev \
             libwebkit2gtk-4.0-dev \
