@@ -1,5 +1,3 @@
-//go:generate protoc -I ../../proto --go_out=plugins=grpc:../../proto/bin ../../proto/upload.proto
-
 package main
 
 import (
