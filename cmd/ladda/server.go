@@ -82,7 +82,7 @@ func listen(addr string) error {
 		return errors.WithStack(err)
 	}
 
-	server := grpc.NewServer()
+	server := grpc.NewServer(grpc.MaxRecvMsgSize(1 * 1024 * 1024 * 1024))
 	// Register binary parser service.
 	uploadpb.RegisterUploadServer(server, &uploadServer{cacheDir: cacheDir})
 	if err := server.Serve(l); err != nil {
