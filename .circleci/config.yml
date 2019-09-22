@@ -1,9 +1,20 @@
 version: 2 # use CircleCI 2.0
 jobs: # basic units of work in a run
+  style:
+    docker:
+      - image: karlekdocker/pippi:0.0.1
+
+    parallelism: 2
+
+    steps:
+      - checkout
+      - run:
+          name: "Enforce Go Formatted Code"
+          command: "! go fmt ./... 2>&1 | read"
+
   build: # runs not using Workflows must have a `build` job as entry point
     docker: # run the steps with Docker
-      # CircleCI Go images available at: https://hub.docker.com/r/circleci/golang/
-      - image: circleci/golang:1.13
+      - image: karlekdocker/pippi:0.0.1
 
     parallelism: 2
 
@@ -17,30 +28,6 @@ jobs: # basic units of work in a run
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
             - go-mod-v4-{{ checksum "go.sum" }}
-
-      - run:
-          name: Update apt
-          working_directory: /
-          command: |
-            sudo apt-get update -y
-
-      - run:
-          name: Install wails dependencies
-          working_directory: /
-          command: |
-            sudo apt-get install -yq \
-            build-essential \
-            libgtk-3-dev \
-            libwebkit2gtk-4.0-dev \
-            npm \
-            cargo \
-            cmake \
-            --fix-missing
-
-      - run:
-          name: Install wails
-          command: |
-            go get github.com/wailsapp/wails/cmd/wails
 
       - run:
           name: Run make
@@ -62,4 +49,19 @@ workflows:
   version: 2
   build-workflow:
     jobs:
-      - build
+      - style:
+          filters:
+            branches:
+              only: master
+      - build:
+          requires:
+              - style
+          filters:
+            branches:
+              only: master
+      - test:
+          requires:
+              - build
+          filters:
+            branches:
+              only: master
