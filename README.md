@@ -1,5 +1,18 @@
 # Pippi
 
+## Run
+
+```bash
+go get -u github.com/ddollar/forego
+forego start
+```
+
+## Build
+
+```bash
+make
+```
+
 ## Ports
 
 * `upload`:  1100
