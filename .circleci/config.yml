@@ -55,13 +55,7 @@ workflows:
               only: master
       - build:
           requires:
-              - style
-          filters:
-            branches:
-              only: master
-      - test:
-          requires:
-              - build
+            - style
           filters:
             branches:
               only: master
