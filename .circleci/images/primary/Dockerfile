@@ -2,6 +2,9 @@ FROM golang:1.13-alpine
 
 RUN apk add --update --no-cache \
 	git \
+	make \
+	g++ \
+	perl \
 	openssh \
 	tar \
 	gzip \
