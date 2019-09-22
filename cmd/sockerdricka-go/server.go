@@ -20,9 +20,9 @@ import (
 
 const (
 	// Default bin gRPC address to listen on.
-	binGRPCAddr = ":1234"
+	binGRPCAddr = ":1200"
 	// Default disasm gRPC address to listen on.
-	disasmGRPCAddr = ":1236"
+	disasmGRPCAddr = ":1300"
 	// Extension of binary files.
 	ext = ".bin"
 )

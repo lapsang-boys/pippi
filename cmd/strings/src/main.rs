@@ -16,9 +16,9 @@ use futures::Future;
 use grpcio::{Environment, RpcContext, RpcStatus, RpcStatusCode, ServerBuilder, UnarySink};
 use protobuf::RepeatedField;
 
-#[path = "../../proto/strings/strings.rs"]
+#[path = "../../../proto/strings/strings.rs"]
 mod strings;
-#[path = "../../proto/strings/strings_grpc.rs"]
+#[path = "../../../proto/strings/strings_grpc.rs"]
 mod strings_grpc;
 
 use directories::BaseDirs;
@@ -83,19 +83,22 @@ fn main() {
     let service = strings_grpc::create_strings_extractor(StringsService);
     let mut server = ServerBuilder::new(env)
         .register_service(service)
-        .bind("127.0.0.1", 1234)
+        .bind("127.0.0.1", 1400)
         .build()
         .unwrap();
     server.start();
     for &(ref host, port) in server.bind_addrs() {
-        info!("listening on {}:{}", host, port);
+        println!("listening on {}:{}", host, port);
     }
     let (tx, rx) = oneshot::channel();
-    thread::spawn(move || {
-        info!("Press ENTER to exit...");
-        let _ = io::stdin().read(&mut [0]).unwrap();
-        tx.send(())
-    });
+    //thread::spawn(move || {
+    //    info!("Press ENTER to exit...");
+    //    let _ = io::stdin().read(&mut [0]).unwrap();
+    //    tx.send(())
+    //});
+    if (false) {
+        tx.send(());
+    }
     let _ = rx.wait();
     let _ = server.shutdown().wait();
 }

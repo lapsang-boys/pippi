@@ -106,6 +106,9 @@ func connect(binAddr, disasmAddr, binID string) error {
 		mode = 64
 	}
 	// Get cache directory.
+
+	// TODO: use receive.proto to get file from server. Right now, we assume that
+	// we are running on localhost to read the file contents of binID.
 	cacheDir, err := os.UserCacheDir()
 	if err != nil {
 		return errors.WithStack(err)

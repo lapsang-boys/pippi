@@ -16,9 +16,11 @@ all: ${DIR} ${PB_GO} ${PB_PY} ${PB_RS}
 # Go protobuf compiler:
 #
 #    $ go get -u github.com/golang/protobuf/protoc-gen-go
+#    $ go get -u golang.org/x/tools/cmd/goimports
 
 %.pb.go: %.proto
 	protoc -I . --go_out=plugins=grpc:$(basename $<) $<
+	goimports -w "$(basename $<)/$@"
 
 # Python protobuf compiler:
 #

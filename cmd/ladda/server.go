@@ -18,7 +18,7 @@ import (
 
 const (
 	// Default gRPC address to listen on.
-	grpcAddr  = ":1235"
+	grpcAddr  = ":1100"
 	extension = ".bin"
 )
 

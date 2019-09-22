@@ -22,7 +22,7 @@ import (
 
 const (
 	// Default gRPC address to listen on.
-	grpcAddr = ":1234"
+	grpcAddr = ":1200"
 	// Extension of binary files.
 	ext = ".bin"
 )

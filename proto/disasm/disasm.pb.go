@@ -8,8 +8,8 @@ import (
 	fmt "fmt"
 	math "math"
 
+	binpb "github.com/lapsang-boys/pippi/proto/bin"
 	proto "github.com/golang/protobuf/proto"
-	"github.com/lapsang-boys/pippi/proto/bin"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -108,7 +108,7 @@ func (m *DisassembleReply) GetExecSections() []*DisassembleSection {
 
 type DisassembleSection struct {
 	// Underlying section (or segment) of the exectuable.
-	Section *bin.Section `protobuf:"bytes,1,opt,name=section,proto3" json:"section,omitempty"`
+	Section *binpb.Section `protobuf:"bytes,1,opt,name=section,proto3" json:"section,omitempty"`
 	// Valid byte offsets for assembly instructions.
 	ValidOffsets         []uint64 `protobuf:"varint,2,rep,packed,name=valid_offsets,json=validOffsets,proto3" json:"valid_offsets,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -141,7 +141,7 @@ func (m *DisassembleSection) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_DisassembleSection proto.InternalMessageInfo
 
-func (m *DisassembleSection) GetSection() *bin.Section {
+func (m *DisassembleSection) GetSection() *binpb.Section {
 	if m != nil {
 		return m.Section
 	}
