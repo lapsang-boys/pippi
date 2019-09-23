@@ -22,6 +22,7 @@
     "@angular/router": "~8.0.1",
     "buffer": "^5.4.3",
     "hexdump-nodejs": "^0.1.0",
+    "ng2-file-upload": "^1.3.0",
     "ngx-build-plus": "^8.0.3",
     "rxjs": "~6.4.0",
     "tslib": "^1.9.0",

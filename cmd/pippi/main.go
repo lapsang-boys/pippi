@@ -67,6 +67,7 @@ func main() {
 	js := mewn.String("./frontend/dist/my-app/main-es2015.js")
 	css := mewn.String("./frontend/dist/my-app/styles.css")
 
+	go recvUploads()
 	app := wails.CreateApp(&wails.AppConfig{
 		Width:  1024,
 		Height: 768,

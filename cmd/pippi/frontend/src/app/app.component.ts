@@ -1,14 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Buffer } from "buffer";
+import { FileUploader } from 'ng2-file-upload/ng2-file-upload';
 import  hexdump from "hexdump-nodejs";
+
+const uploadURL = 'http://localhost:2000/upload'
 
 @Component({
   selector: '[id="app"]',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  title = 'my-app';
+export class AppComponent implements OnInit {
+  title = 'Pippi front-end';
+
+  public uploader: FileUploader = new FileUploader({url: uploadURL, itemAlias: 'file'});
+
+  ngOnInit() {
+    this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; }
+    this.uploader.onCompleteItem = (item: any, response: any, status: any, header: any) => {
+      console.log('FileUpload.uploaded:', item, status, response);
+    }
+  }
 
   public binary: any;
   getBinary() {

@@ -18,6 +18,8 @@
     </ng-container>
     <button (click)="getStrings()">Strings</button>
     <p *ngFor="let string of extractedStrings">{{string.location}} {{string.raw_string}}</p>
+    <input type="file" name="file" ng2FileSelect [uploader]="uploader">
+    <button type="button" class="btn btn-success btn-s" (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">Upload binary</button>
 </div>
 
 <router-outlet></router-outlet>
