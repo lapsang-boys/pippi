@@ -33,12 +33,13 @@ jobs: # basic units of work in a run
       - run:
           name: Calculate dependencies
           command: |
-            rustc --version >rust-version
+            cd ./cmd/strings
+            rustc --version > rust-version
             test -e Cargo.lock || cargo generate-lockfile
 
       - restore_cache:
           keys:
-            - rust-cache-{{checksum "rust-version"}}-{{checksum "./cmd/strings/Cargo.lock"}}
+            - rust-cache-{{checksum "./cmd/strings/rust-version"}}-{{checksum "./cmd/strings/Cargo.lock"}}
 
       - run:
           name: Run make
@@ -59,7 +60,7 @@ jobs: # basic units of work in a run
           paths:
             - /root/.cargo/registry
             - ./cmd/strings/target
-          key: rust-cache-{{checksum "rust-version"}}-{{checksum "./cmd/strings/Cargo.lock"}}
+          key: rust-cache-{{checksum "./cmd/strings/rust-version"}}-{{checksum "./cmd/strings/Cargo.lock"}}
 
       - store_artifacts: # upload test summary for display in Artifacts
           path: /tmp/test-results
