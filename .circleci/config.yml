@@ -78,7 +78,7 @@ jobs:
       - run:
           name: Run make
           command: |
-            make -C cmd/sockerdricka
+            make -C cmd/sockerdricka-go
 
       - save_cache:
           key: sockerdricka-go-mod-cache-{{ checksum "go.sum" }}
