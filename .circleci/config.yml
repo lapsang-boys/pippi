@@ -24,7 +24,21 @@ jobs: # basic units of work in a run
 
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
-            - go-mod-v4-{{ checksum "go.sum" }}
+            - go-mod-cache-{{ checksum "go.sum" }}
+
+      - restore_cache: # restores saved cache if no changes are detected since last run
+          keys:
+            - frontend-cache-{{ checksum "./cmd/pippi/frontend/package.json.md5" }}
+
+      - run:
+          name: Calculate dependencies
+          command: |
+            rustc --version >rust-version
+            test -e Cargo.lock || cargo generate-lockfile
+
+      - restore_cache:
+          keys:
+            - rust-cache-{{checksum "rust-version"}}-{{checksum "./cmd/strings/Cargo.lock"}}
 
       - run:
           name: Run make
@@ -32,9 +46,20 @@ jobs: # basic units of work in a run
             make # pull and build dependencies for the project
 
       - save_cache:
-          key: go-mod-v4-{{ checksum "go.sum" }}
+          key: go-mod-cache-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
+
+      - save_cache:
+          key: frontend-cache-{{ checksum "./cmd/pippi/frontend/package.json.md5" }}
+          paths:
+            - "./cmd/pippi/frontend/node_modules"
+
+      - save_cache:
+          paths:
+            - /root/.cargo/registry
+            - ./cmd/strings/target
+          key: rust-cache-{{checksum "rust-version"}}-{{checksum "./cmd/strings/Cargo.lock"}}
 
       - store_artifacts: # upload test summary for display in Artifacts
           path: /tmp/test-results
