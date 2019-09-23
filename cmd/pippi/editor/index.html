@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8'>
+		<title>Pippi front-end</title>
+		<script src="src/ace.js"></script>
+		<script src="src/theme-monokai.js"></script>
+		<script>
+			function init_editor() {
+				var editor = ace.edit("editor");
+				window.aceEditor = editor;
+				editor.setTheme("ace/theme/monokai");
+				editor.session.setMode("ace/mode/assembly_x86");
+				editor.commands.addCommand({
+					name: 'xref',
+					bindKey: {win: 'Alt-C',  mac: 'Alt-C'},
+					exec: function(editor) {
+						var selection = editor.getSelection();
+						var anchor = selection.getSelectionAnchor();
+						var token = editor.session.getTokenAt(anchor.row, anchor.column);
+						console.log(token);
+					},
+					readOnly: true
+				});
+			}
+		</script>
+		<script src="src/mode-assembly_x86.js"></script>
+		<style>
+			#editor {
+				position: absolute;
+				width: 700px;
+				height: 700px;
+			}
+		</style>
+	</head>
+	<body onload="init_editor();">
+		<div id="editor">
+0000000000401000 <_cgo_26061493d47f_C2func_getnameinfo>:
+	401000:	41 56                	push   %r14
+	401002:	41 55                	push   %r13
+	401004:	41 54                	push   %r12
+	401006:	55                   	push   %rbp
+	401007:	53                   	push   %rbx
+	401008:	48 89 fb             	mov    %rdi,%rbx
+	40100b:	e8 80 a7 05 00       	callq  45b790 <_cgo_topofstack>
+	401010:	49 89 c5             	mov    %rax,%r13
+	401013:	e8 d8 ea 45 00       	callq  85faf0 <__errno_location@plt>
+	401018:	48 83 ec 08          	sub    $0x8,%rsp
+	40101c:	48 8b 53 10          	mov    0x10(%rbx),%rdx
+	401020:	48 8b 3b             	mov    (%rbx),%rdi
+	401023:	c7 00 00 00 00 00    	movl   $0x0,(%rax)
+	401029:	48 89 c5             	mov    %rax,%rbp
+	40102c:	8b 43 2c             	mov    0x2c(%rbx),%eax
+	40102f:	8b 4b 18             	mov    0x18(%rbx),%ecx
+	401032:	8b 73 08             	mov    0x8(%rbx),%esi
+	401035:	44 8b 4b 28          	mov    0x28(%rbx),%r9d
+	401039:	4c 8b 43 20          	mov    0x20(%rbx),%r8
+	40103d:	50                   	push   %rax
+	40103e:	e8 bd ea 45 00       	callq  85fb00 <getnameinfo@plt>
+	401043:	44 8b 75 00          	mov    0x0(%rbp),%r14d
+	401047:	41 89 c4             	mov    %eax,%r12d
+	40104a:	e8 41 a7 05 00       	callq  45b790 <_cgo_topofstack>
+	40104f:	4c 29 e8             	sub    %r13,%rax
+	401052:	44 89 64 03 30       	mov    %r12d,0x30(%rbx,%rax,1)
+	401057:	58                   	pop    %rax
+	401058:	44 89 f0             	mov    %r14d,%eax
+	40105b:	5a                   	pop    %rdx
+	40105c:	5b                   	pop    %rbx
+	40105d:	5d                   	pop    %rbp
+	40105e:	41 5c                	pop    %r12
+	401060:	41 5d                	pop    %r13
+	401062:	41 5e                	pop    %r14
+	401064:	c3                   	retq
+	401065:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
+	40106c:	00 00 00 00
+
+0000000000401070 <_cgo_26061493d47f_Cfunc_getnameinfo>:
+	401070:	41 54                	push   %r12
+	401072:	55                   	push   %rbp
+	401073:	53                   	push   %rbx
+	401074:	48 89 fb             	mov    %rdi,%rbx
+	401077:	e8 14 a7 05 00       	callq  45b790 <_cgo_topofstack>
+	40107c:	48 83 ec 08          	sub    $0x8,%rsp
+	401080:	48 8b 53 10          	mov    0x10(%rbx),%rdx
+	401084:	8b 4b 18             	mov    0x18(%rbx),%ecx
+	401087:	49 89 c4             	mov    %rax,%r12
+	40108a:	8b 43 2c             	mov    0x2c(%rbx),%eax
+	40108d:	8b 73 08             	mov    0x8(%rbx),%esi
+	401090:	44 8b 4b 28          	mov    0x28(%rbx),%r9d
+	401094:	4c 8b 43 20          	mov    0x20(%rbx),%r8
+	401098:	50                   	push   %rax
+	401099:	48 8b 3b             	mov    (%rbx),%rdi
+	40109c:	e8 5f ea 45 00       	callq  85fb00 <getnameinfo@plt>
+	4010a1:	89 c5                	mov    %eax,%ebp
+	4010a3:	e8 e8 a6 05 00       	callq  45b790 <_cgo_topofstack>
+	4010a8:	4c 29 e0             	sub    %r12,%rax
+	4010ab:	89 6c 03 30          	mov    %ebp,0x30(%rbx,%rax,1)
+	4010af:	58                   	pop    %rax
+	4010b0:	5a                   	pop    %rdx
+	4010b1:	5b                   	pop    %rbx
+	4010b2:	5d                   	pop    %rbp
+	4010b3:	41 5c                	pop    %r12
+	4010b5:	c3                   	retq
+	4010b6:	cc                   	int3
+	4010b7:	cc                   	int3
+	4010b8:	cc                   	int3
+	4010b9:	cc                   	int3
+	4010ba:	cc                   	int3
+	4010bb:	cc                   	int3
+	4010bc:	cc                   	int3
+	4010bd:	cc                   	int3
+	4010be:	cc                   	int3
+	4010bf:	cc                   	int3
+		</div>
+	</body>
+</html>
