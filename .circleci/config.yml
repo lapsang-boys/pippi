@@ -45,7 +45,7 @@ jobs:
 
   build-ladda:
     docker:
-      - image: karlekdocker/pippi:0.0.3
+      - image: circleci/golang:1.13
 
     steps:
       - checkout # check out source code to working directory
@@ -66,7 +66,7 @@ jobs:
 
   build-sockerdricka:
     docker:
-      - image: karlekdocker/pippi:0.0.3
+      - image: circleci/golang:1.13
 
     steps:
       - checkout # check out source code to working directory
@@ -88,7 +88,7 @@ jobs:
 
   build-alvriket:
     docker:
-      - image: karlekdocker/pippi:0.0.3
+      - image: circleci/golang:1.13
 
     steps:
       - checkout # check out source code to working directory
@@ -109,7 +109,7 @@ jobs:
 
   build-strings:
     docker:
-      - image: karlekdocker/pippi:0.0.3
+      - image: circleci/rust:1.37
 
     steps:
       - checkout # check out source code to working directory
