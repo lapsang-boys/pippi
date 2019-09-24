@@ -1,8 +1,8 @@
 version: 2
 jobs:
-  style:
+  style-go:
     docker:
-      - image: karlekdocker/pippi:0.0.3
+      - image: circleci/golang:1.13
 
     steps:
       - checkout
@@ -140,7 +140,7 @@ workflows:
   version: 2
   build-workflow:
     jobs:
-      - style:
+      - style-go:
           filters:
             branches:
               only: master
