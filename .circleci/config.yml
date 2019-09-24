@@ -155,7 +155,7 @@ workflows:
             branches:
               only: master
 
-      - build-pippi:
+      - build-sockerdricka:
           filters:
             branches:
               only: master
@@ -165,7 +165,7 @@ workflows:
             branches:
               only: master
 
-      - build-sockerdricka:
+      - build-pippi:
           filters:
             branches:
               only: master
