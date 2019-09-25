@@ -55,6 +55,11 @@ jobs:
             - ladda-go-mod-cache-{{ checksum "go.sum" }}
 
       - run:
+          name: Generate protobuf code
+          command: |
+            make -C ./proto
+
+      - run:
           name: Run make
           command: |
             make -C cmd/ladda
@@ -74,6 +79,11 @@ jobs:
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
             - sockerdricka-go-mod-cache-{{ checksum "go.sum" }}
+
+      - run:
+          name: Generate protobuf code
+          command: |
+            make -C ./proto
 
       - run:
           name: Run make
@@ -98,6 +108,11 @@ jobs:
             - alvriket-go-mod-cache-{{ checksum "go.sum" }}
 
       - run:
+          name: Generate protobuf code
+          command: |
+            make -C ./proto
+
+      - run:
           name: Run make
           command: |
             make -C cmd/alvriket
@@ -120,6 +135,11 @@ jobs:
             cd ./cmd/strings
             rustc --version > rust-version
             test -e Cargo.lock || cargo generate-lockfile
+
+      - run:
+          name: Generate protobuf code
+          command: |
+            make -C ./proto
 
       - restore_cache:
           keys:
