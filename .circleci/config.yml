@@ -1,4 +1,12 @@
 version: 2
+
+references:
+  workspace_root: &workspace_root
+    /tmp/workspace
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *workspace_root
+
 jobs:
   style-go:
     docker:
@@ -9,6 +17,23 @@ jobs:
       - run:
           name: "Enforce Go Formatted Code"
           command: "! go fmt ./... 2>&1 | read"
+
+  generate-proto:
+    docker:
+      - image: karlekdocker/pippi:0.0.4
+
+    steps:
+      - *attach_workspace
+      - checkout # check out source code to working directory
+      - run:
+          name: Generate protobuf code
+          command: |
+            make -C ./proto
+
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - proto
 
   build-pippi:
     docker:
@@ -47,17 +72,14 @@ jobs:
     docker:
       - image: circleci/golang:1.13
 
+    working_directory: /tmp/workspace
     steps:
       - checkout # check out source code to working directory
+      - *attach_workspace
 
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
             - ladda-go-mod-cache-{{ checksum "go.sum" }}
-
-      - run:
-          name: Generate protobuf code
-          command: |
-            make -C ./proto
 
       - run:
           name: Run make
@@ -73,17 +95,14 @@ jobs:
     docker:
       - image: circleci/golang:1.13
 
+    working_directory: /tmp/workspace
     steps:
       - checkout # check out source code to working directory
+      - *attach_workspace
 
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
             - sockerdricka-go-mod-cache-{{ checksum "go.sum" }}
-
-      - run:
-          name: Generate protobuf code
-          command: |
-            make -C ./proto
 
       - run:
           name: Run make
@@ -100,17 +119,14 @@ jobs:
     docker:
       - image: circleci/golang:1.13
 
+    working_directory: /tmp/workspace
     steps:
       - checkout # check out source code to working directory
+      - *attach_workspace
 
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
             - alvriket-go-mod-cache-{{ checksum "go.sum" }}
-
-      - run:
-          name: Generate protobuf code
-          command: |
-            make -C ./proto
 
       - run:
           name: Run make
@@ -126,8 +142,10 @@ jobs:
     docker:
       - image: karlekdocker/pippi:0.0.4
 
+    working_directory: /tmp/workspace
     steps:
       - checkout # check out source code to working directory
+      - *attach_workspace
 
       - run:
           name: Calculate dependencies
@@ -135,11 +153,6 @@ jobs:
             cd ./cmd/strings
             rustc --version > rust-version
             test -e Cargo.lock || cargo generate-lockfile
-
-      - run:
-          name: Generate protobuf code
-          command: |
-            make -C ./proto
 
       - restore_cache:
           keys:
@@ -165,25 +178,38 @@ workflows:
             branches:
               only: master
 
+      - generate-proto:
+          filters:
+            branches:
+              only: master
+
       - build-ladda:
           filters:
             branches:
               only: master
+          requires:
+            - generate-proto
 
       - build-alvriket:
           filters:
             branches:
               only: master
+          requires:
+            - generate-proto
 
       - build-sockerdricka:
           filters:
             branches:
               only: master
+          requires:
+            - generate-proto
 
       - build-strings:
           filters:
             branches:
               only: master
+          requires:
+            - generate-proto
 
       - build-pippi:
           filters:
