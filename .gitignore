@@ -5,4 +5,3 @@ cmd/pippi/pippi
 proto/*/*.go
 proto/*/*.rs
 proto/*/*.py
-cmd/pippi/frontend/src/wailsbridge.js
