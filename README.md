@@ -17,10 +17,23 @@ $ make
 
 ## Run
 
+### Back-end
+
+Install `forego` dependency (or run the commands listed in the [Procfile](Procfile)):
 ```bash
-$ go get -u github.com/ddollar/forego
-$ make run_backend
-$ make run_frontend
+go get -u github.com/ddollar/forego
+```
+
+Terminal 1:
+```bash
+make run_backend
+```
+
+### Front-end
+
+Terminal 2:
+```bash
+make run_frontend
 ```
 
 ## Ports
