@@ -1,4 +1,4 @@
-//go:generate protoc -I ../../proto --go_out=plugins=grpc:../../proto/bin ../../proto/bin.proto
+//go:generate protoc -I ../../proto --go_out=plugins=grpc:../../proto/bin ../../proto/upload.proto
 
 package main
 
@@ -13,12 +13,12 @@ import (
 )
 
 var (
-	// dbg is a logger with the "alvriket:" prefix which logs debug messages to
+	// dbg is a logger with the "pi-upload:" prefix which logs debug messages to
 	// standard error.
-	dbg = log.New(os.Stderr, term.CyanBold("alvriket:")+" ", 0)
-	// warn is a logger with the "alvriket:" prefix which logs warning messages
-	// to standard error.
-	warn = log.New(os.Stderr, term.RedBold("alvriket:")+" ", 0)
+	dbg = log.New(os.Stderr, term.CyanBold("pi-upload:")+" ", 0)
+	// warn is a logger with the "pi-upload:" prefix which logs warning messages to
+	// standard error.
+	warn = log.New(os.Stderr, term.RedBold("pi-upload:")+" ", 0)
 )
 
 func main() {
@@ -28,7 +28,6 @@ func main() {
 	subcommands.Register(subcommands.CommandsCommand(), "")
 	subcommands.Register(&serverCmd{}, "")
 	subcommands.Register(&clientCmd{}, "")
-	subcommands.Register(&parseCmd{}, "")
 
 	// Parse command line arguments.
 	flag.Parse()
