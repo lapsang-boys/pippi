@@ -146,13 +146,13 @@ jobs:
       - run:
           name: Calculate dependencies
           command: |
-            cd ./cmd/strings
+            cd ./cmd/pi-strings
             rustc --version > rust-version
             test -e Cargo.lock || cargo generate-lockfile
 
       - restore_cache:
           keys:
-            - strings-rust-cache-{{checksum "./cmd/strings/rust-version"}}-{{checksum "./cmd/strings/Cargo.lock"}}
+            - strings-rust-cache-{{checksum "./cmd/pi-strings/rust-version"}}-{{checksum "./cmd/pi-strings/Cargo.lock"}}
 
       - run:
           name: Run make
@@ -163,7 +163,7 @@ jobs:
           paths:
             - /root/.cargo/registry
             - ./cmd/strings/target
-          key: strings-rust-cache-{{checksum "./cmd/strings/rust-version"}}-{{checksum "./cmd/strings/Cargo.lock"}}
+          key: strings-rust-cache-{{checksum "./cmd/pi-strings/rust-version"}}-{{checksum "./cmd/pi-strings/Cargo.lock"}}
 
 workflows:
   version: 2

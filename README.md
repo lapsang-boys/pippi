@@ -3,8 +3,6 @@
 
 # Pippi
 
----
-
 [![CircleCI](https://circleci.com/gh/lapsang-boys/pippi/tree/master.svg?style=svg)](https://circleci.com/gh/lapsang-boys/pippi/tree/master)
 
 ---
