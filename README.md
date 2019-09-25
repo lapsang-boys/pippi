@@ -12,7 +12,7 @@ An exploratory and modular reverse engineering platform.
 ## Build
 
 ```bash
-$ make
+make
 ```
 
 ## Run
