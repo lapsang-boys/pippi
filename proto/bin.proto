@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package bin;
+option go_package = "github.com/lapsang-boys/pippi/proto/bin";
 
 service BinaryParser {
 	rpc ParseBinary (ParseBinaryRequest) returns (File) {}
