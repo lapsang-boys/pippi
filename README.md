@@ -14,14 +14,15 @@ An exploratory and modular reverse engineering platform.
 ## Build
 
 ```bash
-make
+$ make
 ```
 
 ## Run
 
 ```bash
-go get -u github.com/ddollar/forego
-forego start
+$ go get -u github.com/ddollar/forego
+$ make run_backend
+$ make run_frontend
 ```
 
 ## Ports
