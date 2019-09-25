@@ -1,4 +1,7 @@
-all: pippigo pippirust pippipython
+all: protogen pippigo pippirust pippipython
+
+protogen:
+	make -C proto
 
 pippigo:
 	go install ./...
@@ -20,5 +23,6 @@ run_backend:
 clean:
 	make -C cmd/pippi clean
 	make -C cmd/strings clean
+	make -C proto clean
 
-.PHONY: all pippigo pippirust pippipython
+.PHONY: all protogen pippigo pippirust pippipython

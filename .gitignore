@@ -2,3 +2,6 @@
 __pycache__
 target
 cmd/pippi/pippi
+proto/*/*.go
+proto/*/*.rs
+proto/*/*.py

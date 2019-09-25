@@ -19,7 +19,7 @@ all: ${DIR} ${PB_GO} ${PB_PY} ${PB_RS}
 #    $ go get -u golang.org/x/tools/cmd/goimports
 
 %.pb.go: %.proto
-	protoc -I . --go_out=plugins=grpc:$(basename $<) $<
+	protoc -I . --go_out=plugins=grpc,paths=source_relative:$(basename $<) $<
 	goimports -w "$(basename $<)/$@"
 
 # Python protobuf compiler:
