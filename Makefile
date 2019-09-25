@@ -9,7 +9,7 @@ pippigo:
 	go mod tidy
 
 pippirust:
-	make -C cmd/strings
+	make -C cmd/pi-strings
 
 pippipython:
 	# nothing to do. TODO: type-check using Cython?
@@ -22,7 +22,7 @@ run_backend:
 
 clean:
 	make -C cmd/pippi clean
-	make -C cmd/strings clean
+	make -C cmd/pi-strings clean
 	make -C proto clean
 
 .PHONY: all protogen pippigo pippirust pippipython

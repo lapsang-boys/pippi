@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/google/subcommands"
-	"github.com/lapsang-boys/pippi/cmd/alvriket/binpbx"
+	"github.com/lapsang-boys/pippi/cmd/pi-bin/binpbx"
 	binpb "github.com/lapsang-boys/pippi/proto/bin"
 	disasmpb "github.com/lapsang-boys/pippi/proto/disasm"
 	"github.com/pkg/errors"

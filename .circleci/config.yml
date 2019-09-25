@@ -68,7 +68,7 @@ jobs:
           paths:
             - "./cmd/pippi/frontend/node_modules"
 
-  build-ladda:
+  build-pi-upload:
     docker:
       - image: circleci/golang:1.13
 
@@ -78,19 +78,19 @@ jobs:
 
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
-            - ladda-go-mod-cache-{{ checksum "go.sum" }}
+            - pi-upload-go-mod-cache-{{ checksum "go.sum" }}
 
       - run:
           name: Run make
           command: |
-            make -C cmd/ladda
+            make -C cmd/pi-upload
 
       - save_cache:
-          key: ladda-go-mod-cache-{{ checksum "go.sum" }}
+          key: pi-upload-go-mod-cache-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
 
-  build-sockerdricka:
+  build-pi-disasm:
     docker:
       - image: circleci/golang:1.13
 
@@ -100,20 +100,20 @@ jobs:
 
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
-            - sockerdricka-go-mod-cache-{{ checksum "go.sum" }}
+            - pi-disasm-mod-cache-{{ checksum "go.sum" }}
 
       - run:
           name: Run make
           command: |
-            make -C cmd/sockerdricka-go
+            make -C cmd/pi-disasm
 
       - save_cache:
-          key: sockerdricka-go-mod-cache-{{ checksum "go.sum" }}
+          key: pi-disasm-mod-cache-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
 
 
-  build-alvriket:
+  build-pi-bin:
     docker:
       - image: circleci/golang:1.13
 
@@ -123,15 +123,15 @@ jobs:
 
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
-            - alvriket-go-mod-cache-{{ checksum "go.sum" }}
+            - pi-bin-go-mod-cache-{{ checksum "go.sum" }}
 
       - run:
           name: Run make
           command: |
-            make -C cmd/alvriket
+            make -C cmd/pi-bin
 
       - save_cache:
-          key: alvriket-go-mod-cache-{{ checksum "go.sum" }}
+          key: pi-bin-go-mod-cache-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
 
@@ -179,21 +179,21 @@ workflows:
             branches:
               only: master
 
-      - build-ladda:
+      - build-pi-upload:
           filters:
             branches:
               only: master
           requires:
             - generate-proto
 
-      - build-alvriket:
+      - build-pi-bin:
           filters:
             branches:
               only: master
           requires:
             - generate-proto
 
-      - build-sockerdricka:
+      - build-pi-disasm:
           filters:
             branches:
               only: master

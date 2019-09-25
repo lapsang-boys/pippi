@@ -1,6 +1,6 @@
-all: strings
+all: pi-strings
 
-strings:
+pi-strings:
 	cargo build
 
 .PHONY: all clean
