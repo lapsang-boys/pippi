@@ -23,7 +23,7 @@ RUN go get -u github.com/golang/protobuf/protoc-gen-go
 RUN go get -u golang.org/x/tools/cmd/goimports
 RUN python3 -m pip install --user grpcio
 RUN python3 -m pip install --user grpcio-tools
-RUN cargo install protobuf-codegen
+RUN cargo install --vers 2.8.1 protobuf-codegen
 RUN cargo install grpcio-compiler
 RUN ln -s /usr/bin/python3 /usr/bin/python
 ENV PATH="${PATH}:/root/.cargo/bin"
