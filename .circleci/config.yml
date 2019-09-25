@@ -2,7 +2,7 @@ version: 2
 
 references:
   workspace_root: &workspace_root
-    /tmp/workspace
+    ./
   attach_workspace: &attach_workspace
     attach_workspace:
       at: *workspace_root
@@ -33,7 +33,7 @@ jobs:
       - persist_to_workspace:
           root: *workspace_root
           paths:
-            - proto
+            - ./proto
 
   build-pippi:
     docker:
@@ -72,7 +72,6 @@ jobs:
     docker:
       - image: circleci/golang:1.13
 
-    working_directory: /tmp/workspace
     steps:
       - checkout # check out source code to working directory
       - *attach_workspace
@@ -95,7 +94,6 @@ jobs:
     docker:
       - image: circleci/golang:1.13
 
-    working_directory: /tmp/workspace
     steps:
       - checkout # check out source code to working directory
       - *attach_workspace
@@ -119,7 +117,6 @@ jobs:
     docker:
       - image: circleci/golang:1.13
 
-    working_directory: /tmp/workspace
     steps:
       - checkout # check out source code to working directory
       - *attach_workspace
@@ -142,7 +139,6 @@ jobs:
     docker:
       - image: karlekdocker/pippi:0.0.4
 
-    working_directory: /tmp/workspace
     steps:
       - checkout # check out source code to working directory
       - *attach_workspace
