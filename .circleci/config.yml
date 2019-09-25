@@ -135,7 +135,7 @@ jobs:
           paths:
             - "/go/pkg/mod"
 
-  build-strings:
+  build-pi-strings:
     docker:
       - image: karlekdocker/pippi:0.0.5
 
@@ -152,18 +152,18 @@ jobs:
 
       - restore_cache:
           keys:
-            - strings-rust-cache-{{checksum "./cmd/pi-strings/rust-version"}}-{{checksum "./cmd/pi-strings/Cargo.lock"}}
+            - pi-strings-rust-cache-{{checksum "./cmd/pi-strings/rust-version"}}-{{checksum "./cmd/pi-strings/Cargo.lock"}}
 
       - run:
           name: Run make
           command: |
-            make -C cmd/strings
+            make -C cmd/pi-strings
 
       - save_cache:
           paths:
             - /root/.cargo/registry
-            - ./cmd/strings/target
-          key: strings-rust-cache-{{checksum "./cmd/pi-strings/rust-version"}}-{{checksum "./cmd/pi-strings/Cargo.lock"}}
+            - ./cmd/pi-strings/target
+          key: pi-strings-rust-cache-{{checksum "./cmd/pi-strings/rust-version"}}-{{checksum "./cmd/pi-strings/Cargo.lock"}}
 
 workflows:
   version: 2
@@ -200,7 +200,7 @@ workflows:
           requires:
             - generate-proto
 
-      - build-strings:
+      - build-pi-strings:
           filters:
             branches:
               only: master
