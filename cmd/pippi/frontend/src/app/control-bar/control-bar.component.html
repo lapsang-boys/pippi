@@ -1,0 +1,19 @@
+<div>
+  <button (click)="getFile()">File</button>
+  <button (click)="getBinary()">Binary</button>
+  <button (click)="getDisassembly()">Disassembly</button>
+  <button (click)="getStrings()">Strings</button>
+  <input type="file" name="file" ng2FileSelect [uploader]="uploader">
+  <button type="button" class="btn btn-success btn-s" (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">Upload binary</button>
+
+  <p *ngFor="let string of extractedStrings">{{string.location}} {{string.raw_string}}</p>
+  <ng-container *ngIf="file">
+  {{ file }}
+  </ng-container>
+  <ng-container *ngIf="disassembly">
+  {{ disassembly }}
+  </ng-container>
+  <ng-container *ngIf="binary">
+    <pre style="text-align: left; color: #fff;">{{ binary }}</pre>
+  </ng-container>
+</div>
