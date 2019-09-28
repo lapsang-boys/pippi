@@ -21,12 +21,17 @@
             "aot": false,
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              { "glob": "worker-html.js", "input": "./node_modules/ace-builds/src-min/", "output": "/" }
             ],
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/ace-builds/src-min/ace.js",
+              "node_modules/ace-builds/src-min/theme-github.js",
+              "node_modules/ace-builds/src-min/mode-assembly_x86.js"
+            ]
           },
           "configurations": {
             "production": {
