@@ -63,6 +63,25 @@ func strings(binId string) []*stringspb.StringInfo {
 	return extractedStrings
 }
 
+func listIds() []string {
+	cacheDir, err := os.UserCacheDir()
+	if err != nil {
+		log.Println(err)
+		return []string{}
+	}
+	cacheDir = filepath.Join(cacheDir, "pippi")
+	files, err := ioutil.ReadDir(cacheDir)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var ret = make([]string, 0, len(files))
+	for _, f := range files {
+		ret = append(ret, f.Name())
+	}
+	return ret
+}
+
 func main() {
 	js := mewn.String("./frontend/dist/my-app/main-es2015.js")
 	css := mewn.String("./frontend/dist/my-app/styles.css")
@@ -74,11 +93,12 @@ func main() {
 		Title:  "Pippi",
 		JS:     js,
 		CSS:    css,
-		Colour: "#131313",
+		Colour: "#ffffff",
 	})
 	app.Bind(binary)
 	app.Bind(disassembly)
 	app.Bind(sections)
 	app.Bind(strings)
+	app.Bind(listIds)
 	app.Run()
 }
