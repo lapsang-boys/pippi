@@ -1,0 +1,8 @@
+<div class="loading" *ngIf="isLoading | async; else done">
+  Loading!
+</div>
+<ng-template #done>
+  <div class="done">
+    Done!
+  </div>
+</ng-template>
