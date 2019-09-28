@@ -1,0 +1,11 @@
+Click on an id to show it's hexdump
+<ul>
+  <li *ngFor="let id of ids" (click)="setId(id)">
+    <b *ngIf="id == currentId; else normal">
+      {{ short(id) }}
+    </b>
+    <ng-template #normal>
+      {{ short(id) }}
+    </ng-template>
+  </li>
+</ul>
