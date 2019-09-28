@@ -6,19 +6,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  background-color: #282c34;
 }
 
-p {
-  color: white
-}
-
-h1 {
-  color: white
-}
-
-button {
-  background-color: white;
-  color: black;
+.as-split-area, .as-horizontal.as-init {
+  height: 98vh !important;
 }
