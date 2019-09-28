@@ -1,25 +1,17 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-    <br />
-    <button (click)="getBinary()">Binary</button>
-    <ng-container *ngIf="binary">
-      <pre style="text-align: left; color: #fff;">{{ binary }}</pre>
-    </ng-container>
-    <button (click)="getDisassembly()">Disassembly</button>
-    <ng-container *ngIf="disassembly">
-    {{ disassembly }}
-    </ng-container>
-    <button (click)="getFile()">File</button>
-    <ng-container *ngIf="file">
-    {{ file }}
-    </ng-container>
-    <button (click)="getStrings()">Strings</button>
-    <p *ngFor="let string of extractedStrings">{{string.location}} {{string.raw_string}}</p>
-    <input type="file" name="file" ng2FileSelect [uploader]="uploader">
-    <button type="button" class="btn btn-success btn-s" (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">Upload binary</button>
-</div>
+<div id="outer-container">
+  <router-outlet></router-outlet>
 
-<router-outlet></router-outlet>
+  <app-control-bar></app-control-bar>
+  <as-split direction="horizontal" gutterSize=5>
+    <as-split-area size="30" minSize="30">
+      <app-hexdump [data]="binaryData"></app-hexdump>
+    </as-split-area>
+    <as-split-area size="30" minSize="30">
+      <app-disassembly [data]="disassemblyData"></app-disassembly>
+    </as-split-area>
+    <as-split-area size="40">
+      <app-loader></app-loader>
+      <app-select-id></app-select-id>
+    </as-split-area>
+  </as-split>
+</div>
