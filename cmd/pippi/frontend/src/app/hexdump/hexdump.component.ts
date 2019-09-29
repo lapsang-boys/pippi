@@ -1,5 +1,8 @@
 import { Component, OnInit, ViewChild, Input, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
+
 import hexdump from "hexdump-nodejs";
+
+import { SelectionService } from '../selection.service';
 
 @Component({
   selector: 'app-hexdump',
@@ -12,6 +15,10 @@ export class HexdumpComponent implements OnChanges {
   @Input() data: string;
   private _data: string = "";
 
+  constructor(
+    private selectionService: SelectionService,
+  ) {}
+
   ngOnChanges(changes: SimpleChanges) {
     const data: SimpleChange = changes.data;
     if (!data.currentValue) {
@@ -23,6 +30,21 @@ export class HexdumpComponent implements OnChanges {
 
   ngAfterViewInit() {
     this.editor.setTheme("github");
+
+    this.selectionService.selection.subscribe(newSel => {
+      if (newSel.start == 0 && newSel.end == 0) {
+        return;
+      }
+      console.log(this);
+      console.log(newSel);
+
+      let row = Math.floor(newSel.start/16)+1;
+      // let pos = this.editor.getEditor().getSession().doc.indexToPosition(newSel.start, 0);
+      // console.log(pos);
+      console.log(row)
+      this.editor.getEditor().moveCursorToPosition({column: 0, row: row});
+      this.editor.getEditor().scrollToLine(row, true, false, null);
+    })
 
     this.editor.getEditor().commands.addCommand({
         name: "xref",
