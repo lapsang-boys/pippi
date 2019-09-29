@@ -9,12 +9,17 @@ import (
 	"github.com/leaanthony/mewn"
 	"github.com/wailsapp/wails"
 
+	"github.com/lapsang-boys/pippi/pkg/pi"
 	binpb "github.com/lapsang-boys/pippi/proto/bin"
 	disasmpb "github.com/lapsang-boys/pippi/proto/disasm"
 	stringspb "github.com/lapsang-boys/pippi/proto/strings"
 )
 
 func binary(binId string) []byte {
+	if err := pi.CheckBinID(binId); err != nil {
+		log.Printf("invalid binary ID %q: %v", binId, err)
+		return nil
+	}
 	const (
 		ext = ".bin"
 	)
@@ -37,6 +42,10 @@ func binary(binId string) []byte {
 }
 
 func sections(binId string) *binpb.File {
+	if err := pi.CheckBinID(binId); err != nil {
+		log.Printf("invalid binary ID %q: %v", binId, err)
+		return nil
+	}
 	file, err := Sections("localhost:1200", binId)
 	if err != nil {
 		log.Println(err)
@@ -46,6 +55,10 @@ func sections(binId string) *binpb.File {
 }
 
 func disassembly(binId string) *disasmpb.DisassembleReply {
+	if err := pi.CheckBinID(binId); err != nil {
+		log.Printf("invalid binary ID %q: %v", binId, err)
+		return nil
+	}
 	reply, err := Disassembly("localhost:1300", binId)
 	if err != nil {
 		log.Println(err)
@@ -55,6 +68,10 @@ func disassembly(binId string) *disasmpb.DisassembleReply {
 }
 
 func strings(binId string) []*stringspb.StringInfo {
+	if err := pi.CheckBinID(binId); err != nil {
+		log.Printf("invalid binary ID %q: %v", binId, err)
+		return nil
+	}
 	extractedStrings, err := Strings("localhost:1400", binId)
 	if err != nil {
 		log.Println(err)
