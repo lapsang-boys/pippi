@@ -4,13 +4,25 @@
   <app-control-bar></app-control-bar>
   <as-split direction="horizontal" gutterSize=5>
     <as-split-area size="30" minSize="30">
-      <app-hexdump [data]="binaryData"></app-hexdump>
+      <app-tabs>
+      <app-tab [title]="'Strings'">
+        <app-strings [data]="stringsData"></app-strings>
+      </app-tab>
+      </app-tabs>
     </as-split-area>
     <as-split-area size="30" minSize="30">
-      <app-disassembly [data]="disassemblyData"></app-disassembly>
+      <app-tabs>
+      <app-tab [title]="'Hexdump'">
+        <app-hexdump [data]="binaryData"></app-hexdump>
+      </app-tab>
+      <app-tab [title]="'Disassembly'">
+        <app-disassembly [data]="disassemblyData" pos="disassemblyPos"></app-disassembly>
+      </app-tab>
+      </app-tabs>
     </as-split-area>
     <as-split-area size="40">
       <app-loader></app-loader>
+      <app-upload></app-upload>
       <app-select-id></app-select-id>
     </as-split-area>
   </as-split>
