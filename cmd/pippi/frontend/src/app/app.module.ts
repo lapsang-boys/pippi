@@ -12,20 +12,28 @@ import { AngularSplitModule } from "angular-split";
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HexdumpComponent } from './hexdump/hexdump.component';
+import { TabsComponent } from './tabs/tabs.component';
+import { TabComponent } from './tabs/tab.component';
 import { ControlBarComponent } from './control-bar/control-bar.component';
 import { DisassemblyComponent } from './disassembly/disassembly.component';
 import { SelectIdComponent } from './select-id/select-id.component';
 import { LoaderComponent } from './loader/loader.component';
 import { LoaderService } from './loader.service';
+import { UploadComponent } from './upload/upload.component';
+import { StringsComponent } from './strings/strings.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    TabsComponent,
+    TabComponent,
     HexdumpComponent,
     ControlBarComponent,
     DisassemblyComponent,
     SelectIdComponent,
     LoaderComponent,
+    UploadComponent,
+    StringsComponent,
   ],
   imports: [
     AngularSplitModule.forRoot(),

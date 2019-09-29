@@ -6,7 +6,6 @@ import { Buffer } from "buffer";
 })
 export class BinaryService {
   get(id: string): Promise<Buffer> {
-    console.log(id)
     // @ts-ignore
     return window.backend.binary(id).then(result => {
       let buffer = new Buffer(result, 'base64');

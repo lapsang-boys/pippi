@@ -1,0 +1,4 @@
+<div class="outer">
+  <input type="file" name="file" ng2FileSelect [uploader]="uploader">
+  <button type="button" class="btn btn-success btn-s" (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">Upload binary</button>
+</div>

@@ -13,8 +13,7 @@ export class SelectIdComponent {
   constructor(
     private idService: IdService,
   ) {
-    //@ts-ignore
-    window.backend.listIds().then(ids => {
+    this.idService.ids.subscribe(ids => {
       this.ids = ids;
     })
     this.idService.id.subscribe(newId => {

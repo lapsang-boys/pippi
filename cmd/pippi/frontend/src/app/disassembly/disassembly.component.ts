@@ -16,7 +16,7 @@ export class DisassemblyComponent {
     if (!data.currentValue) {
       return;
     }
-    this._data = JSON.stringify(data.currentValue);
+    this._data = JSON.stringify(data.currentValue, null, 2);
     this.editor.getEditor().getSession().setUseWrapMode(true);
   }
 
