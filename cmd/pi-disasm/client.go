@@ -11,6 +11,7 @@ import (
 	"github.com/google/subcommands"
 	"github.com/kr/pretty"
 	"github.com/lapsang-boys/pippi/cmd/pi-bin/binpbx"
+	"github.com/lapsang-boys/pippi/pkg/pi"
 	binpb "github.com/lapsang-boys/pippi/proto/bin"
 	disasmpb "github.com/lapsang-boys/pippi/proto/disasm"
 	"github.com/pkg/errors"
@@ -71,7 +72,7 @@ func (cmd *clientCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 // connect connects to the given gRPC address to send a disassemble binary file
 // reuquest.
 func connect(binAddr, disasmAddr, binID string) error {
-	if err := validateID(binID); err != nil {
+	if err := pi.CheckBinID(binID); err != nil {
 		return errors.WithStack(err)
 	}
 	dbg.Printf("connecting to %q", disasmAddr)

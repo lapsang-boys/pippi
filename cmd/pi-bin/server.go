@@ -2,19 +2,18 @@ package main
 
 import (
 	"context"
-	"crypto/sha256"
 	"flag"
 	"fmt"
 	"net"
 	"os"
 	"path/filepath"
 	"sort"
-	"strings"
 
 	"github.com/decomp/exp/bin"
 	_ "github.com/decomp/exp/bin/elf" // register ELF decoder
 	_ "github.com/decomp/exp/bin/pe"  // register PE decoder
 	"github.com/google/subcommands"
+	"github.com/lapsang-boys/pippi/pkg/pi"
 	binpb "github.com/lapsang-boys/pippi/proto/bin"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
@@ -97,7 +96,7 @@ type binParserServer struct {
 
 // ParseBinary parses the given binary file.
 func (s *binParserServer) ParseBinary(ctx context.Context, req *binpb.ParseBinaryRequest) (*binpb.File, error) {
-	if err := validateID(req.BinId); err != nil {
+	if err := pi.CheckBinID(req.BinId); err != nil {
 		return nil, errors.WithStack(err)
 	}
 	dbg.Printf("parsing ID %q", req.BinId)
@@ -173,22 +172,4 @@ func archpb(arch bin.Arch) binpb.Arch {
 	default:
 		panic(fmt.Errorf("support for arch %v not yet implemented", arch))
 	}
-}
-
-// validateID validates the given binary ID.
-func validateID(id string) error {
-	if sha256.Size*2 != len(id) {
-		return errors.Errorf("invalid length of binary ID; expected %d, got %d", sha256.Size*2, len(id))
-	}
-	s := strings.ToLower(id)
-	if s != id {
-		return errors.Errorf("invalid binary ID; expected lowercase, got %q", id)
-	}
-	const hex = "0123456789abcdef"
-	for _, r := range id {
-		if !strings.ContainsRune(hex, r) {
-			return errors.Errorf("invalid rune in binary ID; expected hexadecimal digit, got %q", r)
-		}
-	}
-	return nil
 }

@@ -2,16 +2,15 @@ package main
 
 import (
 	"context"
-	"crypto/sha256"
 	"flag"
 	"io/ioutil"
 	"net"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/google/subcommands"
 	"github.com/lapsang-boys/pippi/cmd/pi-bin/binpbx"
+	"github.com/lapsang-boys/pippi/pkg/pi"
 	binpb "github.com/lapsang-boys/pippi/proto/bin"
 	disasmpb "github.com/lapsang-boys/pippi/proto/disasm"
 	"github.com/pkg/errors"
@@ -102,7 +101,7 @@ type disasmServer struct {
 
 // Disassemble disassembles the given binary file.
 func (s *disasmServer) Disassemble(ctx context.Context, req *disasmpb.DisassembleRequest) (*disasmpb.DisassembleReply, error) {
-	if err := validateID(req.BinId); err != nil {
+	if err := pi.CheckBinID(req.BinId); err != nil {
 		return nil, errors.WithStack(err)
 	}
 	dbg.Printf("disassembling ID %q", req.BinId)
@@ -162,22 +161,4 @@ func permContains(perms []binpb.Perm, perm binpb.Perm) bool {
 		}
 	}
 	return false
-}
-
-// validateID validates the given binary ID.
-func validateID(id string) error {
-	if sha256.Size*2 != len(id) {
-		return errors.Errorf("invalid length of binary ID; expected %d, got %d", sha256.Size*2, len(id))
-	}
-	s := strings.ToLower(id)
-	if s != id {
-		return errors.Errorf("invalid binary ID; expected lowercase, got %q", id)
-	}
-	const hex = "0123456789abcdef"
-	for _, r := range id {
-		if !strings.ContainsRune(hex, r) {
-			return errors.Errorf("invalid rune in binary ID; expected hexadecimal digit, got %q", r)
-		}
-	}
-	return nil
 }
