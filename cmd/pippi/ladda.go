@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/lapsang-boys/pippi/pkg/pi"
 	"github.com/pkg/errors"
@@ -71,6 +72,15 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		}
 		rawHash := sha256.Sum256(buf.Bytes())
 		binID := hex.EncodeToString(rawHash[:])
+		binDir, err := pi.BinDir(binID)
+		if err != nil {
+			log.Printf("%+v", errors.WithStack(err))
+			return
+		}
+		if err := os.MkdirAll(binDir, 0755); err != nil {
+			log.Printf("%+v", errors.WithStack(err))
+			return
+		}
 		binPath, err := pi.BinPath(binID)
 		if err != nil {
 			log.Printf("%+v", errors.WithStack(err))
