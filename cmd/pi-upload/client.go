@@ -2,13 +2,12 @@ package main
 
 import (
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"flag"
 	"fmt"
 	"io/ioutil"
 
 	"github.com/google/subcommands"
+	"github.com/lapsang-boys/pippi/pkg/pi"
 	uploadpb "github.com/lapsang-boys/pippi/proto/upload"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
@@ -65,15 +64,11 @@ func newRequest(binPath string) (*uploadpb.UploadRequest, error) {
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-	rawHash := sha256.Sum256(buf)
-	hash := hex.EncodeToString(rawHash[:])
-
 	req := &uploadpb.UploadRequest{
 		Filename: binPath,
-		Hash:     hash,
+		Hash:     pi.BinID(buf),
 		Content:  buf,
 	}
-
 	return req, nil
 }
 
