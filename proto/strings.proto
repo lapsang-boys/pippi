@@ -3,19 +3,39 @@ syntax = "proto3";
 package strings;
 
 service StringsExtractor {
-   rpc ExtractStrings (StringsRequest) returns (StringsReply) {}
+	rpc ExtractStrings (StringsRequest) returns (StringsReply) {}
 }
 
 message StringsRequest {
-   // ID of file.
-   string id = 1;
+	// Binary ID.
+	string bin_id = 1;
 }
 
 message StringInfo {
+	// File offset to start of string.
 	uint64 location = 1;
+	// String in UTF-8 encoding.
 	string raw_string = 2;
+	// Size of string in bytes.
+	uint64 size = 3;
+	// Encoding of string.
+	Encoding encoding = 4;
 }
 
 message StringsReply {
-   repeated StringInfo strings = 1;
+	repeated StringInfo strings = 1;
+}
+
+// String encodings.
+enum Encoding {
+	// ASCII encoding.
+	ASCII = 0;
+	// UTF-8 encoding.
+	UTF8 = 1;
+	// UTF-16 encoding.
+	UTF16 = 2;
+	// UTF-32 encoding
+	UTF32 = 3;
+	// Big-5 encoding.
+	Big5 = 4;
 }
