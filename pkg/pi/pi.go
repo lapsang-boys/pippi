@@ -31,8 +31,8 @@ func CheckBinID(binID string) error {
 
 // BinID returns the binary ID corresponding to the given binary contents. The
 // binary ID is the computed SHA256 hashsum of the binary contents in lowercase.
-func BinID(data []byte) string {
-	rawHash := sha256.Sum256(data)
+func BinID(content []byte) string {
+	rawHash := sha256.Sum256(content)
 	binID := hex.EncodeToString(rawHash[:])
 	// Sanity check.
 	if err := CheckBinID(binID); err != nil {
