@@ -64,7 +64,7 @@ func BinDir(binID string) (string, error) {
 	return binDir, nil
 }
 
-// Binary executable extension.
+// Binary extension.
 const binExt = ".bin"
 
 // BinPath returns the file path to the binary of the given binary ID.
