@@ -9,9 +9,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
-	"path/filepath"
 
+	"github.com/lapsang-boys/pippi/pkg/pi"
 	"github.com/pkg/errors"
 )
 
@@ -32,7 +31,6 @@ func recvUploads() {
 
 const (
 	uploadAddr = ":2000"
-	ext        = ".bin"
 )
 
 // upload handles upload requests.
@@ -71,22 +69,15 @@ func upload(w http.ResponseWriter, r *http.Request) {
 			log.Printf("%+v", errors.WithStack(err))
 			return
 		}
-		cacheDir, err := os.UserCacheDir()
+		rawHash := sha256.Sum256(buf.Bytes())
+		binID := hex.EncodeToString(rawHash[:])
+		binPath, err := pi.BinPath(binID)
 		if err != nil {
 			log.Printf("%+v", errors.WithStack(err))
 			return
 		}
-		cacheDir = filepath.Join(cacheDir, "pippi")
-		rawHash := sha256.Sum256(buf.Bytes())
-		hash := hex.EncodeToString(rawHash[:])
-		dirName := filepath.Join(cacheDir, hash)
-		if err := os.Mkdir(dirName, 0755); err != nil {
-			log.Printf("%+v", errors.WithStack(err))
-			return
-		}
-		dstPath := filepath.Join(dirName, hash+ext)
-		log.Printf("creating %q", dstPath)
-		if err := ioutil.WriteFile(dstPath, buf.Bytes(), 0644); err != nil {
+		log.Printf("creating %q", binPath)
+		if err := ioutil.WriteFile(binPath, buf.Bytes(), 0644); err != nil {
 			log.Printf("%+v", errors.WithStack(err))
 			return
 		}

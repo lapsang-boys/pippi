@@ -3,8 +3,6 @@ package main
 import (
 	"io/ioutil"
 	"log"
-	"os"
-	"path/filepath"
 
 	"github.com/leaanthony/mewn"
 	"github.com/wailsapp/wails"
@@ -20,19 +18,12 @@ func binary(binId string) []byte {
 		log.Printf("invalid binary ID %q: %v", binId, err)
 		return nil
 	}
-	const (
-		ext = ".bin"
-	)
-
-	cacheDir, err := os.UserCacheDir()
+	binPath, err := pi.BinPath(binId)
 	if err != nil {
-		log.Println(err)
+		log.Println()
 		return []byte{}
 	}
-	cacheDir = filepath.Join(cacheDir, "pippi")
 	// Read file contents.
-	binName := binId + ext
-	binPath := filepath.Join(cacheDir, binId, binName)
 	binData, err := ioutil.ReadFile(binPath)
 	if err != nil {
 		log.Println(err)
@@ -81,13 +72,11 @@ func strings(binId string) []*stringspb.StringInfo {
 }
 
 func listIds() []string {
-	cacheDir, err := os.UserCacheDir()
+	pippiCacheDir, err := pi.CacheDir()
 	if err != nil {
-		log.Println(err)
-		return []string{}
+		log.Fatal(err)
 	}
-	cacheDir = filepath.Join(cacheDir, "pippi")
-	files, err := ioutil.ReadDir(cacheDir)
+	files, err := ioutil.ReadDir(pippiCacheDir)
 	if err != nil {
 		log.Fatal(err)
 	}

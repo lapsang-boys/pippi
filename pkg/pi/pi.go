@@ -27,16 +27,25 @@ func CheckBinID(binID string) error {
 	return nil
 }
 
-// BinDir returns the project directory of the given binary ID.
-func BinDir(binID string) (string, error) {
-	if err := CheckBinID(binID); err != nil {
-		return "", errors.WithStack(err)
-	}
+// CacheDir returns the pippi cache directory.
+func CacheDir() (string, error) {
 	cacheDir, err := os.UserCacheDir()
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
 	pippiCacheDir := filepath.Join(cacheDir, "pippi")
+	return pippiCacheDir, nil
+}
+
+// BinDir returns the project directory of the given binary ID.
+func BinDir(binID string) (string, error) {
+	if err := CheckBinID(binID); err != nil {
+		return "", errors.WithStack(err)
+	}
+	pippiCacheDir, err := CacheDir()
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
 	binDir := filepath.Join(pippiCacheDir, binID)
 	return binDir, nil
 }
