@@ -20,7 +20,7 @@ func binary(binId string) []byte {
 	}
 	binPath, err := pi.BinPath(binId)
 	if err != nil {
-		log.Println()
+		log.Println(err)
 		return []byte{}
 	}
 	// Read file contents.
