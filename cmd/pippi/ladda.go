@@ -2,8 +2,6 @@ package main
 
 import (
 	"bytes"
-	"crypto/sha256"
-	"encoding/hex"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -70,8 +68,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 			log.Printf("%+v", errors.WithStack(err))
 			return
 		}
-		rawHash := sha256.Sum256(buf.Bytes())
-		binID := hex.EncodeToString(rawHash[:])
+		binID := pi.BinID(buf.Bytes())
 		binDir, err := pi.BinDir(binID)
 		if err != nil {
 			log.Printf("%+v", errors.WithStack(err))
