@@ -3,6 +3,8 @@ package pi
 
 import (
 	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -25,6 +27,18 @@ func CheckBinID(binID string) error {
 		}
 	}
 	return nil
+}
+
+// BinID returns the binary ID corresponding to the given binary contents. The
+// binary ID is the computed SHA256 hashsum of the binary contents in lowercase.
+func BinID(data []byte) string {
+	rawHash := sha256.Sum256(data)
+	binID := hex.EncodeToString(rawHash[:])
+	// Sanity check.
+	if err := CheckBinID(binID); err != nil {
+		panic(fmt.Errorf("discripancy between computed binary ID %q and validity check; %+v", binID, err))
+	}
+	return binID
 }
 
 // CacheDir returns the pippi cache directory.
