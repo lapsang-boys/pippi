@@ -3,4 +3,5 @@ bin:            pi-bin server
 // TODO: uncomment when #43 is resolved.
 //strings:        sh -c 'cd ./cmd/pi-strings/target/debug && exec ./pi-strings'
 disasm:         pi-disasm server
+//strings:        pi-strings-go server
 disasm-objdump: pi-disasm-objdump server
