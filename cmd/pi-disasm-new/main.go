@@ -7,10 +7,10 @@ import (
 	"os"
 
 	"github.com/decomp/exp/bin"
-	_ "github.com/decomp/exp/bin/elf"
-	_ "github.com/decomp/exp/bin/pe"
+	_ "github.com/decomp/exp/bin/elf" // register ELF decoder
+	_ "github.com/decomp/exp/bin/pe"  // register PE decoder
 	"github.com/lapsang-boys/pippi/cmd/pi-disasm-new/disasm"
-	_ "github.com/lapsang-boys/pippi/cmd/pi-disasm-new/disasm/x86"
+	_ "github.com/lapsang-boys/pippi/cmd/pi-disasm-new/disasm/x86" // register 32- and 64-bit x86 disassemblers
 	"github.com/mewkiz/pkg/jsonutil"
 	"github.com/mewkiz/pkg/pathutil"
 	"github.com/mewkiz/pkg/term"
