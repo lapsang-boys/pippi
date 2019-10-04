@@ -55,14 +55,21 @@ func main() {
 	genNullTerm("null_terminated_zh.bin", refZH) // Null-terminated UTF-8
 }
 
+// genASCII generates an ASCII encoded string based on the given reference
+// string. The file contents is stored to the given path.
 func genASCII(path, s string) {
 	mustWriteFile(path, []byte(s))
 }
 
+// genUTF8 generates a UTF-8 encoded string based on the given reference string.
+// The file contents is stored to the given path.
 func genUTF8(path, s string) {
 	mustWriteFile(path, []byte(s))
 }
 
+// genUTF16 generates a UTF-16 encoded string with the specified byte ordering
+// based on the given reference string. The file contents is stored to the given
+// path.
 func genUTF16(path, s string, order binary.ByteOrder) {
 	bs := utf16.Encode([]rune(s))
 	buf := &bytes.Buffer{}
@@ -72,10 +79,14 @@ func genUTF16(path, s string, order binary.ByteOrder) {
 	mustWriteFile(path, buf.Bytes())
 }
 
+// genNullTerm generates a NULL-terminated string based on the given reference
+// string. The file contents is stored to the given path.
 func genNullTerm(path, s string) {
 	mustWriteFile(path, []byte(s+"\x00"))
 }
 
+// mustWriteFile writes data to the file of the given path. It panics on
+// failure.
 func mustWriteFile(path string, data []byte) {
 	log.Printf("creating %q", path)
 	if err := ioutil.WriteFile(path, data, 0644); err != nil {
