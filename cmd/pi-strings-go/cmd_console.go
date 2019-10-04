@@ -45,7 +45,7 @@ func (cmd *consoleCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interfac
 	// Extract strings of binary file and pretty-print to standard output.
 	buf, err := ioutil.ReadFile(binPath)
 	if err != nil {
-		warn.Printf("unable to read contents of binary file %q; %+v", err)
+		warn.Printf("unable to read contents of binary file %q; %+v", binPath, err)
 		return subcommands.ExitFailure
 	}
 	// TODO: figure out a good way to make minimum length configurable.
