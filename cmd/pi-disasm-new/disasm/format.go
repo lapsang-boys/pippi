@@ -13,7 +13,7 @@ import (
 // of a Disassembler. Name is the name of the format, like "x86_32" or
 // "MIPS_32". Arch is is the machine architecture that identifies the format's
 // Instruction Set Architecture (ISA).
-func RegisterFormat(name string, arch bin.Arch, decodeInst func(buf []byte) (Instruction, error)) {
+func RegisterFormat(name string, arch bin.Arch, decodeInst func(addr bin.Address, buf []byte) (Instruction, error)) {
 	formats = append(formats, format{name: name, arch: arch, decodeInst: decodeInst})
 }
 
@@ -28,12 +28,12 @@ type format struct {
 	// Machine architecture that identifies the format's encoding.
 	arch bin.Arch
 	// decodeInst decodes the first instruction in buf.
-	decodeInst func(buf []byte) (Instruction, error)
+	decodeInst func(addr bin.Address, buf []byte) (Instruction, error)
 }
 
 // DecodeInst decodes the first instruction in buf.
-func (format *format) DecodeInst(buf []byte) (Instruction, error) {
-	return format.decodeInst(buf)
+func (format *format) DecodeInst(addr bin.Address, buf []byte) (Instruction, error) {
+	return format.decodeInst(addr, buf)
 }
 
 // NewDisassembler returns a new disassembler for the given machine

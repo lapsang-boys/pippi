@@ -16,21 +16,33 @@ func init() {
 }
 
 // decodeInst32 decodes the first instruction in buf.
-func decodeInst32(buf []byte) (disasm.Instruction, error) {
+func decodeInst32(addr bin.Address, buf []byte) (disasm.Instruction, error) {
 	const mode = 32 // x86 (32-bit)
 	inst, err := x86asm.Decode(buf, mode)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-	return inst, nil
+	return &Instruction{Inst: inst, addr: addr}, nil
 }
 
 // decodeInst64 decodes the first instruction in buf.
-func decodeInst64(buf []byte) (disasm.Instruction, error) {
+func decodeInst64(addr bin.Address, buf []byte) (disasm.Instruction, error) {
 	const mode = 64 // x86 (64-bit)
 	inst, err := x86asm.Decode(buf, mode)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-	return inst, nil
+	return &Instruction{Inst: inst, addr: addr}, nil
+}
+
+// Instruction is an x86 assembly instruction.
+type Instruction struct {
+	x86asm.Inst
+	// Address of the instruction.
+	addr bin.Address
+}
+
+// Addr returns the address of the instruction.
+func (inst *Instruction) Addr() bin.Address {
+	return inst.addr
 }

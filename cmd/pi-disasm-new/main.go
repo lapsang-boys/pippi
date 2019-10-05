@@ -55,7 +55,7 @@ func main() {
 		log.Fatalf("%+v", err)
 	}
 	for _, inst := range insts {
-		fmt.Println(inst)
+		fmt.Printf("0x%08X    %v\n", uint64(inst.Addr()), inst)
 	}
 }
 
@@ -94,7 +94,7 @@ func disasmBinary(db *Database, binPath string) ([]disasm.Instruction, error) {
 	var insts []disasm.Instruction
 	for _, instAddr := range db.InstAddrs {
 		data := file.Code(instAddr)
-		inst, err := dis.DecodeInst(data)
+		inst, err := dis.DecodeInst(instAddr, data)
 		if err != nil {
 			//fmt.Fprintln(os.Stderr, hex.Dump(data))
 			warn.Printf("unable to decode instruction at address %v", instAddr)
