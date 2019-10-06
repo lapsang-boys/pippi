@@ -51,7 +51,7 @@ func CacheDir() (string, error) {
 	return pippiCacheDir, nil
 }
 
-// BinDir returns the project directory of the given binary ID.
+// BinDir returns the binary directory of the given binary ID.
 func BinDir(binID string) (string, error) {
 	if err := CheckBinID(binID); err != nil {
 		return "", errors.WithStack(err)
