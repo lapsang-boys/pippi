@@ -5,8 +5,6 @@ import (
 	"flag"
 	"io/ioutil"
 	"net"
-	"os"
-	"path/filepath"
 
 	"github.com/google/subcommands"
 	"github.com/lapsang-boys/pippi/cmd/pi-bin/binpbx"
@@ -22,8 +20,6 @@ const (
 	binGRPCAddr = ":1200"
 	// Default disasm gRPC address to listen on.
 	disasmGRPCAddr = ":1300"
-	// Extension of binary files.
-	ext = ".bin"
 )
 
 // serverCmd is the command to launch a gRPC server processing disassemble
@@ -72,11 +68,6 @@ func (cmd *serverCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 // binary files.
 func listen(binAddr, disasmAddr string) error {
 	dbg.Printf("listening on %q", disasmAddr)
-	cacheDir, err := os.UserCacheDir()
-	if err != nil {
-		return errors.WithStack(err)
-	}
-	cacheDir = filepath.Join(cacheDir, "pippi")
 	// Launch gRPC server.
 	l, err := net.Listen("tcp", disasmAddr)
 	if err != nil {
@@ -84,7 +75,7 @@ func listen(binAddr, disasmAddr string) error {
 	}
 	server := grpc.NewServer()
 	// Register disassembler service.
-	disasmpb.RegisterDisassemblerServer(server, &disasmServer{cacheDir: cacheDir, binAddr: binAddr})
+	disasmpb.RegisterDisassemblerServer(server, &disasmServer{binAddr: binAddr})
 	if err := server.Serve(l); err != nil {
 		return errors.WithStack(err)
 	}
@@ -93,8 +84,6 @@ func listen(binAddr, disasmAddr string) error {
 
 // disasmServer implements disasmpb.DisassembleServer.
 type disasmServer struct {
-	// Cache directory of pippi.
-	cacheDir string
 	// bin gRPC address.
 	binAddr string
 }
@@ -106,8 +95,10 @@ func (s *disasmServer) Disassemble(ctx context.Context, req *disasmpb.Disassembl
 	}
 	dbg.Printf("disassembling ID %q", req.BinId)
 	// Read file contents.
-	binName := req.BinId + ext
-	binPath := filepath.Join(s.cacheDir, req.BinId, binName)
+	binPath, err := pi.BinPath(req.BinId)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
 	binData, err := ioutil.ReadFile(binPath)
 	if err != nil {
 		return nil, errors.WithStack(err)

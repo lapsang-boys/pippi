@@ -2,15 +2,13 @@ package main
 
 import (
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"flag"
 	"io/ioutil"
 	"net"
 	"os"
-	"path/filepath"
 
 	"github.com/google/subcommands"
+	"github.com/lapsang-boys/pippi/pkg/pi"
 	uploadpb "github.com/lapsang-boys/pippi/proto/upload"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
@@ -18,8 +16,7 @@ import (
 
 const (
 	// Default gRPC address to listen on.
-	grpcAddr  = ":1100"
-	extension = ".bin"
+	grpcAddr = ":1100"
 )
 
 // serverCmd is the command to launch a gRPC server processing parse binary
@@ -61,6 +58,9 @@ func (cmd *serverCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 	return subcommands.ExitSuccess
 }
 
+// Maximum file size in bytes.
+const maxFileSize = 1 * 1024 * 1024 * 1024 // 1 GB
+
 // listen listens on the given gRPC address for incoming requests to parse binary
 // files.
 func listen(addr string) error {
@@ -70,54 +70,45 @@ func listen(addr string) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-
-	cacheDir, err := os.UserCacheDir()
-	if err != nil {
-		return errors.WithStack(err)
-	}
-	cacheDir = filepath.Join(cacheDir, "pippi")
-
-	err = os.MkdirAll(cacheDir, 0755)
-	if err != nil {
-		return errors.WithStack(err)
-	}
-
-	server := grpc.NewServer(grpc.MaxRecvMsgSize(1 * 1024 * 1024 * 1024))
+	server := grpc.NewServer(grpc.MaxRecvMsgSize(maxFileSize))
 	// Register binary parser service.
-	uploadpb.RegisterUploadServer(server, &uploadServer{cacheDir: cacheDir})
+	uploadpb.RegisterUploadServer(server, &uploadServer{})
 	if err := server.Serve(l); err != nil {
 		return errors.WithStack(err)
 	}
 	return nil
 }
 
-type uploadServer struct {
-	cacheDir string
-}
+// uploadServer handles binary file upload requests.
+type uploadServer struct{}
 
+// Upload handles binary file upload requests.
 func (us uploadServer) Upload(ctx context.Context, req *uploadpb.UploadRequest) (*uploadpb.UploadReply, error) {
 	dbg.Printf("receiving %q", req.Filename)
-
-	rawHash := sha256.Sum256(req.Content)
-	hash := hex.EncodeToString(rawHash[:])
-	if hash != req.Hash {
-		return nil, errors.Errorf("Hash mismatch. Expected %s, got %s", req.Hash, hash)
+	// Compute binary ID based on binary file contents.
+	binID := pi.BinID(req.Content)
+	if binID != req.Hash {
+		return nil, errors.Errorf("hash mismatch; expected %q, got %q", req.Hash, binID)
 	}
-	dirName := filepath.Join(us.cacheDir, req.Hash)
-	err := os.Mkdir(dirName, 0755)
+	// Create project directory for the binary ID.
+	binDir, err := pi.BinDir(binID)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-	destPath := filepath.Join(dirName, hash+extension)
-
-	err = ioutil.WriteFile(destPath, req.Content, 0644)
+	if err := os.MkdirAll(binDir, 0755); err != nil {
+		return nil, errors.WithStack(err)
+	}
+	// Store binary file to disk.
+	binPath, err := pi.BinPath(binID)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-
+	if err := ioutil.WriteFile(binPath, req.Content, 0644); err != nil {
+		return nil, errors.WithStack(err)
+	}
 	// Send reply.
 	reply := &uploadpb.UploadReply{
-		Id: hash,
+		Id: binID,
 	}
 	return reply, nil
 }

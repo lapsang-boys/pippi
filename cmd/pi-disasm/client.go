@@ -5,8 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"os"
-	"path/filepath"
 
 	"github.com/google/subcommands"
 	"github.com/kr/pretty"
@@ -106,18 +104,13 @@ func connect(binAddr, disasmAddr, binID string) error {
 	case binpb.Arch_X86_64:
 		mode = 64
 	}
-	// Get cache directory.
-
 	// TODO: use receive.proto to get file from server. Right now, we assume that
 	// we are running on localhost to read the file contents of binID.
-	cacheDir, err := os.UserCacheDir()
+	// Read file contents.
+	binPath, err := pi.BinPath(binID)
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	cacheDir = filepath.Join(cacheDir, "pippi")
-	// Read file contents.
-	binName := binID + ext
-	binPath := filepath.Join(cacheDir, binID, binName)
 	binData, err := ioutil.ReadFile(binPath)
 	if err != nil {
 		return errors.WithStack(err)

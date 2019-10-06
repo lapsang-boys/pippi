@@ -5,8 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"net"
-	"os"
-	"path/filepath"
 	"sort"
 
 	"github.com/decomp/exp/bin"
@@ -22,8 +20,6 @@ import (
 const (
 	// Default gRPC address to listen on.
 	grpcAddr = ":1200"
-	// Extension of binary files.
-	ext = ".bin"
 )
 
 // serverCmd is the command to launch a gRPC server processing parse binary
@@ -69,11 +65,6 @@ func (cmd *serverCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 // files.
 func listen(addr string) error {
 	dbg.Printf("listening on %q", addr)
-	cacheDir, err := os.UserCacheDir()
-	if err != nil {
-		return errors.WithStack(err)
-	}
-	cacheDir = filepath.Join(cacheDir, "pippi")
 	// Launch gRPC server.
 	l, err := net.Listen("tcp", addr)
 	if err != nil {
@@ -81,7 +72,7 @@ func listen(addr string) error {
 	}
 	server := grpc.NewServer()
 	// Register binary parser service.
-	binpb.RegisterBinaryParserServer(server, &binParserServer{cacheDir: cacheDir})
+	binpb.RegisterBinaryParserServer(server, &binParserServer{})
 	if err := server.Serve(l); err != nil {
 		return errors.WithStack(err)
 	}
@@ -89,10 +80,7 @@ func listen(addr string) error {
 }
 
 // binParserServer implements binpb.BinaryParserServer.
-type binParserServer struct {
-	// Cache directory of pippi.
-	cacheDir string
-}
+type binParserServer struct{}
 
 // ParseBinary parses the given binary file.
 func (s *binParserServer) ParseBinary(ctx context.Context, req *binpb.ParseBinaryRequest) (*binpb.File, error) {
@@ -101,8 +89,10 @@ func (s *binParserServer) ParseBinary(ctx context.Context, req *binpb.ParseBinar
 	}
 	dbg.Printf("parsing ID %q", req.BinId)
 	// Parse binary file.
-	binName := req.BinId + ext
-	binPath := filepath.Join(s.cacheDir, req.BinId, binName)
+	binPath, err := pi.BinPath(req.BinId)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
 	file, err := bin.ParseFile(binPath)
 	if err != nil {
 		return nil, errors.WithStack(err)
