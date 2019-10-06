@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package disasm_objdump;
+
+service InstAddrExtractor {
+	rpc ExtractInstAddrs(InstAddrsRequest) returns (InstAddrsReply) {}
+}
+
+message InstAddrsRequest {
+	// Binary ID.
+	string bin_id = 1;
+}
+
+message InstAddrsReply {
+	// Addresses of instruction.
+	repeated uint64 inst_addrs = 1;
+}

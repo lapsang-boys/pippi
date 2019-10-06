@@ -1,53 +1,14 @@
-//+build ignore
-
-// The extract_inst_addrs tool extracts instruction address of binaries using
-// the objdump tool (*.bin -> *.json).
 package main
 
 import (
 	"bufio"
 	"bytes"
-	"flag"
-	"fmt"
-	"log"
-	"os"
 	"os/exec"
 	"strings"
 
 	"github.com/decomp/exp/bin"
-	"github.com/mewkiz/pkg/jsonutil"
 	"github.com/pkg/errors"
 )
-
-func usage() {
-	const use = `
-Usage:
-
-extract_inst_addrs [OPTION]... BIN_FILE
-
-Extract instruction addresses of binaries (*.bin -> *.json).`
-	fmt.Fprintln(os.Stderr, use[1:])
-	flag.PrintDefaults()
-}
-
-func main() {
-	// Parse command line arguments.
-	flag.Usage = usage
-	flag.Parse()
-	if flag.NArg() != 1 {
-		flag.Usage()
-		os.Exit(1)
-	}
-	binPath := flag.Arg(0)
-	// Extract instruction addresses.
-	instAddrs, err := extractInstAddrs(binPath)
-	if err != nil {
-		log.Fatalf("%+v", err)
-	}
-	if err := jsonutil.Write(os.Stdout, instAddrs); err != nil {
-		log.Fatalf("%+v", err)
-	}
-}
 
 // extractInstAddrs extracts the instruction addresses of the given binary using
 // the objdump tool.
