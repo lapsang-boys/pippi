@@ -1,3 +1,5 @@
+//+build ignore
+
 //go:generate protoc -I ../../proto --go_out=plugins=grpc:../../proto/disasm ../../proto/disasm.proto
 
 package main
