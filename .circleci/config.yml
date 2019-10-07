@@ -112,6 +112,27 @@ jobs:
           paths:
             - "/go/pkg/mod"
 
+  build-pi-disasm-objdump:
+    docker:
+      - image: circleci/golang:1.13
+
+    steps:
+      - checkout # check out source code to working directory
+      - *attach_workspace
+
+      - restore_cache: # restores saved cache if no changes are detected since last run
+          keys:
+            - pi-disasm-objdump-mod-cache-{{ checksum "go.sum" }}
+
+      - run:
+          name: Run make
+          command: |
+            make -C cmd/pi-disasm-objdump
+
+      - save_cache:
+          key: pi-disasm-objdump-mod-cache-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
 
   build-pi-bin:
     docker:
@@ -194,6 +215,13 @@ workflows:
             - generate-proto
 
       - build-pi-disasm-new:
+          filters:
+            branches:
+              only: master
+          requires:
+            - generate-proto
+
+      - build-pi-disasm-objdump:
           filters:
             branches:
               only: master
