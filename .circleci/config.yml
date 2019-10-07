@@ -90,7 +90,7 @@ jobs:
           paths:
             - "/go/pkg/mod"
 
-  build-pi-disasm:
+  build-pi-disasm-new:
     docker:
       - image: circleci/golang:1.13
 
@@ -100,15 +100,15 @@ jobs:
 
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
-            - pi-disasm-mod-cache-{{ checksum "go.sum" }}
+            - pi-disasm-new-mod-cache-{{ checksum "go.sum" }}
 
       - run:
           name: Run make
           command: |
-            make -C cmd/pi-disasm
+            make -C cmd/pi-disasm-new
 
       - save_cache:
-          key: pi-disasm-mod-cache-{{ checksum "go.sum" }}
+          key: pi-disasm-new-mod-cache-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
 
@@ -193,7 +193,7 @@ workflows:
           requires:
             - generate-proto
 
-      - build-pi-disasm:
+      - build-pi-disasm-new:
           filters:
             branches:
               only: master
