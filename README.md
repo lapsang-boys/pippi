@@ -17,7 +17,7 @@ make
 
 ## Run
 
-### Back-end
+### Backend
 
 Install `forego` dependency (or run the commands listed in the [Procfile](Procfile)):
 ```bash
@@ -29,7 +29,7 @@ Terminal 1:
 make run_backend
 ```
 
-### Front-end
+### Frontend
 
 Terminal 2:
 ```bash
