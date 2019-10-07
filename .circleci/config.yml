@@ -213,49 +213,49 @@ workflows:
       - style-go:
           filters:
             branches:
-              only: master
+              ignore: gh-pages
 
       - generate-proto:
           filters:
             branches:
-              only: master
+              ignore: gh-pages
 
       - build-pi-upload:
           filters:
             branches:
-              only: master
+              ignore: gh-pages
           requires:
             - generate-proto
 
       - build-pi-bin:
           filters:
             branches:
-              only: master
+              ignore: gh-pages
           requires:
             - generate-proto
 
       - build-pi-disasm-new:
           filters:
             branches:
-              only: master
+              ignore: gh-pages
           requires:
             - generate-proto
 
       - build-pi-disasm-objdump:
           filters:
             branches:
-              only: master
+              ignore: gh-pages
           requires:
             - generate-proto
 
       - build-pi-strings:
           filters:
             branches:
-              only: master
+              ignore: gh-pages
           requires:
             - generate-proto
 
       - build-pippi:
           filters:
             branches:
-              only: master
+              ignore: gh-pages
