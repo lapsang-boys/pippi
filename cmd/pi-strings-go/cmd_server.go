@@ -3,19 +3,21 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"net"
 
 	"github.com/google/subcommands"
 	"github.com/lapsang-boys/pippi/pkg/pi"
+	"github.com/lapsang-boys/pippi/pkg/services"
 	stringspb "github.com/lapsang-boys/pippi/proto/strings"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 )
 
-const (
+var (
 	// Default gRPC address to listen on.
-	defaultAddr = ":1400"
+	defaultStringsAddr = fmt.Sprintf("localhost:%d", services.StringsPort)
 	// Default minimum string length in characters.
 	defaultMinLength = 4
 )
@@ -24,7 +26,7 @@ const (
 // requests.
 type serverCmd struct {
 	// gRPC address to listen on.
-	Addr string
+	stringsAddr string
 }
 
 func (*serverCmd) Name() string {
@@ -48,11 +50,11 @@ Flags:
 }
 
 func (cmd *serverCmd) SetFlags(f *flag.FlagSet) {
-	f.StringVar(&cmd.Addr, "addr", defaultAddr, "gRPC address to listen on")
+	f.StringVar(&cmd.stringsAddr, "addr", defaultStringsAddr, "gRPC address to listen on")
 }
 
 func (cmd *serverCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
-	if err := listen(cmd.Addr); err != nil {
+	if err := listen(cmd.stringsAddr); err != nil {
 		warn.Printf("listen failed; %+v", err)
 		return subcommands.ExitFailure
 	}
@@ -61,10 +63,10 @@ func (cmd *serverCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 
 // listen listens on the given gRPC address for incoming requests to extract
 // strings.
-func listen(addr string) error {
-	dbg.Printf("listening on %q", addr)
+func listen(stringsAddr string) error {
+	dbg.Printf("listening on %q", stringsAddr)
 	// Launch gRPC server.
-	l, err := net.Listen("tcp", addr)
+	l, err := net.Listen("tcp", stringsAddr)
 	if err != nil {
 		return errors.WithStack(err)
 	}

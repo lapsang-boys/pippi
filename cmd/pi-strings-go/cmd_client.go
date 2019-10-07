@@ -15,7 +15,7 @@ import (
 // requests.
 type clientCmd struct {
 	// gRPC address to connect to.
-	Addr string
+	stringsAddr string
 }
 
 func (*clientCmd) Name() string {
@@ -39,7 +39,7 @@ Flags:
 }
 
 func (cmd *clientCmd) SetFlags(f *flag.FlagSet) {
-	f.StringVar(&cmd.Addr, "addr", defaultAddr, "gRPC address to connect to")
+	f.StringVar(&cmd.stringsAddr, "addr", defaultStringsAddr, "gRPC address to connect to")
 }
 
 func (cmd *clientCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
@@ -51,7 +51,7 @@ func (cmd *clientCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 	binID := f.Arg(0)
 
 	// Connect to gRPC server.
-	if err := connect(cmd.Addr, binID); err != nil {
+	if err := connect(cmd.stringsAddr, binID); err != nil {
 		warn.Printf("connect failed; %+v", err)
 		return subcommands.ExitFailure
 	}
@@ -60,10 +60,10 @@ func (cmd *clientCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 
 // connect connects to the given gRPC address to send an extract strings
 // request.
-func connect(addr, binID string) error {
-	dbg.Printf("connecting to %q", addr)
+func connect(stringsAddr, binID string) error {
+	dbg.Printf("connecting to %q", stringsAddr)
 	// Connect to gRPC server.
-	conn, err := grpc.Dial(addr, grpc.WithInsecure())
+	conn, err := grpc.Dial(stringsAddr, grpc.WithInsecure())
 	if err != nil {
 		return errors.WithStack(err)
 	}
