@@ -56,7 +56,6 @@ func extractUTF8Strings(buf []byte, minLength int, c chan []*stringspb.StringInf
 // invalid UTF-8 encoding is encountered at the start of the given buffer, n is
 // set to 1 and the boolean return value is false.
 func findUTF8String(buf []byte, minLength int) (s string, n uint64, ok bool) {
-	n = 0
 	nchars := 0
 	for i := 0; i < len(buf); {
 		r, size := utf8.DecodeRune(buf[i:])
@@ -123,9 +122,7 @@ func extractUTF16Strings(buf []byte, minLength int, encoding stringspb.Encoding,
 // UTF-8 encoding is encountered at the start of the given buffer, n is set to 1
 // and the boolean return value is false.
 func findUTF16String(buf []byte, minLength int, order binary.ByteOrder) (s string, n uint64, ok bool) {
-	n = 0
 	nchars := 0
-	s = ""
 	for i := 0; i < len(buf); {
 		r, size := utf16DecodeRuneWithOrder(buf[i:], order)
 		if r == unicode.ReplacementChar {
