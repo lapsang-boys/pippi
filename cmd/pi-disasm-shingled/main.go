@@ -15,12 +15,12 @@ import (
 )
 
 var (
-	// dbg is a logger with the "pi-disasm:" prefix which logs debug messages to
-	// standard error.
-	dbg = log.New(os.Stderr, term.CyanBold("pi-disasm:")+" ", 0)
-	// warn is a logger with the "pi-disasm:" prefix which logs warning messages to
-	// standard error.
-	warn = log.New(os.Stderr, term.RedBold("pi-disasm:")+" ", 0)
+	// dbg is a logger with the "pi-disasm-shingled:" prefix which logs debug
+	// messages to standard error.
+	dbg = log.New(os.Stderr, term.CyanBold("pi-disasm-shingled:")+" ", 0)
+	// warn is a logger with the "pi-disasm-shingled:" prefix which logs warning
+	// messages to standard error.
+	warn = log.New(os.Stderr, term.RedBold("pi-disasm-shingled:")+" ", 0)
 )
 
 func main() {
