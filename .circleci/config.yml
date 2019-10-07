@@ -25,6 +25,12 @@ jobs:
     steps:
       - *attach_workspace
       - checkout # check out source code to working directory
+
+      - run:
+          name: Finish early if path not changed.
+          command: |
+            bash ./.circleci/exit-if-path-not-changed.bash ./proto
+
       - run:
           name: Generate protobuf code
           command: |
@@ -46,28 +52,9 @@ jobs:
       - checkout # check out source code to working directory
 
       - run:
-          name: Create finish early hash
+          name: Finish early if path not changed.
           command: |
-              cd cmd/pippi
-              find . -not -path "*/node_modules/*" -type f \( -exec sha1sum "$PWD"/{} \; \) | sort | sha1sum | awk '{ print $1 }' > new-pippi-hash
-
-      - restore_cache:
-          name: "Restore old source tree hash"
-          keys:
-            - pippi-hash-{{ checksum "./cmd/pippi/new-pippi-hash" }}
-
-      - run:
-          name: Check if we should finish early
-          command: |
-              cd cmd/pippi
-              touch pippi-hash
-              if [ "$(cat new-pippi-hash)" == "$(cat pippi-hash)" ]; then
-                  echo "Old hash is equal to new hash. Finishing early!"
-                  circleci-agent step halt
-              else
-                  echo "There has been changes in the source tree. Continiuing."
-                  cp new-pippi-hash pippi-hash
-              fi
+            bash ./.circleci/exit-if-path-not-changed.bash ./cmd/pippi
 
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
@@ -81,12 +68,6 @@ jobs:
           name: Run make
           command: |
             make -C cmd/pippi
-
-      - save_cache:
-          name: "Save source tree hash"
-          key: pippi-hash-{{ checksum "./cmd/pippi/new-pippi-hash" }}
-          paths:
-              - "./cmd/pippi/pippi-hash"
 
       - save_cache:
           key: pippi-go-mod-cache-{{ checksum "go.sum" }}
@@ -105,6 +86,11 @@ jobs:
     steps:
       - checkout # check out source code to working directory
       - *attach_workspace
+
+      - run:
+          name: Finish early if path not changed.
+          command: |
+            bash ./.circleci/exit-if-path-not-changed.bash ./cmd/pi-upload ./proto ./pkg
 
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
@@ -128,6 +114,11 @@ jobs:
       - checkout # check out source code to working directory
       - *attach_workspace
 
+      - run:
+          name: Finish early if path not changed.
+          command: |
+            bash ./.circleci/exit-if-path-not-changed.bash ./cmd/pi-disasm ./proto ./pkg
+
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
             - pi-disasm-mod-cache-{{ checksum "go.sum" }}
@@ -149,6 +140,11 @@ jobs:
     steps:
       - checkout # check out source code to working directory
       - *attach_workspace
+
+      - run:
+          name: Finish early if path not changed.
+          command: |
+            bash ./.circleci/exit-if-path-not-changed.bash ./cmd/pi-disasm-objdump ./proto ./pkg
 
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
@@ -172,6 +168,11 @@ jobs:
       - checkout # check out source code to working directory
       - *attach_workspace
 
+      - run:
+          name: Finish early if path not changed.
+          command: |
+            bash ./.circleci/exit-if-path-not-changed.bash ./cmd/pi-bin ./proto ./pkg
+
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
             - pi-bin-go-mod-cache-{{ checksum "go.sum" }}
@@ -193,6 +194,11 @@ jobs:
     steps:
       - checkout # check out source code to working directory
       - *attach_workspace
+
+      - run:
+          name: Finish early if path not changed.
+          command: |
+            bash ./.circleci/exit-if-path-not-changed.bash ./cmd/pi-strings ./proto
 
       - run:
           name: Calculate dependencies
