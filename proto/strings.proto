@@ -32,10 +32,12 @@ enum Encoding {
 	ASCII = 0;
 	// UTF-8 encoding.
 	UTF8 = 1;
-	// UTF-16 encoding.
-	UTF16 = 2;
+	// UTF-16 encoding (little endian).
+	UTF16LittleEndian = 2;
+	// UTF-16 encoding (big endian).
+	UTF16BigEndian = 3;
 	// UTF-32 encoding
-	UTF32 = 3;
+	UTF32 = 4;
 	// Big-5 encoding.
-	Big5 = 4;
+	Big5 = 5;
 }
