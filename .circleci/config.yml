@@ -45,19 +45,28 @@ jobs:
     steps:
       - checkout # check out source code to working directory
 
-      - restore_cache:
-          keys:
-            - pippi-hash
-
       - run:
-          name: Finish early if no change
+          name: Create finish early hash
           command: |
               cd cmd/pippi
-              find . -not -path "*/node_modules/*" -type f \( -exec sha1sum "$PWD"/{} \; \) | sha1sum | awk '{ print $1 }' > new-pippi-hash
+              find . -not -path "*/node_modules/*" -type f \( -exec sha1sum "$PWD"/{} \; \) | sort | sha1sum | awk '{ print $1 }' > new-pippi-hash
+
+      - restore_cache:
+          name: "Restore old source tree hash"
+          keys:
+            - pippi-hash-{{ checksum "./cmd/pippi/new-pippi-hash" }}
+
+      - run:
+          name: Check if we should finish early
+          command: |
+              cd cmd/pippi
+              touch pippi-hash
               if [ "$(cat new-pippi-hash)" == "$(cat pippi-hash)" ]; then
+                  echo "Old hash is equal to new hash. Finishing early!"
                   circleci-agent step halt
               else
-                  mv new-pippi-hash pippi-hash
+                  echo "There has been changes in the source tree. Continiuing."
+                  cp new-pippi-hash pippi-hash
               fi
 
       - restore_cache: # restores saved cache if no changes are detected since last run
@@ -74,7 +83,8 @@ jobs:
             make -C cmd/pippi
 
       - save_cache:
-          key: pippi-hash
+          name: "Save source tree hash"
+          key: pippi-hash-{{ checksum "./cmd/pippi/new-pippi-hash" }}
           paths:
               - "./cmd/pippi/pippi-hash"
 
@@ -208,54 +218,56 @@ jobs:
 
 workflows:
   version: 2
+  style-workflow:
+    jobs:
+    - style-go:
+        filters:
+          branches:
+            ignore: gh-pages
+
   build-workflow:
     jobs:
-      - style-go:
-          filters:
-            branches:
-              ignore: gh-pages
+    - generate-proto:
+        filters:
+          branches:
+            ignore: gh-pages
 
-      - generate-proto:
-          filters:
-            branches:
-              ignore: gh-pages
+    - build-pi-upload:
+        filters:
+          branches:
+            ignore: gh-pages
+        requires:
+          - generate-proto
 
-      - build-pi-upload:
-          filters:
-            branches:
-              ignore: gh-pages
-          requires:
-            - generate-proto
+    - build-pi-bin:
+        filters:
+          branches:
+            ignore: gh-pages
+        requires:
+          - generate-proto
 
-      - build-pi-bin:
-          filters:
-            branches:
-              ignore: gh-pages
-          requires:
-            - generate-proto
+    - build-pi-disasm-new:
+        filters:
+          branches:
+            ignore: gh-pages
+        requires:
+          - generate-proto
 
-      - build-pi-disasm-new:
-          filters:
-            branches:
-              ignore: gh-pages
-          requires:
-            - generate-proto
+    - build-pi-disasm-objdump:
+        filters:
+          branches:
+            ignore: gh-pages
+        requires:
+          - generate-proto
 
-      - build-pi-disasm-objdump:
-          filters:
-            branches:
-              ignore: gh-pages
-          requires:
-            - generate-proto
+    - build-pi-strings:
+        filters:
+          branches:
+            ignore: gh-pages
+        requires:
+          - generate-proto
 
-      - build-pi-strings:
-          filters:
-            branches:
-              ignore: gh-pages
-          requires:
-            - generate-proto
-
-      - build-pippi:
-          filters:
-            branches:
-              ignore: gh-pages
+    - build-pippi:
+        filters:
+          branches:
+            ignore: gh-pages
