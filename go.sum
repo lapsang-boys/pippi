@@ -74,6 +74,8 @@ github.com/mewkiz/pkg v0.0.0-20181119122551-9729f4f4ff2b/go.mod h1:bhmdGJSMX5WCI
 github.com/mewkiz/pkg v0.0.0-20190317153131-e8616647c365 h1:WeayHgdK3Mh6RMZKtcJaaRMjGvJeRdn+e+QqO50us84=
 github.com/mewkiz/pkg v0.0.0-20190317153131-e8616647c365/go.mod h1:NefHmmDOyP6U1WiFFk+jFR3YdHoTeueo8nOZ6i1vZbA=
 github.com/mewmew/float v0.0.0-20181121163145-c0f786d7da73/go.mod h1:obQBs6O+vjhgOZLkGdALxItKw4xrI49lSBEnAMO6lWI=
+github.com/mewmew/mips v0.1.0 h1:Q/HkKuzmNBOcOkk89BYlMNx6A83+r1bXVTgURDVhMGI=
+github.com/mewmew/mips v0.1.0/go.mod h1:kb5KbF/SaFx88mvIiDEB0WbADlFZONVYkrpKd4MNhGE=
 github.com/mewrev/pe v0.0.0-20181024063030-8f6d1d7d219c/go.mod h1:j2bWMf/wUNeLV/IHgoCdLiulUruBpCmuP6wGmhQxZOA=
 github.com/mewspring/tools v0.0.0-20181204020634-6c6637dc82b6/go.mod h1:UAdVbSksr+7Bg+z4mga16OaBg3qAcgdaF3x3AeqJHEs=
 github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b/go.mod h1:01TrycV0kFyexm33Z7vhZRXopbI8J3TDReVlkTgMUxE=
