@@ -45,7 +45,7 @@ func sections(binId string) *binpb.File {
 	return file
 }
 
-func disassembly(binId string) *disasmpb.DisassembleReply {
+func disassembly(binId string) []*disasmpb.Instruction {
 	if err := pi.CheckBinID(binId); err != nil {
 		log.Printf("invalid binary ID %q: %v", binId, err)
 		return nil
@@ -61,7 +61,7 @@ func disassembly(binId string) *disasmpb.DisassembleReply {
 		log.Println(err)
 		return nil
 	}
-	return reply
+	return reply.Insts
 }
 
 func strings(binId string) []*stringspb.StringInfo {
