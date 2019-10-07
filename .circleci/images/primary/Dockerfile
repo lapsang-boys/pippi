@@ -16,6 +16,7 @@ RUN apk add --update --no-cache \
 	gtk+3.0 \
 	python3 \
 	python3-dev \
+	bash \
 	webkit2gtk-dev
 
 RUN go get -u github.com/wailsapp/wails/cmd/wails

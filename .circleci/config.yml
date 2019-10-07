@@ -20,7 +20,7 @@ jobs:
 
   generate-proto:
     docker:
-      - image: karlekdocker/pippi:0.0.5
+      - image: karlekdocker/pippi:0.0.6
 
     steps:
       - *attach_workspace
@@ -43,7 +43,7 @@ jobs:
 
   build-pippi:
     docker:
-      - image: karlekdocker/pippi:0.0.5
+      - image: karlekdocker/pippi:0.0.6
 
     environment: # environment variables for the build itself
       NG_CLI_ANALYTICS: false # https://stackoverflow.com/a/57586959
@@ -189,7 +189,7 @@ jobs:
 
   build-pi-strings:
     docker:
-      - image: karlekdocker/pippi:0.0.5
+      - image: karlekdocker/pippi:0.0.6
 
     steps:
       - checkout # check out source code to working directory
