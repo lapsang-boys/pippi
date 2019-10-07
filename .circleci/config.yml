@@ -62,7 +62,7 @@ jobs:
 
       - restore_cache: # restores saved cache if no changes are detected since last run
           keys:
-            - pippi-npm-cache-{{ checksum "./cmd/pippi/frontend/package.json.md5" }}
+            - pippi-npm-cache-{{ checksum "./cmd/pippi/frontend/package-lock.json" }}
 
       - run:
           name: Run make
@@ -75,7 +75,7 @@ jobs:
             - "/go/pkg/mod"
 
       - save_cache:
-          key: pippi-npm-cache-{{ checksum "./cmd/pippi/frontend/package.json.md5" }}
+          key: pippi-npm-cache-{{ checksum "./cmd/pippi/frontend/package-lock.json" }}
           paths:
             - "./cmd/pippi/frontend/node_modules"
 
