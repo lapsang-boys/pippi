@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 
@@ -8,6 +9,7 @@ import (
 	"github.com/wailsapp/wails"
 
 	"github.com/lapsang-boys/pippi/pkg/pi"
+	"github.com/lapsang-boys/pippi/pkg/services"
 	binpb "github.com/lapsang-boys/pippi/proto/bin"
 	disasmpb "github.com/lapsang-boys/pippi/proto/disasm"
 	stringspb "github.com/lapsang-boys/pippi/proto/strings"
@@ -37,7 +39,8 @@ func sections(binId string) *binpb.File {
 		log.Printf("invalid binary ID %q: %v", binId, err)
 		return nil
 	}
-	file, err := Sections("localhost:1200", binId)
+	binAddr := fmt.Sprintf("localhost:%d", services.BinPort)
+	file, err := Sections(binAddr, binId)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -50,13 +53,15 @@ func disassembly(binId string) []*disasmpb.Instruction {
 		log.Printf("invalid binary ID %q: %v", binId, err)
 		return nil
 	}
-	instAddrs, err := InstAddrs("localhost:1310", binId)
+	disasmObjdumpAddr := fmt.Sprintf("localhost:%d", services.DisasmObjdumpPort)
+	instAddrs, err := InstAddrs(disasmObjdumpAddr, binId)
 	if err != nil {
 		log.Println(err)
 		return nil
 	}
 	arch := binpb.Arch_X86_64 // TODO: make configurable.
-	reply, err := Disassembly("localhost:1300", binId, arch, instAddrs)
+	disasmAddr := fmt.Sprintf("localhost:%d", services.DisasmPort)
+	reply, err := Disassembly(disasmAddr, binId, arch, instAddrs)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -69,7 +74,8 @@ func strings(binId string) []*stringspb.StringInfo {
 		log.Printf("invalid binary ID %q: %v", binId, err)
 		return nil
 	}
-	extractedStrings, err := Strings("localhost:1400", binId)
+	stringsAddr := fmt.Sprintf("localhost:%d", services.StringsPort)
+	extractedStrings, err := Strings(stringsAddr, binId)
 	if err != nil {
 		log.Println(err)
 		return []*stringspb.StringInfo{}

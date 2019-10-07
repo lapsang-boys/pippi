@@ -16,7 +16,7 @@ import (
 // address extraction requests.
 type clientCmd struct {
 	// disasm_objdump gRPC address to listen on.
-	DisasmObjdumpAddr string
+	disasmObjdumpAddr string
 }
 
 func (*clientCmd) Name() string {
@@ -41,7 +41,7 @@ Flags:
 
 func (cmd *clientCmd) SetFlags(f *flag.FlagSet) {
 	// TODO: add -arch flag.
-	f.StringVar(&cmd.DisasmObjdumpAddr, "addr_disasm_objdump", disasmObjdumpGRPCAddr, "disasm_objdump gRPC address to connect to")
+	f.StringVar(&cmd.disasmObjdumpAddr, "addr_disasm_objdump", defaultDisasmObjdumpAddr, "disasm_objdump gRPC address to connect to")
 }
 
 func (cmd *clientCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
@@ -52,7 +52,7 @@ func (cmd *clientCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 	}
 	binID := f.Arg(0)
 	// Connect to gRPC server.
-	if err := connect(cmd.DisasmObjdumpAddr, binID); err != nil {
+	if err := connect(cmd.disasmObjdumpAddr, binID); err != nil {
 		warn.Printf("connect failed; %+v", err)
 		return subcommands.ExitFailure
 	}

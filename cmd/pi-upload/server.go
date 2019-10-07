@@ -3,27 +3,29 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"net"
 	"os"
 
 	"github.com/google/subcommands"
 	"github.com/lapsang-boys/pippi/pkg/pi"
+	"github.com/lapsang-boys/pippi/pkg/services"
 	uploadpb "github.com/lapsang-boys/pippi/proto/upload"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 )
 
-const (
+var (
 	// Default gRPC address to listen on.
-	grpcAddr = ":1100"
+	defaultUploadAddr = fmt.Sprintf("localhost:%d", services.UploadPort)
 )
 
 // serverCmd is the command to launch a gRPC server processing parse binary
 // requests.
 type serverCmd struct {
 	// gRPC address to listen on.
-	Addr string
+	uploadAddr string
 }
 
 func (*serverCmd) Name() string {
@@ -47,11 +49,11 @@ Flags:
 }
 
 func (cmd *serverCmd) SetFlags(f *flag.FlagSet) {
-	f.StringVar(&cmd.Addr, "addr", grpcAddr, "gRPC address to listen on")
+	f.StringVar(&cmd.uploadAddr, "addr", defaultUploadAddr, "gRPC address to listen on")
 }
 
 func (cmd *serverCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
-	if err := listen(cmd.Addr); err != nil {
+	if err := listen(cmd.uploadAddr); err != nil {
 		warn.Printf("listen failed; %+v", err)
 		return subcommands.ExitFailure
 	}
@@ -63,10 +65,10 @@ const maxFileSize = 1 * 1024 * 1024 * 1024 // 1 GB
 
 // listen listens on the given gRPC address for incoming requests to parse binary
 // files.
-func listen(addr string) error {
-	dbg.Printf("listening on %q", addr)
+func listen(uploadAddr string) error {
+	dbg.Printf("listening on %q", uploadAddr)
 	// Launch gRPC server.
-	l, err := net.Listen("tcp", addr)
+	l, err := net.Listen("tcp", uploadAddr)
 	if err != nil {
 		return errors.WithStack(err)
 	}

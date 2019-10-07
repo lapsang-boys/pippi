@@ -13,9 +13,9 @@ import (
 	"google.golang.org/grpc"
 )
 
-func Strings(addr, binId string) ([]*stringspb.StringInfo, error) {
+func Strings(stringsAddr, binId string) ([]*stringspb.StringInfo, error) {
 	// Connect to gRPC server.
-	conn, err := grpc.Dial(addr, grpc.WithInsecure())
+	conn, err := grpc.Dial(stringsAddr, grpc.WithInsecure())
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -38,9 +38,9 @@ func Strings(addr, binId string) ([]*stringspb.StringInfo, error) {
 	return reply.Strings, nil
 }
 
-func Sections(addr, binId string) (*binpb.File, error) {
+func Sections(binAddr, binId string) (*binpb.File, error) {
 	// Connect to gRPC server.
-	conn, err := grpc.Dial(addr, grpc.WithInsecure())
+	conn, err := grpc.Dial(binAddr, grpc.WithInsecure())
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -63,9 +63,9 @@ func Sections(addr, binId string) (*binpb.File, error) {
 	return file, nil
 }
 
-func Disassembly(addr, binId string, arch binpb.Arch, instAddrs []uint64) (*disasmpb.DisassembleReply, error) {
+func Disassembly(disasmAddr, binId string, arch binpb.Arch, instAddrs []uint64) (*disasmpb.DisassembleReply, error) {
 	// Connect to gRPC server.
-	conn, err := grpc.Dial(addr, grpc.WithInsecure())
+	conn, err := grpc.Dial(disasmAddr, grpc.WithInsecure())
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -90,9 +90,9 @@ func Disassembly(addr, binId string, arch binpb.Arch, instAddrs []uint64) (*disa
 	return reply, nil
 }
 
-func InstAddrs(addr, binId string) ([]uint64, error) {
+func InstAddrs(disasmObjdumpAddr, binId string) ([]uint64, error) {
 	// Connect to gRPC server.
-	conn, err := grpc.Dial(addr, grpc.WithInsecure())
+	conn, err := grpc.Dial(disasmObjdumpAddr, grpc.WithInsecure())
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}

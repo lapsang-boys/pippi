@@ -13,7 +13,7 @@ import (
 // consoleCmd is the command to parse a binary file from the command line.
 type consoleCmd struct {
 	// path instruction addresses JSON file.
-	InstAddrJSONPath string
+	instAddrJSONPath string
 }
 
 func (*consoleCmd) Name() string {
@@ -37,7 +37,7 @@ Flags:
 }
 
 func (cmd *consoleCmd) SetFlags(f *flag.FlagSet) {
-	f.StringVar(&cmd.InstAddrJSONPath, "inst_addrs", "", "path instruction addresses JSON file")
+	f.StringVar(&cmd.instAddrJSONPath, "inst_addrs", "", "path instruction addresses JSON file")
 }
 
 func (cmd *consoleCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
@@ -47,13 +47,13 @@ func (cmd *consoleCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interfac
 		return subcommands.ExitUsageError
 	}
 	binPath := f.Arg(0)
-	if len(cmd.InstAddrJSONPath) == 0 {
+	if len(cmd.instAddrJSONPath) == 0 {
 		f.Usage()
 		return subcommands.ExitUsageError
 	}
 	db := &Database{}
-	if err := jsonutil.ParseFile(cmd.InstAddrJSONPath, &db.InstAddrs); err != nil {
-		warn.Printf("parse JSON file %q failed; %+v", cmd.InstAddrJSONPath, err)
+	if err := jsonutil.ParseFile(cmd.instAddrJSONPath, &db.InstAddrs); err != nil {
+		warn.Printf("parse JSON file %q failed; %+v", cmd.instAddrJSONPath, err)
 		return subcommands.ExitFailure
 	}
 	arch := bin.ArchX86_64 // TODO: make configurable.

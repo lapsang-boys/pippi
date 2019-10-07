@@ -23,9 +23,9 @@ import (
 // binary requests.
 type clientCmd struct {
 	// bin gRPC address to connect to.
-	BinAddr string
+	binAddr string
 	// disasm gRPC address to connect to.
-	DisasmAddr string
+	disasmAddr string
 }
 
 func (*clientCmd) Name() string {
@@ -49,8 +49,8 @@ Flags:
 }
 
 func (cmd *clientCmd) SetFlags(f *flag.FlagSet) {
-	f.StringVar(&cmd.BinAddr, "addr_bin", binGRPCAddr, "bin gRPC address to connect to")
-	f.StringVar(&cmd.DisasmAddr, "addr_disasm", disasmGRPCAddr, "disasm gRPC address to connect to")
+	f.StringVar(&cmd.binAddr, "addr_bin", defaultBinAddr, "bin gRPC address to connect to")
+	f.StringVar(&cmd.disasmAddr, "addr_disasm", defaultDisasmAddr, "disasm gRPC address to connect to")
 }
 
 func (cmd *clientCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
@@ -62,7 +62,7 @@ func (cmd *clientCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 	binID := f.Arg(0)
 
 	// Connect to gRPC server.
-	if err := connect(cmd.BinAddr, cmd.DisasmAddr, binID); err != nil {
+	if err := connect(cmd.binAddr, cmd.disasmAddr, binID); err != nil {
 		warn.Printf("connect failed; %+v", err)
 		return subcommands.ExitFailure
 	}

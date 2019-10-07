@@ -3,25 +3,27 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"net"
 
 	"github.com/google/subcommands"
 	"github.com/lapsang-boys/pippi/pkg/pi"
+	"github.com/lapsang-boys/pippi/pkg/services"
 	disasm_objdumppb "github.com/lapsang-boys/pippi/proto/disasm_objdump"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 )
 
-const (
+var (
 	// Default disasm gRPC address to listen on.
-	disasmObjdumpGRPCAddr = ":1310"
+	defaultDisasmObjdumpAddr = fmt.Sprintf("localhost:%d", services.DisasmObjdumpPort)
 )
 
 // serverCmd is the command to launch a gRPC server processing instruction
 // address extraction requests.
 type serverCmd struct {
 	// disasm_objdump gRPC address to listen on.
-	DisasmObjdumpAddr string
+	disasmObjdumpAddr string
 }
 
 func (*serverCmd) Name() string {
@@ -45,11 +47,11 @@ Flags:
 }
 
 func (cmd *serverCmd) SetFlags(f *flag.FlagSet) {
-	f.StringVar(&cmd.DisasmObjdumpAddr, "addr_disasm_objdump", disasmObjdumpGRPCAddr, "disasm_objdump gRPC address to listen on")
+	f.StringVar(&cmd.disasmObjdumpAddr, "addr_disasm_objdump", defaultDisasmObjdumpAddr, "disasm_objdump gRPC address to listen on")
 }
 
 func (cmd *serverCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
-	if err := listen(cmd.DisasmObjdumpAddr); err != nil {
+	if err := listen(cmd.disasmObjdumpAddr); err != nil {
 		warn.Printf("listen failed; %+v", err)
 		return subcommands.ExitFailure
 	}
@@ -75,10 +77,7 @@ func listen(disasmObjdumpAddr string) error {
 }
 
 // disasmObjdumpServer implements disasm_objdumppb.InstAddrExtractorServer.
-type disasmObjdumpServer struct {
-	// bin gRPC address.
-	binAddr string
-}
+type disasmObjdumpServer struct{}
 
 // ExtractInstAddr extract instruction address of the given binary file.
 func (s *disasmObjdumpServer) ExtractInstAddrs(ctx context.Context, req *disasm_objdumppb.InstAddrsRequest) (*disasm_objdumppb.InstAddrsReply, error) {
