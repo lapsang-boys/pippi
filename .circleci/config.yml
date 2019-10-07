@@ -201,6 +201,12 @@ jobs:
             bash ./.circleci/exit-if-path-not-changed.bash ./cmd/pi-strings ./proto
 
       - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install cmake
+
+      - run:
           name: Calculate dependencies
           command: |
             cd ./cmd/pi-strings
