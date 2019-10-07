@@ -83,19 +83,19 @@ func findUTF8String(buf []byte, minLength int) (s string, n uint64, ok bool) {
 // extractUTF16LittleEndianStrings extracts printable UTF-16 strings in little
 // endian byte order with a minimum number of characters from the given binary.
 func extractUTF16LittleEndianStrings(buf []byte, minLength int, c chan []*stringspb.StringInfo) {
-	extractUTF16Strings(buf, minLength, binary.LittleEndian, c)
+	extractUTF16Strings(buf, minLength, stringspb.Encoding_UTF16LittleEndian, binary.LittleEndian, c)
 }
 
 // extractUTF16BigEndianStrings extracts printable UTF-16 strings in big endian
 // byte order with a minimum number of characters from the given binary.
 func extractUTF16BigEndianStrings(buf []byte, minLength int, c chan []*stringspb.StringInfo) {
-	extractUTF16Strings(buf, minLength, binary.BigEndian, c)
+	extractUTF16Strings(buf, minLength, stringspb.Encoding_UTF16BigEndian, binary.BigEndian, c)
 }
 
 // extractUTF16Strings extracts printable UTF-8 strings with a minimum number of
 // characters from the given binary. The given byte order is used to decode
 // uint16 values of buf.
-func extractUTF16Strings(buf []byte, minLength int, order binary.ByteOrder, c chan []*stringspb.StringInfo) {
+func extractUTF16Strings(buf []byte, minLength int, encoding stringspb.Encoding, order binary.ByteOrder, c chan []*stringspb.StringInfo) {
 	var infos []*stringspb.StringInfo
 	for i := 0; i < len(buf); {
 		start := uint64(i)
@@ -108,7 +108,7 @@ func extractUTF16Strings(buf []byte, minLength int, order binary.ByteOrder, c ch
 			Location:  start,
 			RawString: s,
 			Size:      n,
-			Encoding:  stringspb.Encoding_UTF16,
+			Encoding:  encoding,
 		}
 		infos = append(infos, info)
 	}
