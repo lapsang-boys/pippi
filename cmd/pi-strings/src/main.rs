@@ -91,11 +91,6 @@ fn main() {
         println!("listening on {}:{}", host, port);
     }
     let (tx, rx) = oneshot::channel();
-    //thread::spawn(move || {
-    //    info!("Press ENTER to exit...");
-    //    let _ = io::stdin().read(&mut [0]).unwrap();
-    //    tx.send(())
-    //});
     if (false) {
         tx.send(());
     }
