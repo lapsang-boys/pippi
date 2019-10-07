@@ -25,7 +25,7 @@ func Strings(addr, binId string) ([]*stringspb.StringInfo, error) {
 	ctx := context.Background()
 
 	req := &stringspb.StringsRequest{
-		Id: binId,
+		BinId: binId,
 	}
 	now := time.Now()
 	reply, err := client.ExtractStrings(ctx, req)

@@ -28,12 +28,12 @@ use regex::Regex;
 #[derive(Clone)]
 struct StringsService;
 
-fn is_valid(id: &str) -> bool {
+fn is_valid(bin_id: &str) -> bool {
     lazy_static! {
         static ref RE: Regex = Regex::new("^[0-9a-f]{64}$").unwrap();
     }
 
-    RE.is_match(id) && id.len() == 64
+    RE.is_match(bin_id) && bin_id.len() == 64
 }
 
 impl strings_grpc::StringsExtractor for StringsService {
@@ -43,10 +43,10 @@ impl strings_grpc::StringsExtractor for StringsService {
         req: strings::StringsRequest,
         sink: UnarySink<strings::StringsReply>,
     ) {
-        let id = req.get_id();
-        println!("{}", id);
-        println!("{}", is_valid(id));
-        if !is_valid(id) {
+        let bin_id = req.get_bin_id();
+        println!("{}", bin_id);
+        println!("{}", is_valid(bin_id));
+        if !is_valid(bin_id) {
             let status = RpcStatus::new(
                 RpcStatusCode::InvalidArgument,
                 Some("Invalid argument".to_string()),
@@ -61,8 +61,8 @@ impl strings_grpc::StringsExtractor for StringsService {
         let filename = base_dirs
             .cache_dir()
             .join("pippi")
-            .join(id)
-            .join(id.to_owned() + ".bin")
+            .join(bin_id)
+            .join(bin_id.to_owned() + ".bin")
             .to_str()
             .unwrap()
             .to_string();
@@ -132,6 +132,8 @@ fn extract_strings_from_path(filename: String) -> Result<Vec<strings::StringInfo
                 let mut sinfo = strings::StringInfo::default();
                 sinfo.set_location((index - s.len()) as u64);
                 sinfo.set_raw_string(s.to_string());
+                sinfo.set_size(s.len() as u64);
+                sinfo.set_encoding(strings::Encoding::UTF8);
                 sinfos.push(sinfo);
                 debug!("{} {}", index - s.len(), s);
             }
