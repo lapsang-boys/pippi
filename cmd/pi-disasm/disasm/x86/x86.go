@@ -4,7 +4,7 @@ package x86
 
 import (
 	"github.com/decomp/exp/bin"
-	"github.com/lapsang-boys/pippi/cmd/pi-disasm-new/disasm"
+	"github.com/lapsang-boys/pippi/cmd/pi-disasm/disasm"
 	"github.com/pkg/errors"
 	"golang.org/x/arch/x86/x86asm"
 )

@@ -1,7 +1,3 @@
-//+build ignore
-
-//go:generate protoc -I ../../proto --go_out=plugins=grpc:../../proto/disasm ../../proto/disasm.proto
-
 package main
 
 import (
@@ -18,8 +14,8 @@ var (
 	// dbg is a logger with the "pi-disasm:" prefix which logs debug messages to
 	// standard error.
 	dbg = log.New(os.Stderr, term.CyanBold("pi-disasm:")+" ", 0)
-	// warn is a logger with the "pi-disasm:" prefix which logs warning messages to
-	// standard error.
+	// warn is a logger with the "pi-disasm:" prefix which logs warning messages
+	// to standard error.
 	warn = log.New(os.Stderr, term.RedBold("pi-disasm:")+" ", 0)
 )
 
@@ -30,7 +26,7 @@ func main() {
 	subcommands.Register(subcommands.CommandsCommand(), "")
 	subcommands.Register(&serverCmd{}, "")
 	subcommands.Register(&clientCmd{}, "")
-	subcommands.Register(&disasmCmd{}, "")
+	subcommands.Register(&consoleCmd{}, "")
 
 	// Parse command line arguments.
 	flag.Parse()
