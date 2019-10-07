@@ -45,17 +45,23 @@ func sections(binId string) *binpb.File {
 	return file
 }
 
-func disassembly(binId string) *disasmpb.DisassembleReply {
+func disassembly(binId string) []*disasmpb.Instruction {
 	if err := pi.CheckBinID(binId); err != nil {
 		log.Printf("invalid binary ID %q: %v", binId, err)
 		return nil
 	}
-	reply, err := Disassembly("localhost:1300", binId)
+	instAddrs, err := InstAddrs("localhost:1310", binId)
 	if err != nil {
 		log.Println(err)
 		return nil
 	}
-	return reply
+	arch := binpb.Arch_X86_64 // TODO: make configurable.
+	reply, err := Disassembly("localhost:1300", binId, arch, instAddrs)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	return reply.Insts
 }
 
 func strings(binId string) []*stringspb.StringInfo {

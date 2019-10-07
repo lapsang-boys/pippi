@@ -1,15 +1,13 @@
-//+build ignore
-
 package main
 
 import (
 	"context"
 	"flag"
-	"io/ioutil"
+	"fmt"
 	"net"
 
+	"github.com/decomp/exp/bin"
 	"github.com/google/subcommands"
-	"github.com/lapsang-boys/pippi/cmd/pi-bin/binpbx"
 	"github.com/lapsang-boys/pippi/pkg/pi"
 	binpb "github.com/lapsang-boys/pippi/proto/bin"
 	disasmpb "github.com/lapsang-boys/pippi/proto/disasm"
@@ -96,62 +94,46 @@ func (s *disasmServer) Disassemble(ctx context.Context, req *disasmpb.Disassembl
 		return nil, errors.WithStack(err)
 	}
 	dbg.Printf("disassembling ID %q", req.BinId)
-	// Read file contents.
+	// Parse instruction addresses.
+	db := &Database{}
+	for _, instAddr := range req.InstAddrs {
+		db.InstAddrs = append(db.InstAddrs, bin.Address(instAddr))
+	}
+	// Parse binary file.
 	binPath, err := pi.BinPath(req.BinId)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-	binData, err := ioutil.ReadFile(binPath)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-	// Parse binary file.
-	file, err := binpbx.ParseFile(s.binAddr, req.BinId)
+	insts, err := disasmBinary(db, binArch(req.Arch), binPath)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 	// Send reply.
 	reply := &disasmpb.DisassembleReply{}
-	// Processor mode (16-, 32-, or 64-bit exection mode).
-	var mode int
-	switch file.Arch {
-	case binpb.Arch_X86_32:
-		mode = 32
-	case binpb.Arch_X86_64:
-		mode = 64
+	for _, inst := range insts {
+		i := &disasmpb.Instruction{
+			Addr:    uint64(inst.Addr()),
+			InstStr: inst.String(),
+		}
+		reply.Insts = append(reply.Insts, i)
 	}
-	for _, sect := range file.Sections {
-		if !permContains(sect.Perms, binpb.Perm_X) {
-			continue
-		}
-		sectData := binData[sect.Offset : sect.Offset+sect.Length]
-		valid, err := shingledDisasm(mode, sectData, sect.Addr)
-		if err != nil {
-			return nil, errors.WithStack(err)
-		}
-		var validOffs []uint64
-		for off := range valid {
-			if valid[off] {
-				validOffs = append(validOffs, uint64(off))
-			}
-		}
-		execSect := &disasmpb.DisassembleSection{
-			Section:      sect,
-			ValidOffsets: validOffs,
-		}
-		reply.ExecSections = append(reply.ExecSections, execSect)
-	}
-	// Sections.
 	return reply, nil
 }
 
-// permContains reports whether the given slice of permissions contains the
-// specified permission.
-func permContains(perms []binpb.Perm, perm binpb.Perm) bool {
-	for _, p := range perms {
-		if p == perm {
-			return true
-		}
+// binArch returns the bin.Arch machine architecture corresponding to the given
+// protobuf enum.
+func binArch(arch binpb.Arch) bin.Arch {
+	// TODO: move into pkg/pi/bin?
+	switch arch {
+	case binpb.Arch_X86_32:
+		return bin.ArchX86_32
+	case binpb.Arch_X86_64:
+		return bin.ArchX86_64
+	case binpb.Arch_MIPS_32:
+		return bin.ArchMIPS_32
+	case binpb.Arch_PowerPC_32:
+		return bin.ArchPowerPC_32
+	default:
+		panic(fmt.Errorf("support for machine architecture %v not yet implemented", uint64(arch)))
 	}
-	return false
 }

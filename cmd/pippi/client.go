@@ -7,6 +7,7 @@ import (
 
 	binpb "github.com/lapsang-boys/pippi/proto/bin"
 	disasmpb "github.com/lapsang-boys/pippi/proto/disasm"
+	disasm_objdumppb "github.com/lapsang-boys/pippi/proto/disasm_objdump"
 	stringspb "github.com/lapsang-boys/pippi/proto/strings"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
@@ -62,7 +63,7 @@ func Sections(addr, binId string) (*binpb.File, error) {
 	return file, nil
 }
 
-func Disassembly(addr, binId string) (*disasmpb.DisassembleReply, error) {
+func Disassembly(addr, binId string, arch binpb.Arch, instAddrs []uint64) (*disasmpb.DisassembleReply, error) {
 	// Connect to gRPC server.
 	conn, err := grpc.Dial(addr, grpc.WithInsecure())
 	if err != nil {
@@ -75,7 +76,9 @@ func Disassembly(addr, binId string) (*disasmpb.DisassembleReply, error) {
 	ctx := context.Background()
 
 	req := &disasmpb.DisassembleRequest{
-		BinId: binId,
+		BinId:     binId,
+		Arch:      arch,
+		InstAddrs: instAddrs,
 	}
 	now := time.Now()
 	reply, err := client.Disassemble(ctx, req)
@@ -85,4 +88,29 @@ func Disassembly(addr, binId string) (*disasmpb.DisassembleReply, error) {
 	log.Println(time.Since(now))
 
 	return reply, nil
+}
+
+func InstAddrs(addr, binId string) ([]uint64, error) {
+	// Connect to gRPC server.
+	conn, err := grpc.Dial(addr, grpc.WithInsecure())
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	defer conn.Close()
+
+	// Send binary parsing request.
+	client := disasm_objdumppb.NewInstAddrExtractorClient(conn)
+	ctx := context.Background()
+
+	req := &disasm_objdumppb.InstAddrsRequest{
+		BinId: binId,
+	}
+	now := time.Now()
+	reply, err := client.ExtractInstAddrs(ctx, req)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	log.Println(time.Since(now))
+
+	return reply.InstAddrs, nil
 }

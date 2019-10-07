@@ -1,29 +1,26 @@
-//+build ignore
-
 package main
 
 import (
 	"context"
 	"flag"
-	"fmt"
-	"io/ioutil"
 
+	"github.com/decomp/exp/bin"
 	"github.com/google/subcommands"
 	"github.com/kr/pretty"
-	"github.com/lapsang-boys/pippi/cmd/pi-bin/binpbx"
 	"github.com/lapsang-boys/pippi/pkg/pi"
 	binpb "github.com/lapsang-boys/pippi/proto/bin"
 	disasmpb "github.com/lapsang-boys/pippi/proto/disasm"
+	"github.com/mewkiz/pkg/jsonutil"
+	"github.com/mewkiz/pkg/pathutil"
 	"github.com/pkg/errors"
-	"golang.org/x/arch/x86/x86asm"
 	"google.golang.org/grpc"
 )
 
 // clientCmd is the command to connect to a gRPC server to send disassemble
 // binary requests.
 type clientCmd struct {
-	// bin gRPC address to connect to.
-	BinAddr string
+	// path instruction addresses JSON file.
+	InstAddrJSONPath string
 	// disasm gRPC address to connect to.
 	DisasmAddr string
 }
@@ -49,7 +46,8 @@ Flags:
 }
 
 func (cmd *clientCmd) SetFlags(f *flag.FlagSet) {
-	f.StringVar(&cmd.BinAddr, "addr_bin", binGRPCAddr, "bin gRPC address to connect to")
+	// TODO: add -arch flag.
+	f.StringVar(&cmd.InstAddrJSONPath, "inst_addrs", "", "path instruction addresses JSON file")
 	f.StringVar(&cmd.DisasmAddr, "addr_disasm", disasmGRPCAddr, "disasm gRPC address to connect to")
 }
 
@@ -60,9 +58,8 @@ func (cmd *clientCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 		return subcommands.ExitUsageError
 	}
 	binID := f.Arg(0)
-
 	// Connect to gRPC server.
-	if err := connect(cmd.BinAddr, cmd.DisasmAddr, binID); err != nil {
+	if err := connect(cmd.InstAddrJSONPath, cmd.DisasmAddr, binID); err != nil {
 		warn.Printf("connect failed; %+v", err)
 		return subcommands.ExitFailure
 	}
@@ -71,63 +68,47 @@ func (cmd *clientCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 
 // connect connects to the given gRPC address to send a disassemble binary file
 // reuquest.
-func connect(binAddr, disasmAddr, binID string) error {
+func connect(instAddrJSONPath, disasmAddr, binID string) error {
 	if err := pi.CheckBinID(binID); err != nil {
 		return errors.WithStack(err)
 	}
 	dbg.Printf("connecting to %q", disasmAddr)
+	binPath, err := pi.BinPath(binID)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	// If -inst_addrs flag was not specified, look for instruction addresses JSON
+	// file in "{BIN_DIR}/{BIN_ID}.json".
+	if len(instAddrJSONPath) == 0 {
+		instAddrJSONPath = pathutil.TrimExt(binPath) + ".json"
+	}
+	var instAddrs []bin.Address
+	dbg.Printf("parsing %q", instAddrJSONPath)
+	if err := jsonutil.ParseFile(instAddrJSONPath, &instAddrs); err != nil {
+		return errors.WithStack(err)
+	}
 	// Connect to gRPC server.
 	conn, err := grpc.Dial(disasmAddr, grpc.WithInsecure())
 	if err != nil {
 		return errors.WithStack(err)
 	}
 	defer conn.Close()
-	// Parse binary file.
-	file, err := binpbx.ParseFile(binAddr, binID)
-	if err != nil {
-		return errors.WithStack(err)
-	}
 	// Send disassemble binary file request.
 	client := disasmpb.NewDisassemblerClient(conn)
 	ctx := context.Background()
+	var instAddrspb []uint64
+	for _, instAddr := range instAddrs {
+		instAddrspb = append(instAddrspb, uint64(instAddr))
+	}
 	req := &disasmpb.DisassembleRequest{
-		BinId: binID,
+		BinId:     binID,
+		InstAddrs: instAddrspb,
+		Arch:      binpb.Arch_X86_64, // TODO: make configurable.
 	}
 	reply, err := client.Disassemble(ctx, req)
 	if err != nil {
 		return errors.WithStack(err)
 	}
 	pretty.Println(reply)
-	// Processor mode (16-, 32-, or 64-bit exection mode).
-	var mode int
-	switch file.Arch {
-	case binpb.Arch_X86_32:
-		mode = 32
-	case binpb.Arch_X86_64:
-		mode = 64
-	}
-	// TODO: use receive.proto to get file from server. Right now, we assume that
-	// we are running on localhost to read the file contents of binID.
-	// Read file contents.
-	binPath, err := pi.BinPath(binID)
-	if err != nil {
-		return errors.WithStack(err)
-	}
-	binData, err := ioutil.ReadFile(binPath)
-	if err != nil {
-		return errors.WithStack(err)
-	}
-	// Print disassembly.
-	for _, execSect := range reply.ExecSections {
-		for _, off := range execSect.ValidOffsets {
-			sectData := binData[execSect.Section.Offset : execSect.Section.Offset+execSect.Section.Length]
-			instAddr := execSect.Section.Addr + off
-			inst, err := x86asm.Decode(sectData[off:], mode)
-			if err != nil {
-				panic(fmt.Errorf("invalid instruction reported as valid at address 0x%08X", instAddr))
-			}
-			fmt.Printf("%08X\t%v\n", instAddr, inst)
-		}
-	}
 	return nil
 }

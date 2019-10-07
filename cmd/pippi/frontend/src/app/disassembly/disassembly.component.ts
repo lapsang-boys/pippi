@@ -16,7 +16,7 @@ export class DisassemblyComponent {
     if (!data.currentValue) {
       return;
     }
-    this._data = JSON.stringify(data.currentValue, null, 2);
+    this._data = data.currentValue.map(inst => `0x${inst.addr.toString(16)}: ${inst.inst_str}`).join("\n");
     this.editor.getEditor().getSession().setUseWrapMode(true);
   }
 

@@ -1,7 +1,5 @@
-//+build ignore
-
-//go:generate protoc -I ../../proto --go_out=plugins=grpc:../../proto/disasm ../../proto/disasm.proto
-
+// The pi-disasm-objdump tool extracts instruction addresses of binaries using
+// the objdump tool.
 package main
 
 import (
@@ -15,12 +13,12 @@ import (
 )
 
 var (
-	// dbg is a logger with the "pi-disasm:" prefix which logs debug messages to
-	// standard error.
-	dbg = log.New(os.Stderr, term.CyanBold("pi-disasm:")+" ", 0)
-	// warn is a logger with the "pi-disasm:" prefix which logs warning messages to
-	// standard error.
-	warn = log.New(os.Stderr, term.RedBold("pi-disasm:")+" ", 0)
+	// dbg is a logger with the "pi-disasm-objdump:" prefix which logs debug
+	// messages to standard error.
+	dbg = log.New(os.Stderr, term.CyanBold("pi-disasm-objdump:")+" ", 0)
+	// warn is a logger with the "pi-disasm-objdump:" prefix which logs warning
+	// messages to standard error.
+	warn = log.New(os.Stderr, term.RedBold("pi-disasm-objdump:")+" ", 0)
 )
 
 func main() {
@@ -30,8 +28,7 @@ func main() {
 	subcommands.Register(subcommands.CommandsCommand(), "")
 	subcommands.Register(&serverCmd{}, "")
 	subcommands.Register(&clientCmd{}, "")
-	subcommands.Register(&disasmCmd{}, "")
-
+	subcommands.Register(&consoleCmd{}, "")
 	// Parse command line arguments.
 	flag.Parse()
 	// Run subcommand based on command line arguments.

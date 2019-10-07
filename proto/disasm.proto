@@ -5,22 +5,29 @@ package disasm;
 import "bin.proto";
 
 service Disassembler {
-	rpc Disassemble (DisassembleRequest) returns (DisassembleReply) {}
+	rpc Disassemble(DisassembleRequest) returns (DisassembleReply) {}
 }
 
 message DisassembleRequest {
-	// Binary executable ID (lowercase sha256 hash).
+	// Binary ID.
 	string bin_id = 1;
+	// Machine architecture specifying the Instruction Set Architecture (ISA) to
+	// disassemble.
+	bin.Arch arch = 2;
+	// Addresses of instructions to disassemble.
+	repeated uint64 inst_addrs = 3;
 }
 
 message DisassembleReply {
-	// Executable sections.
-	repeated DisassembleSection exec_sections = 1;
+	// Disassembled instructions.
+	repeated Instruction insts = 1;
 }
 
-message DisassembleSection {
-	// Underlying section (or segment) of the exectuable.
-	bin.Section section = 1;
-	// Valid byte offsets for assembly instructions.
-	repeated uint64 valid_offsets = 2;
+// Instruction is an assembly instruction of a given machine architecture.
+message Instruction {
+	// Instruction address.
+	uint64 addr = 1;
+	// Instruction string representation.
+	string inst_str = 2;
+	// TODO: also include op_code and ops?
 }
