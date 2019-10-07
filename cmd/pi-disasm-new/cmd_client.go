@@ -20,9 +20,9 @@ import (
 // binary requests.
 type clientCmd struct {
 	// path instruction addresses JSON file.
-	InstAddrJSONPath string
+	instAddrJSONPath string
 	// disasm gRPC address to connect to.
-	DisasmAddr string
+	disasmAddr string
 }
 
 func (*clientCmd) Name() string {
@@ -47,8 +47,8 @@ Flags:
 
 func (cmd *clientCmd) SetFlags(f *flag.FlagSet) {
 	// TODO: add -arch flag.
-	f.StringVar(&cmd.InstAddrJSONPath, "inst_addrs", "", "path instruction addresses JSON file")
-	f.StringVar(&cmd.DisasmAddr, "addr_disasm", disasmGRPCAddr, "disasm gRPC address to connect to")
+	f.StringVar(&cmd.instAddrJSONPath, "inst_addrs", "", "path instruction addresses JSON file")
+	f.StringVar(&cmd.disasmAddr, "addr_disasm", defaultDisasmAddr, "disasm gRPC address to connect to")
 }
 
 func (cmd *clientCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
@@ -59,7 +59,7 @@ func (cmd *clientCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 	}
 	binID := f.Arg(0)
 	// Connect to gRPC server.
-	if err := connect(cmd.InstAddrJSONPath, cmd.DisasmAddr, binID); err != nil {
+	if err := connect(cmd.instAddrJSONPath, cmd.disasmAddr, binID); err != nil {
 		warn.Printf("connect failed; %+v", err)
 		return subcommands.ExitFailure
 	}

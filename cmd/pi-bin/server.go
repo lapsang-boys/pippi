@@ -12,21 +12,22 @@ import (
 	_ "github.com/decomp/exp/bin/pe"  // register PE decoder
 	"github.com/google/subcommands"
 	"github.com/lapsang-boys/pippi/pkg/pi"
+	"github.com/lapsang-boys/pippi/pkg/services"
 	binpb "github.com/lapsang-boys/pippi/proto/bin"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 )
 
-const (
+var (
 	// Default gRPC address to listen on.
-	grpcAddr = ":1200"
+	defaultBinAddr = fmt.Sprintf("localhost:%d", services.BinPort)
 )
 
 // serverCmd is the command to launch a gRPC server processing parse binary
 // requests.
 type serverCmd struct {
 	// gRPC address to listen on.
-	Addr string
+	binAddr string
 }
 
 func (*serverCmd) Name() string {
@@ -50,11 +51,11 @@ Flags:
 }
 
 func (cmd *serverCmd) SetFlags(f *flag.FlagSet) {
-	f.StringVar(&cmd.Addr, "addr", grpcAddr, "gRPC address to listen on")
+	f.StringVar(&cmd.binAddr, "addr", defaultBinAddr, "gRPC address to listen on")
 }
 
 func (cmd *serverCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
-	if err := listen(cmd.Addr); err != nil {
+	if err := listen(cmd.binAddr); err != nil {
 		warn.Printf("listen failed; %+v", err)
 		return subcommands.ExitFailure
 	}
@@ -63,10 +64,10 @@ func (cmd *serverCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 
 // listen listens on the given gRPC address for incoming requests to parse binary
 // files.
-func listen(addr string) error {
-	dbg.Printf("listening on %q", addr)
+func listen(binAddr string) error {
+	dbg.Printf("listening on %q", binAddr)
 	// Launch gRPC server.
-	l, err := net.Listen("tcp", addr)
+	l, err := net.Listen("tcp", binAddr)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -124,9 +125,9 @@ func (s *binParserServer) ParseBinary(ctx context.Context, req *binpb.ParseBinar
 		reply.Sections = append(reply.Sections, section)
 	}
 	// Imports.
-	for addr, funcName := range file.Imports {
+	for funcAddr, funcName := range file.Imports {
 		fn := &binpb.Func{
-			Addr: uint64(addr),
+			Addr: uint64(funcAddr),
 			Name: funcName,
 		}
 		reply.Imports = append(reply.Imports, fn)
@@ -135,9 +136,9 @@ func (s *binParserServer) ParseBinary(ctx context.Context, req *binpb.ParseBinar
 		return reply.Imports[i].Addr < reply.Imports[j].Addr
 	})
 	// Exports.
-	for addr, funcName := range file.Exports {
+	for funcAddr, funcName := range file.Exports {
 		fn := &binpb.Func{
-			Addr: uint64(addr),
+			Addr: uint64(funcAddr),
 			Name: funcName,
 		}
 		reply.Exports = append(reply.Exports, fn)

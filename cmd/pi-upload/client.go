@@ -16,7 +16,7 @@ import (
 // clientCmd is the command to upload a binary file.
 type clientCmd struct {
 	// gRPC address to connect to.
-	Addr string
+	uploadAddr string
 }
 
 func (*clientCmd) Name() string {
@@ -40,7 +40,7 @@ Flags:
 }
 
 func (cmd *clientCmd) SetFlags(f *flag.FlagSet) {
-	f.StringVar(&cmd.Addr, "addr", grpcAddr, "gRPC address to connect to")
+	f.StringVar(&cmd.uploadAddr, "addr", defaultUploadAddr, "gRPC address to connect to")
 }
 
 func (cmd *clientCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
@@ -52,7 +52,7 @@ func (cmd *clientCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 	binPath := f.Arg(0)
 
 	// Connect to gRPC server.
-	if err := connect(cmd.Addr, binPath); err != nil {
+	if err := connect(cmd.uploadAddr, binPath); err != nil {
 		warn.Printf("connect failed; %+v", err)
 		return subcommands.ExitFailure
 	}
@@ -74,10 +74,10 @@ func newRequest(binPath string) (*uploadpb.UploadRequest, error) {
 
 // connect connects to the given gRPC address for incoming requests to parse
 // binary files.
-func connect(addr, binPath string) error {
-	dbg.Printf("connecting to %q", addr)
+func connect(uploadAddr, binPath string) error {
+	dbg.Printf("connecting to %q", uploadAddr)
 	// Launch gRPC server.
-	conn, err := grpc.Dial(addr, grpc.WithInsecure())
+	conn, err := grpc.Dial(uploadAddr, grpc.WithInsecure())
 	if err != nil {
 		return errors.WithStack(err)
 	}

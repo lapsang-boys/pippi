@@ -10,6 +10,7 @@ import (
 	"os"
 
 	"github.com/lapsang-boys/pippi/pkg/pi"
+	"github.com/lapsang-boys/pippi/pkg/services"
 	"github.com/pkg/errors"
 )
 
@@ -23,14 +24,11 @@ func logger(handler http.Handler) http.Handler {
 
 func recvUploads() {
 	handler := logger(http.HandlerFunc(upload))
+	uploadAddr := fmt.Sprintf("localhost:%d", services.UploadPort)
 	if err := http.ListenAndServe(uploadAddr, handler); err != nil {
 		log.Fatal(err)
 	}
 }
-
-const (
-	uploadAddr = ":2000"
-)
 
 // upload handles upload requests.
 func upload(w http.ResponseWriter, r *http.Request) {

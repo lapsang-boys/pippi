@@ -9,26 +9,27 @@ import (
 	"github.com/decomp/exp/bin"
 	"github.com/google/subcommands"
 	"github.com/lapsang-boys/pippi/pkg/pi"
+	"github.com/lapsang-boys/pippi/pkg/services"
 	binpb "github.com/lapsang-boys/pippi/proto/bin"
 	disasmpb "github.com/lapsang-boys/pippi/proto/disasm"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 )
 
-const (
+var (
 	// Default bin gRPC address to listen on.
-	binGRPCAddr = ":1200"
+	defaultBinAddr = fmt.Sprintf("localhost:%d", services.BinPort)
 	// Default disasm gRPC address to listen on.
-	disasmGRPCAddr = ":1300"
+	defaultDisasmAddr = fmt.Sprintf("localhost:%d", services.DisasmPort)
 )
 
 // serverCmd is the command to launch a gRPC server processing disassemble
 // binary requests.
 type serverCmd struct {
 	// bin gRPC address to listen on.
-	BinAddr string
+	binAddr string
 	// disasm gRPC address to listen on.
-	DisasmAddr string
+	disasmAddr string
 }
 
 func (*serverCmd) Name() string {
@@ -52,12 +53,12 @@ Flags:
 }
 
 func (cmd *serverCmd) SetFlags(f *flag.FlagSet) {
-	f.StringVar(&cmd.BinAddr, "addr_bin", binGRPCAddr, "bin gRPC address to listen on")
-	f.StringVar(&cmd.DisasmAddr, "addr_disasm", disasmGRPCAddr, "disasm gRPC address to connect to")
+	f.StringVar(&cmd.binAddr, "addr_bin", defaultBinAddr, "bin gRPC address to listen on")
+	f.StringVar(&cmd.disasmAddr, "addr_disasm", defaultDisasmAddr, "disasm gRPC address to connect to")
 }
 
 func (cmd *serverCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
-	if err := listen(cmd.BinAddr, cmd.DisasmAddr); err != nil {
+	if err := listen(cmd.binAddr, cmd.disasmAddr); err != nil {
 		warn.Printf("listen failed; %+v", err)
 		return subcommands.ExitFailure
 	}
