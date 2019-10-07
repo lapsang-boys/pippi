@@ -189,7 +189,7 @@ jobs:
 
   build-pi-strings:
     docker:
-      - image: circleci/rust:1.38
+      - image: karlekdocker/pippi:0.0.6
 
     steps:
       - checkout # check out source code to working directory
