@@ -27,11 +27,6 @@ jobs:
       - checkout # check out source code to working directory
 
       - run:
-          name: Finish early if path not changed.
-          command: |
-            bash ./.circleci/exit-if-path-not-changed.bash ./proto
-
-      - run:
           name: Generate protobuf code
           command: |
             make -C ./proto

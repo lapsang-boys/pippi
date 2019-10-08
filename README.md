@@ -39,6 +39,7 @@ make run_frontend
 ## Ports
 
 * `upload`:  1100
+   - `frontend-upload`:  1110
 * `bin`:     1200
 * `disasm`:  1300
    - `disasm-objdump`:  1310

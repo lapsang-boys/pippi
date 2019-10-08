@@ -24,7 +24,7 @@ func logger(handler http.Handler) http.Handler {
 
 func recvUploads() {
 	handler := logger(http.HandlerFunc(upload))
-	uploadAddr := fmt.Sprintf("localhost:%d", services.UploadPort)
+	uploadAddr := fmt.Sprintf("localhost:%d", services.FrontendUploadPort)
 	if err := http.ListenAndServe(uploadAddr, handler); err != nil {
 		log.Fatal(err)
 	}

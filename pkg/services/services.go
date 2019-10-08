@@ -3,9 +3,10 @@ package services
 
 // Default ports on which services listen.
 const (
-	UploadPort        = 1100
-	BinPort           = 1200
-	DisasmPort        = 1300
-	DisasmObjdumpPort = 1310
-	StringsPort       = 1400
+	UploadPort         = 1100
+	FrontendUploadPort = 1110
+	BinPort            = 1200
+	DisasmPort         = 1300
+	DisasmObjdumpPort  = 1310
+	StringsPort        = 1400
 )
