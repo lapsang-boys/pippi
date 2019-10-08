@@ -15,14 +15,13 @@ require (
 	github.com/mewmew/mips v0.1.0
 	github.com/pkg/errors v0.8.1
 	github.com/sirupsen/logrus v1.4.2 // indirect
-	github.com/wailsapp/wails v0.18.3-0.20191008174700-9aca99911e00
+	github.com/wailsapp/wails v0.17.0
 	golang.org/x/arch v0.0.0-20181203225421-5a4828bb7045
 	golang.org/x/net v0.0.0-20191007182048-72f939374954 // indirect
 	golang.org/x/sys v0.0.0-20191008105621-543471e840be // indirect
 	golang.org/x/text v0.3.2 // indirect
 	google.golang.org/genproto v0.0.0-20190716160619-c506a9f90610 // indirect
 	google.golang.org/grpc v1.22.0
-	gopkg.in/yaml.v3 v3.0.0-20190924164351-c8b7dadae555 // indirect
 )
 
 go 1.13
