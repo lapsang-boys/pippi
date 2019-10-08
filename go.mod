@@ -2,7 +2,6 @@ module github.com/lapsang-boys/pippi
 
 require (
 	github.com/decomp/exp v0.0.0-20181210173419-052a5b074939
-	github.com/golang/protobuf v1.3.2
 	github.com/google/subcommands v1.0.1
 	github.com/kr/pretty v0.1.0
 	github.com/leaanthony/mewn v0.10.7
@@ -16,6 +15,7 @@ require (
 	golang.org/x/text v0.3.2 // indirect
 	google.golang.org/genproto v0.0.0-20190716160619-c506a9f90610 // indirect
 	google.golang.org/grpc v1.22.0
+	google.golang.org/protobuf v0.0.0-20191007210826-3b65992c65a8
 )
 
 go 1.13
