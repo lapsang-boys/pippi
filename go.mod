@@ -4,7 +4,6 @@ require (
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/dchest/htmlmin v1.0.0 // indirect
 	github.com/decomp/exp v0.0.0-20181210173419-052a5b074939
-	github.com/golang/protobuf v1.3.2
 	github.com/google/subcommands v1.0.1
 	github.com/gorilla/websocket v1.4.1 // indirect
 	github.com/kr/pretty v0.1.0
@@ -22,6 +21,8 @@ require (
 	golang.org/x/text v0.3.2 // indirect
 	google.golang.org/genproto v0.0.0-20190716160619-c506a9f90610 // indirect
 	google.golang.org/grpc v1.22.0
+	gopkg.in/yaml.v3 v3.0.0-20190924164351-c8b7dadae555 // indirect
+	google.golang.org/protobuf v0.0.0-20191007210826-3b65992c65a8
 )
 
 go 1.13
