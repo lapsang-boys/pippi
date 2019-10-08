@@ -20,7 +20,8 @@ RUN apk add --update --no-cache \
 	webkit2gtk-dev
 
 RUN go get -u github.com/wailsapp/wails/cmd/wails
-RUN go get -u github.com/golang/protobuf/protoc-gen-go
+RUN go get -u google.golang.org/protobuf/cmd/protoc-gen-go
+RUN go get -u google.golang.org/protobuf/cmd/protoc-gen-go-grpc
 RUN go get -u golang.org/x/tools/cmd/goimports
 RUN python3 -m pip install --user grpcio
 RUN python3 -m pip install --user grpcio-tools
