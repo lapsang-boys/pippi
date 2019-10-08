@@ -1,4 +1,4 @@
-all: protogen pippigo pippirust pippipython
+all: protogen pippigo pippirust pippipython testdatagen
 
 protogen:
 	make -C proto
@@ -15,6 +15,9 @@ pippirust:
 pippipython:
 	# nothing to do. TODO: type-check using Cython?
 
+testdatagen:
+	make -C testdata
+
 run_frontend:
 	make -C cmd/pippi run
 
@@ -25,5 +28,6 @@ clean:
 	make -C cmd/pippi clean
 	make -C cmd/pi-strings clean
 	make -C proto clean
+	make -C testdata clean
 
 .PHONY: all protogen pippigo pippirust pippipython
