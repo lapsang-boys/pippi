@@ -261,12 +261,13 @@ workflows:
         requires:
           - generate-proto
 
-    - build-pi-strings:
-        filters:
-          branches:
-            ignore: gh-pages
-        requires:
-          - generate-proto
+    # TODO: uncomment when #43 is resolved.
+    #- build-pi-strings:
+    #    filters:
+    #      branches:
+    #        ignore: gh-pages
+    #    requires:
+    #      - generate-proto
 
     - build-pippi:
         filters:

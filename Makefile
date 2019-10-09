@@ -9,7 +9,8 @@ pippigo:
 	go mod tidy
 
 pippirust:
-	make -C cmd/pi-strings
+	# TODO: uncomment when #43 is resolved.
+	#make -C cmd/pi-strings
 
 pippipython:
 	# nothing to do. TODO: type-check using Cython?
