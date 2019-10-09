@@ -87,6 +87,8 @@ github.com/mewkiz/pkg v0.0.0-20190317153131-e8616647c365/go.mod h1:NefHmmDOyP6U1
 github.com/mewmew/float v0.0.0-20181121163145-c0f786d7da73/go.mod h1:obQBs6O+vjhgOZLkGdALxItKw4xrI49lSBEnAMO6lWI=
 github.com/mewmew/mips v0.1.0 h1:Q/HkKuzmNBOcOkk89BYlMNx6A83+r1bXVTgURDVhMGI=
 github.com/mewmew/mips v0.1.0/go.mod h1:kb5KbF/SaFx88mvIiDEB0WbADlFZONVYkrpKd4MNhGE=
+github.com/mewpull/webview v0.5.1-0.20191009214754-e5c797c746e1 h1:Tz0NHF31ZqpWWXjPxNteSmqX4MkrrVsqSDdsbK+nPzE=
+github.com/mewpull/webview v0.5.1-0.20191009214754-e5c797c746e1/go.mod h1:XO9HJbKWokDxUYTWQEBCYg95n/To1v7PxvanDNVf8hY=
 github.com/mewrev/pe v0.0.0-20181024063030-8f6d1d7d219c/go.mod h1:j2bWMf/wUNeLV/IHgoCdLiulUruBpCmuP6wGmhQxZOA=
 github.com/mewspring/tools v0.0.0-20181204020634-6c6637dc82b6/go.mod h1:UAdVbSksr+7Bg+z4mga16OaBg3qAcgdaF3x3AeqJHEs=
 github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b/go.mod h1:01TrycV0kFyexm33Z7vhZRXopbI8J3TDReVlkTgMUxE=
