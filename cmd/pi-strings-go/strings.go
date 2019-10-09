@@ -76,12 +76,16 @@ func extractStrings(buf []byte, minLength int) []*stringspb.StringInfo {
 		// for latin)?
 		//
 		//    * https://godoc.org/golang.org/x/text/encoding/charmap
-		//
+
 		// TODO: add support for more encodings? got to catch 'em all!
 		//
 		//    * https://godoc.org/golang.org/x/text/encoding/japanese
 		//    * https://godoc.org/golang.org/x/text/encoding/korean
 		//    * https://godoc.org/golang.org/x/text/encoding/simplifiedchinese
+
+		// TODO: add NULL-terminated string encoding.
+
+		// TODO: add length-prefixed string encoding.
 	}
 	for _, enc := range encs {
 		go extractEncStrings(buf, minLength, enc.enc, enc.dec, c)
