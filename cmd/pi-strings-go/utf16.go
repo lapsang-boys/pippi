@@ -1,6 +1,8 @@
 package main
 
 import (
+	"unicode/utf8"
+
 	stringspb "github.com/lapsang-boys/pippi/proto/strings"
 	textunicode "golang.org/x/text/encoding/unicode"
 )
@@ -56,9 +58,12 @@ func findUTF16String(src []byte, minLength int, endianness textunicode.Endiannes
 	//utf16Big := textunicode.UTF16(textunicode.BigEndian, textunicode.IgnoreBOM)
 	dec := textunicode.UTF16(endianness, textunicode.IgnoreBOM).NewDecoder()
 	nDst, nSrc, _ := dec.Transform(dst[:], src, false)
-	// TODO: check number of runes decoded, not number of bytes.
 	if nDst > minLength {
-		return string(dst[:nDst]), uint64(nSrc), true
+		// Check number of runes decoded, not just number of bytes.
+		d := dst[:nDst]
+		if utf8.Valid(d) && utf8.RuneCount(d) > minLength {
+			return string(d), uint64(nSrc), true
+		}
 	}
 	return "", 1, false
 }
