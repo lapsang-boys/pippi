@@ -16,6 +16,7 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/sirupsen/logrus v1.4.2 // indirect
 	github.com/wailsapp/wails v0.17.0
+	github.com/wailsapp/webview v0.2.7
 	golang.org/x/arch v0.0.0-20181203225421-5a4828bb7045
 	golang.org/x/net v0.0.0-20191007182048-72f939374954 // indirect
 	golang.org/x/sys v0.0.0-20191008105621-543471e840be // indirect
@@ -25,3 +26,5 @@ require (
 )
 
 go 1.13
+
+replace github.com/wailsapp/webview => github.com/mewpull/webview v0.5.1-0.20191009214754-e5c797c746e1
