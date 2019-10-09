@@ -54,6 +54,17 @@ func TestExtractStrings(t *testing.T) {
 	}
 }
 
+func BenchmarkExtractStrings(b *testing.B) {
+	const path = "../../testdata/strings/ascii_en.bin"
+	buf, err := ioutil.ReadFile(path)
+	if err != nil {
+		b.Fatalf("unable to read file %q; %v", path, err)
+	}
+	for i := 0; i < b.N; i++ {
+		extractStrings(buf, defaultMinLength)
+	}
+}
+
 func contains(infos []*stringspb.StringInfo, want *stringspb.StringInfo) bool {
 	for _, info := range infos {
 		if equal(info, want) {

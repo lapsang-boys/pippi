@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"unicode"
 	"unicode/utf8"
 
@@ -95,10 +96,11 @@ func extractStrings(buf []byte, minLength int) []*stringspb.StringInfo {
 // extractEncStrings extracts printable strings of the given encoding with a
 // minimum number of characters from the given binary.
 func extractEncStrings(buf []byte, minLength int, encoding stringspb.Encoding, dec *encoding.Decoder, c chan []*stringspb.StringInfo) {
+	ex := &extractor{}
 	var infos []*stringspb.StringInfo
 	for i := 0; i < len(buf); {
 		start := uint64(i)
-		s, n, ok := findEncString(buf[start:], minLength, dec)
+		s, n, ok := ex.findEncString(buf[start:], minLength, dec)
 		i += int(n)
 		if !ok {
 			continue
@@ -114,17 +116,24 @@ func extractEncStrings(buf []byte, minLength int, encoding stringspb.Encoding, d
 	c <- infos
 }
 
+// Size of throwaway buffer needed for encoding.Encoding.Transform.
+const maxSize = 10 * 1024 * 1024 // 10 MB
+
+// extractor holds the buffer used for an extractor.
+type extractor struct {
+	// Destination buffer when decoding.
+	dst [maxSize]byte
+}
+
 // findEncString tries to locate the longest printable string starting at src,
 // decoding from dec. For the string to be valid, it must be of at least the
 // specified minimum length in number of characters. The integer return value n
 // specifies the number of bytes read, and the boolean return value indicates
 // success. If an invalid encoding is encountered at the start of the given
 // buffer, n is set to 1 and the boolean return value is false.
-func findEncString(src []byte, minLength int, dec *encoding.Decoder) (s string, n uint64, ok bool) {
-	// Throwaway buffer needed for encoding.Encoding.Transform.
-	const maxSize = 10 * 1024 * 1024 // 10 MB
-	var dst [maxSize]byte
-	nDst, nSrc, _ := dec.Transform(dst[:], src, false)
+func (ex *extractor) findEncString(src []byte, minLength int, dec *encoding.Decoder) (s string, n uint64, ok bool) {
+	dst := ex.dst[:]
+	nDst, nSrc, _ := dec.Transform(dst, src, false)
 	if nDst > minLength {
 		// Check number of runes decoded, not just number of bytes.
 		d := dst[:nDst]
@@ -136,6 +145,13 @@ func findEncString(src []byte, minLength int, dec *encoding.Decoder) (s string, 
 		}
 	}
 	return "", 1, false
+}
+
+// hasInvalidRune reports whether the given byte slice contains a Unicode
+// replacement character.
+func hasInvalidRune(buf []byte) bool {
+	pos := bytes.IndexRune(buf, utf8.RuneError)
+	return pos != -1
 }
 
 // valid reports whether the given string is valid UTF-8 without any Unicode
