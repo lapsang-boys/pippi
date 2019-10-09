@@ -1,6 +1,7 @@
 package main
 
 import (
+	"sort"
 	"strings"
 	"unicode"
 	"unicode/utf8"
@@ -95,6 +96,13 @@ func extractStrings(buf []byte, minLength int) []*stringspb.StringInfo {
 	for range encs {
 		infos = append(infos, <-c...)
 	}
+	// Sort results.
+	sort.Slice(infos, func(i, j int) bool {
+		if infos[i].Location < infos[j].Location {
+			return true
+		}
+		return infos[i].Encoding < infos[j].Encoding
+	})
 	return infos
 }
 
