@@ -19,49 +19,49 @@ func extractStrings(buf []byte, minLength int) []*stringspb.StringInfo {
 		enc stringspb.Encoding
 		dec *encoding.Decoder
 	}{
-		// UTF-8
+		// * UTF-8
 		{
 			enc: stringspb.Encoding_UTF8,
 			dec: textunicode.UTF8.NewDecoder(),
 		},
-		// UTF-16
-		// * UTF-16 (big endian)
+		// * UTF-16
+		//    - big endian
 		{
 			enc: stringspb.Encoding_UTF16BigEndian,
 			dec: textunicode.UTF16(textunicode.BigEndian, textunicode.IgnoreBOM).NewDecoder(),
 		},
-		// * UTF-16 (big endian, with BOM)
+		//    - big endian, with BOM
 		{
 			enc: stringspb.Encoding_UTF16BigEndianBOM,
 			dec: textunicode.UTF16(textunicode.BigEndian, textunicode.ExpectBOM).NewDecoder(),
 		},
-		// * UTF-16 (little endian)
+		//    - little endian
 		{
 			enc: stringspb.Encoding_UTF16LittleEndian,
 			dec: textunicode.UTF16(textunicode.LittleEndian, textunicode.IgnoreBOM).NewDecoder(),
 		},
-		// * UTF-16 (little endian, with BOM)
+		//    - little endian, with BOM
 		{
 			enc: stringspb.Encoding_UTF16LittleEndianBOM,
 			dec: textunicode.UTF16(textunicode.LittleEndian, textunicode.ExpectBOM).NewDecoder(),
 		},
-		// UTF-32
-		// * UTF-32 (big endian)
+		// * UTF-32
+		//    - big endian
 		{
 			enc: stringspb.Encoding_UTF32BigEndian,
 			dec: utf32.UTF32(utf32.BigEndian, utf32.IgnoreBOM).NewDecoder(),
 		},
-		// * UTF-32 (big endian, with BOM)
+		//    - big endian, with BOM
 		{
 			enc: stringspb.Encoding_UTF32BigEndianBOM,
 			dec: utf32.UTF32(utf32.BigEndian, utf32.ExpectBOM).NewDecoder(),
 		},
-		// * UTF-32 (little endian)
+		//    - little endian
 		{
 			enc: stringspb.Encoding_UTF32LittleEndian,
 			dec: utf32.UTF32(utf32.LittleEndian, utf32.IgnoreBOM).NewDecoder(),
 		},
-		// * UTF-32 (little endian, with BOM)
+		//    - little endian, with BOM
 		{
 			enc: stringspb.Encoding_UTF32LittleEndianBOM,
 			dec: utf32.UTF32(utf32.LittleEndian, utf32.ExpectBOM).NewDecoder(),
