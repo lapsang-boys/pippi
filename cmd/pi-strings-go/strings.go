@@ -7,6 +7,7 @@ import (
 	stringspb "github.com/lapsang-boys/pippi/proto/strings"
 	"golang.org/x/text/encoding"
 	textunicode "golang.org/x/text/encoding/unicode"
+	"golang.org/x/text/encoding/unicode/utf32"
 )
 
 // extractStrings extracts printable strings with a minimum number of characters
@@ -22,25 +23,47 @@ func extractStrings(buf []byte, minLength int) []*stringspb.StringInfo {
 			enc: stringspb.Encoding_UTF8,
 			dec: textunicode.UTF8.NewDecoder(),
 		},
-		// UTF-16 (big endian)
+		// UTF-16
+		// * UTF-16 (big endian)
 		{
 			enc: stringspb.Encoding_UTF16BigEndian,
 			dec: textunicode.UTF16(textunicode.BigEndian, textunicode.IgnoreBOM).NewDecoder(),
 		},
-		// UTF-16 (big endian, with BOM)
+		// * UTF-16 (big endian, with BOM)
 		{
 			enc: stringspb.Encoding_UTF16BigEndianBOM,
 			dec: textunicode.UTF16(textunicode.BigEndian, textunicode.ExpectBOM).NewDecoder(),
 		},
-		// UTF-16 (little endian)
+		// * UTF-16 (little endian)
 		{
 			enc: stringspb.Encoding_UTF16LittleEndian,
 			dec: textunicode.UTF16(textunicode.LittleEndian, textunicode.IgnoreBOM).NewDecoder(),
 		},
-		// UTF-16 (little endian, with BOM)
+		// * UTF-16 (little endian, with BOM)
 		{
 			enc: stringspb.Encoding_UTF16LittleEndianBOM,
 			dec: textunicode.UTF16(textunicode.LittleEndian, textunicode.ExpectBOM).NewDecoder(),
+		},
+		// UTF-32
+		// * UTF-32 (big endian)
+		{
+			enc: stringspb.Encoding_UTF32BigEndian,
+			dec: utf32.UTF32(utf32.BigEndian, utf32.IgnoreBOM).NewDecoder(),
+		},
+		// * UTF-32 (big endian, with BOM)
+		{
+			enc: stringspb.Encoding_UTF32BigEndianBOM,
+			dec: utf32.UTF32(utf32.BigEndian, utf32.ExpectBOM).NewDecoder(),
+		},
+		// * UTF-32 (little endian)
+		{
+			enc: stringspb.Encoding_UTF32LittleEndian,
+			dec: utf32.UTF32(utf32.LittleEndian, utf32.IgnoreBOM).NewDecoder(),
+		},
+		// * UTF-32 (little endian, with BOM)
+		{
+			enc: stringspb.Encoding_UTF32LittleEndianBOM,
+			dec: utf32.UTF32(utf32.LittleEndian, utf32.ExpectBOM).NewDecoder(),
 		},
 	}
 	for _, enc := range encs {
