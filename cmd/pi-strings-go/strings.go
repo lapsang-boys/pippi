@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bytes"
+	"strings"
 	"unicode"
 	"unicode/utf8"
 
@@ -10,6 +10,7 @@ import (
 	"golang.org/x/text/encoding/traditionalchinese"
 	textunicode "golang.org/x/text/encoding/unicode"
 	"golang.org/x/text/encoding/unicode/utf32"
+	"golang.org/x/text/transform"
 )
 
 // extractStrings extracts printable strings with a minimum number of characters
@@ -98,21 +99,22 @@ func extractStrings(buf []byte, minLength int) []*stringspb.StringInfo {
 }
 
 // extractEncStrings extracts printable strings of the given encoding with a
-// minimum number of characters from the given binary.
+// minimum number of characters from the given binary. Results are sent on the
+// channel c.
 func extractEncStrings(buf []byte, minLength int, encoding stringspb.Encoding, dec *encoding.Decoder, c chan []*stringspb.StringInfo) {
-	ex := &extractor{}
 	var infos []*stringspb.StringInfo
 	for i := 0; i < len(buf); {
-		start := uint64(i)
-		s, n, ok := ex.findEncString(buf[start:], minLength, dec)
-		i += int(n)
+		s, n, ok := findEncString(buf[i:], minLength, dec)
 		if !ok {
+			i++
 			continue
 		}
+		start := uint64(i)
+		i += n
 		info := &stringspb.StringInfo{
 			Location:  start,
 			RawString: s,
-			Size:      n,
+			Size:      uint64(n),
 			Encoding:  encoding,
 		}
 		infos = append(infos, info)
@@ -120,69 +122,62 @@ func extractEncStrings(buf []byte, minLength int, encoding stringspb.Encoding, d
 	c <- infos
 }
 
-// Size of throwaway buffer needed for encoding.Encoding.Transform.
-const maxSize = 10 * 1024 // 10 KB
-
-// extractor holds the buffer used for an extractor.
-type extractor struct {
-	// Destination buffer when decoding.
-	dst [maxSize]byte
-}
-
 // findEncString tries to locate the longest printable string starting at src,
 // decoding from dec. For the string to be valid, it must be of at least the
 // specified minimum length in number of characters. The integer return value n
 // specifies the number of bytes read, and the boolean return value indicates
 // success. If an invalid encoding is encountered at the start of the given
-// buffer, n is set to 1 and the boolean return value is false.
-func (ex *extractor) findEncString(src []byte, minLength int, dec *encoding.Decoder) (s string, n uint64, ok bool) {
-	dst := ex.dst[:]
-	// Cap src to maxSize.
-	m := len(src)
-	if m > maxSize {
-		m = maxSize
-	}
-	nDst, nSrc, _ := dec.Transform(dst, src[:m], false)
-	if nDst > minLength {
-		// Check number of runes decoded, not just number of bytes.
-		d := dst[:nDst]
-		if utf8.Valid(d) && utf8.RuneCount(d) > minLength {
-			s := string(d)
-			if valid(s) && prefixGraphicCount(s) > uint64(minLength) {
-				return s, uint64(nSrc), true
-			}
+// buffer or the located string is too short, n is set to 1 and the boolean
+// return value is false.
+func findEncString(src []byte, minLength int, dec *encoding.Decoder) (s string, n int, ok bool) {
+	dst := &strings.Builder{}
+	nchars := 0
+	for n = 0; n < len(src); {
+		r, nSrc := decodeRune(src[n:], dec)
+		if r == unicode.ReplacementChar {
+			break
 		}
-	}
-	return "", 1, false
-}
-
-// hasInvalidRune reports whether the given byte slice contains a Unicode
-// replacement character.
-func hasInvalidRune(buf []byte) bool {
-	pos := bytes.IndexRune(buf, utf8.RuneError)
-	return pos != -1
-}
-
-// valid reports whether the given string is valid UTF-8 without any Unicode
-// replacement characters.
-func valid(s string) bool {
-	for _, r := range s {
-		if r == utf8.RuneError {
-			return false
-		}
-	}
-	return true
-}
-
-// prefixGraphicCount returns the number of graphic Unicode code points at the start
-// of the given string.
-func prefixGraphicCount(s string) uint64 {
-	n := uint64(0)
-	for _, r := range s {
 		if !unicode.IsGraphic(r) {
 			break
 		}
-		n++
+		n += nSrc
+		dst.WriteRune(r)
+		nchars++
 	}
-	return n
+	// Check length.
+	if nchars < minLength {
+		return "", 1, false
+	}
+	return dst.String(), n, true
+}
+
+// decodeRune tries to decode a single rune from src using the given text
+// transformer. The rune may consist of several surrogate runes. The returned
+// rune is either a valid rune or unicode.ReplacementChar, and the returned
+// integer indicates the number of source bytes read to decode the rune.
+func decodeRune(src []byte, t transform.Transformer) (rune, int) {
+	const (
+		// TODO: verify that 4 bytes is enough to store any Unicode code point in
+		// UTF-8.
+		maxDstSize = 4
+		// TODO: check if any encoding requires more than 4 bytes to encode a
+		// single rune (including surrogate pairs).
+		maxSrcSize = 4
+	)
+	var dst [maxDstSize]byte
+	for n := maxSrcSize; n >= 1; n-- {
+		nDst, nSrc, err := t.Transform(dst[:], src[:n], false)
+		if err != nil {
+			continue
+		}
+		if n != nSrc {
+			continue
+		}
+		d := dst[:nDst]
+		if utf8.RuneCount(d) == 1 {
+			r, _ := utf8.DecodeRune(d)
+			return r, n
+		}
+	}
+	return unicode.ReplacementChar, 1
 }

@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"testing"
 
+	"github.com/kr/pretty"
 	stringspb "github.com/lapsang-boys/pippi/proto/strings"
 )
 
@@ -49,7 +50,8 @@ func TestExtractStrings(t *testing.T) {
 		}
 		infos := extractStrings(buf, defaultMinLength)
 		if !contains(infos, g.want) {
-			t.Errorf("extracted string missing; expected string %q at location %d with encoding %v and size %d not extracted", g.want.RawString, g.want.Location, g.want.Encoding, g.want.Size)
+			pretty.Println(infos)
+			t.Errorf("extracted string missing from %q; expected string %q at location %d with encoding %v and size %d not extracted", g.path, g.want.RawString, g.want.Location, g.want.Encoding, g.want.Size)
 		}
 	}
 }
