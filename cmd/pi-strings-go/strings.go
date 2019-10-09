@@ -6,6 +6,7 @@ import (
 
 	stringspb "github.com/lapsang-boys/pippi/proto/strings"
 	"golang.org/x/text/encoding"
+	"golang.org/x/text/encoding/traditionalchinese"
 	textunicode "golang.org/x/text/encoding/unicode"
 	"golang.org/x/text/encoding/unicode/utf32"
 )
@@ -65,6 +66,21 @@ func extractStrings(buf []byte, minLength int) []*stringspb.StringInfo {
 			enc: stringspb.Encoding_UTF32LittleEndianBOM,
 			dec: utf32.UTF32(utf32.LittleEndian, utf32.ExpectBOM).NewDecoder(),
 		},
+		// * Big-5
+		{
+			enc: stringspb.Encoding_Big5,
+			dec: traditionalchinese.Big5.NewDecoder(),
+		},
+		// TODO: consider adding support for ISO-88xx-xx encodings (e.g. 8859-1
+		// for latin)?
+		//
+		//    * https://godoc.org/golang.org/x/text/encoding/charmap
+		//
+		// TODO: add support for more encodings? got to catch 'em all!
+		//
+		//    * https://godoc.org/golang.org/x/text/encoding/japanese
+		//    * https://godoc.org/golang.org/x/text/encoding/korean
+		//    * https://godoc.org/golang.org/x/text/encoding/simplifiedchinese
 	}
 	for _, enc := range encs {
 		go extractEncStrings(buf, minLength, enc.enc, enc.dec, c)
@@ -114,7 +130,7 @@ func findEncString(src []byte, minLength int, dec *encoding.Decoder) (s string, 
 		d := dst[:nDst]
 		if utf8.Valid(d) && utf8.RuneCount(d) > minLength {
 			s := string(d)
-			if graphicCount(s) > uint64(minLength) {
+			if valid(s) && prefixGraphicCount(s) > uint64(minLength) {
 				return s, uint64(nSrc), true
 			}
 		}
@@ -122,14 +138,26 @@ func findEncString(src []byte, minLength int, dec *encoding.Decoder) (s string, 
 	return "", 1, false
 }
 
-// graphicCount returns the number of graphic Unicode code points in the given
-// string.
-func graphicCount(s string) uint64 {
+// valid reports whether the given string is valid UTF-8 without any Unicode
+// replacement characters.
+func valid(s string) bool {
+	for _, r := range s {
+		if r == utf8.RuneError {
+			return false
+		}
+	}
+	return true
+}
+
+// prefixGraphicCount returns the number of graphic Unicode code points at the start
+// of the given string.
+func prefixGraphicCount(s string) uint64 {
 	n := uint64(0)
 	for _, r := range s {
-		if unicode.IsGraphic(r) {
-			n++
+		if !unicode.IsGraphic(r) {
+			break
 		}
+		n++
 	}
 	return n
 }
