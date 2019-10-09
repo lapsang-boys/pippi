@@ -11,6 +11,10 @@ message StringsRequest {
 	string bin_id = 1;
 }
 
+message StringsReply {
+	repeated StringInfo strings = 1;
+}
+
 message StringInfo {
 	// File offset to start of string.
 	uint64 location = 1;
@@ -20,10 +24,6 @@ message StringInfo {
 	uint64 size = 3;
 	// Encoding of string.
 	Encoding encoding = 4;
-}
-
-message StringsReply {
-	repeated StringInfo strings = 1;
 }
 
 // String encodings.

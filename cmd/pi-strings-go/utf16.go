@@ -1,64 +1,64 @@
 package main
 
 import (
-	"encoding/binary"
-	"unicode"
-	"unicode/utf16"
+	stringspb "github.com/lapsang-boys/pippi/proto/strings"
+	textunicode "golang.org/x/text/encoding/unicode"
 )
 
-// utf16DecodeRuneWithOrder unpacks the first UTF-16 encoding in p and returns
-// the rune and its width in bytes. The given byte order is used to decode
-// uint16 values of p. If p is empty it returns (ReplacementChar, 0). Otherwise,
-// if the encoding is invalid, it returns (ReplacementChar, 1)
-func utf16DecodeRuneWithOrder(p []byte, order binary.ByteOrder) (rune, int) {
-	var bs [2]uint16
-	n := 0
-	if len(p) >= 2 {
-		bs[0] = order.Uint16(p)
-		n++
-	}
-	if len(p) >= 4 {
-		bs[1] = order.Uint16(p[2:])
-		n++
-	}
-	return utf16DecodeRune(bs[:n])
+// extractUTF16LittleEndianStrings extracts printable UTF-16 strings in little
+// endian byte order with a minimum number of characters from the given binary.
+func extractUTF16LittleEndianStrings(buf []byte, minLength int, c chan []*stringspb.StringInfo) {
+	extractUTF16Strings(buf, minLength, stringspb.Encoding_UTF16LittleEndian, textunicode.LittleEndian, c)
 }
 
-// Copied from unicode/utf16 package of the Go 1.13 stdlib.
-const (
-	// 0xd800-0xdc00 encodes the high 10 bits of a pair.
-	// 0xdc00-0xe000 encodes the low 10 bits of a pair.
-	// the value is those 20 bits plus 0x10000.
-	surr1 = 0xd800
-	surr2 = 0xdc00
-	surr3 = 0xe000
+// extractUTF16BigEndianStrings extracts printable UTF-16 strings in big endian
+// byte order with a minimum number of characters from the given binary.
+func extractUTF16BigEndianStrings(buf []byte, minLength int, c chan []*stringspb.StringInfo) {
+	extractUTF16Strings(buf, minLength, stringspb.Encoding_UTF16BigEndian, textunicode.BigEndian, c)
+}
 
-	surrSelf = 0x10000
-)
+// extractUTF16Strings extracts printable UTF-8 strings with a minimum number of
+// characters from the given binary. The given byte order is used to decode
+// uint16 values of buf.
+func extractUTF16Strings(buf []byte, minLength int, encoding stringspb.Encoding, endianness textunicode.Endianness, c chan []*stringspb.StringInfo) {
+	var infos []*stringspb.StringInfo
+	for i := 0; i < len(buf); {
+		start := uint64(i)
+		s, n, ok := findUTF16String(buf[start:], minLength, endianness)
+		i += int(n)
+		if !ok {
+			continue
+		}
+		info := &stringspb.StringInfo{
+			Location:  start,
+			RawString: s,
+			Size:      n,
+			Encoding:  encoding,
+		}
+		infos = append(infos, info)
+	}
+	c <- infos
+}
 
-// utf16DecodeRune unpacks the first UTF-16 encoding in p and returns the rune
-// and its width in bytes. If p is empty it returns (ReplacementChar, 0).
-// Otherwise, if the encoding is invalid, it returns (ReplacementChar, 1)
-//
-// Copied with minor modifications from unicode/utf16.Decode function of the Go
-// 1.13 stdlib.
-//
-// Changes made:
-//    * Unpack only first rune in p (which may consist of two surrogate runes)
-//    * Return the number of bytes read to decode the rune.
-func utf16DecodeRune(p []uint16) (rune, int) {
-	if len(p) < 1 {
-		return unicode.ReplacementChar, 0
+// findUTF16String tries to locate the longest printable UTF-8 string starting
+// at src. For the string to be valid, it must be of at least the specified
+// minimum length in number of characters. The given byte order is used to
+// decode uint16 values of src. The integer return value n specifies the number
+// of bytes read, and the boolean return value indicates success. If an invalid
+// UTF-8 encoding is encountered at the start of the given buffer, n is set to 1
+// and the boolean return value is false.
+func findUTF16String(src []byte, minLength int, endianness textunicode.Endianness) (s string, n uint64, ok bool) {
+	// Throwaway buffer needed for encoding.Encoding.Transform.
+	const maxSize = 10 * 1024 * 1024 // 10 MB
+	var dst [maxSize]byte
+	// TODO: add BOM check.
+	//utf16BigBom := textunicode.UTF16(textunicode.BigEndian, textunicode.UseBOM)
+	//utf16Big := textunicode.UTF16(textunicode.BigEndian, textunicode.IgnoreBOM)
+	dec := textunicode.UTF16(endianness, textunicode.IgnoreBOM).NewDecoder()
+	nDst, nSrc, _ := dec.Transform(dst[:], src, false)
+	// TODO: check number of runes decoded, not number of bytes.
+	if nDst > minLength {
+		return string(dst[:nDst]), uint64(nSrc), true
 	}
-	switch r := p[0]; {
-	case r < surr1, surr3 <= r:
-		// normal rune
-		return rune(r), 2
-	case surr1 <= r && r < surr2 && len(p) > 1 && surr2 <= p[1] && p[1] < surr3:
-		// valid surrogate sequence
-		return utf16.DecodeRune(rune(r), rune(p[1])), 4
-	default:
-		// invalid surrogate sequence
-		return unicode.ReplacementChar, 1
-	}
+	return "", 1, false
 }
