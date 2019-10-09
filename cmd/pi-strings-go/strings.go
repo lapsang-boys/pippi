@@ -117,7 +117,7 @@ func extractEncStrings(buf []byte, minLength int, encoding stringspb.Encoding, d
 }
 
 // Size of throwaway buffer needed for encoding.Encoding.Transform.
-const maxSize = 10 * 1024 * 1024 // 10 MB
+const maxSize = 10 * 1024 // 10 KB
 
 // extractor holds the buffer used for an extractor.
 type extractor struct {
@@ -133,7 +133,12 @@ type extractor struct {
 // buffer, n is set to 1 and the boolean return value is false.
 func (ex *extractor) findEncString(src []byte, minLength int, dec *encoding.Decoder) (s string, n uint64, ok bool) {
 	dst := ex.dst[:]
-	nDst, nSrc, _ := dec.Transform(dst, src, false)
+	// Cap src to maxSize.
+	m := len(src)
+	if m > maxSize {
+		m = maxSize
+	}
+	nDst, nSrc, _ := dec.Transform(dst, src[:m], false)
 	if nDst > minLength {
 		// Check number of runes decoded, not just number of bytes.
 		d := dst[:nDst]
