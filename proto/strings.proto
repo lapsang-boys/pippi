@@ -11,6 +11,10 @@ message StringsRequest {
 	string bin_id = 1;
 }
 
+message StringsReply {
+	repeated StringInfo strings = 1;
+}
+
 message StringInfo {
 	// File offset to start of string.
 	uint64 location = 1;
@@ -22,22 +26,28 @@ message StringInfo {
 	Encoding encoding = 4;
 }
 
-message StringsReply {
-	repeated StringInfo strings = 1;
-}
-
 // String encodings.
 enum Encoding {
 	// ASCII encoding.
 	ASCII = 0;
 	// UTF-8 encoding.
 	UTF8 = 1;
-	// UTF-16 encoding (little endian).
-	UTF16LittleEndian = 2;
 	// UTF-16 encoding (big endian).
-	UTF16BigEndian = 3;
-	// UTF-32 encoding
-	UTF32 = 4;
+	UTF16BigEndian = 2;
+	// UTF-16 encoding (big endian, with BOM).
+	UTF16BigEndianBOM = 3;
+	// UTF-16 encoding (little endian).
+	UTF16LittleEndian = 4;
+	// UTF-16 encoding (little endian, with BOM).
+	UTF16LittleEndianBOM = 5;
+	// UTF-32 encoding (big endian).
+	UTF32BigEndian = 6;
+	// UTF-32 encoding (big endian, with BOM).
+	UTF32BigEndianBOM = 7;
+	// UTF-32 encoding (little endian).
+	UTF32LittleEndian = 8;
+	// UTF-32 encoding (little endian, with BOM).
+	UTF32LittleEndianBOM = 9;
 	// Big-5 encoding.
-	Big5 = 5;
+	Big5 = 10;
 }
