@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package upload;
 
+option go_package = "github.com/lapsang-boys/pippi/proto/upload";
+
 service Upload {
 	rpc Upload (UploadRequest) returns (UploadReply) {}
 }

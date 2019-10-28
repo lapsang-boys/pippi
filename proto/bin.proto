@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package bin;
+
 option go_package = "github.com/lapsang-boys/pippi/proto/bin";
 
 service BinaryParser {
@@ -38,14 +39,6 @@ enum Arch {
 	PowerPC_32 = 3;
 }
 
-// A Func is an imported or exported function.
-message Func {
-	// Function address.
-	uint64 addr = 1;
-	// Function name.
-	string name = 2;
-}
-
 // A Section represents a continuous section of memory.
 message Section {
 	// Section name; or empty if unnamed section or memory segment.
@@ -79,4 +72,12 @@ enum Perm {
 	W = 1;
 	// Memory is executable.
 	X = 2;
+}
+
+// A Func is an imported or exported function.
+message Func {
+	// Function address.
+	uint64 addr = 1;
+	// Function name.
+	string name = 2;
 }
