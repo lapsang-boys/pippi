@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload/ng2-file-upload';
 import { IdService } from '../id.service';
 
-const uploadURL = 'http://localhost:2000/upload';
+const uploadURL = 'http://localhost:1110/upload';
 
 @Component({
   selector: 'app-upload',
