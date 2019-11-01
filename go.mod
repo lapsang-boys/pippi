@@ -3,6 +3,7 @@ module github.com/lapsang-boys/pippi
 require (
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/dchest/htmlmin v1.0.0 // indirect
+	github.com/ddollar/forego v0.16.1
 	github.com/decomp/exp v0.0.0-20181210173419-052a5b074939
 	github.com/golang/protobuf v1.3.2
 	github.com/google/subcommands v1.0.1
@@ -15,8 +16,7 @@ require (
 	github.com/mewmew/mips v0.1.0
 	github.com/pkg/errors v0.8.1
 	github.com/sirupsen/logrus v1.4.2 // indirect
-	github.com/wailsapp/wails v0.18.3
-	github.com/wailsapp/webview v0.2.7
+	github.com/wailsapp/wails v0.18.5
 	golang.org/x/arch v0.0.0-20181203225421-5a4828bb7045
 	golang.org/x/net v0.0.0-20191007182048-72f939374954 // indirect
 	golang.org/x/sys v0.0.0-20191008105621-543471e840be // indirect
@@ -26,5 +26,3 @@ require (
 )
 
 go 1.13
-
-replace github.com/wailsapp/webview => github.com/mewpull/webview v0.5.1-0.20191009214754-e5c797c746e1
