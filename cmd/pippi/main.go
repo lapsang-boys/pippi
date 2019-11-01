@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 
 	"github.com/leaanthony/mewn"
 	"github.com/wailsapp/wails"
@@ -13,6 +14,7 @@ import (
 	binpb "github.com/lapsang-boys/pippi/proto/bin"
 	disasmpb "github.com/lapsang-boys/pippi/proto/disasm"
 	stringspb "github.com/lapsang-boys/pippi/proto/strings"
+	"github.com/mewkiz/pkg/osutil"
 )
 
 func binary(binId string) []byte {
@@ -103,6 +105,17 @@ func listIds() []string {
 func main() {
 	js := mewn.String("./frontend/dist/my-app/main-es2015.js")
 	css := mewn.String("./frontend/dist/my-app/styles.css")
+
+	// Create pippi cache directory if not present.
+	pippiCacheDir, err := pi.CacheDir()
+	if err != nil {
+		log.Fatalf("unable to locate pippi cache directory; %+v", err)
+	}
+	if !osutil.Exists(pippiCacheDir) {
+		if err := os.MkdirAll(pippiCacheDir, 0755); err != nil {
+			log.Fatalf("unable to create pippi cache directory %q; %+v", pippiCacheDir, err)
+		}
+	}
 
 	go recvUploads()
 	app := wails.CreateApp(&wails.AppConfig{
